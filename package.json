@@ -12,7 +12,9 @@
   "dependencies": {
     "@vue/apollo-composable": "^4.0.0-beta.7",
     "graphql": "^16.7.1",
-    "vue": "^3.2.47"
+    "vue": "^3.2.47",
+    "@vueuse/core": "^9.13.0",
+    "@vueuse/router": "^9.13.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^3.3.1",

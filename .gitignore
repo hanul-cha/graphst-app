@@ -25,3 +25,5 @@ dist-ssr
 .graphqlrc
 .prettierrc
 .envrc
+types/auto-components.d.ts
+types/auto-imports.d.ts

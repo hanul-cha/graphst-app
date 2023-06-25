@@ -23,6 +23,8 @@ export enum AuthRole {
 export type Mutation = {
   __typename?: 'Mutation';
   deleteUser?: Maybe<Scalars['Boolean']>;
+  signIn?: Maybe<Scalars['String']>;
+  signUp?: Maybe<User>;
 };
 
 
@@ -30,25 +32,24 @@ export type MutationDeleteUserArgs = {
   id: Scalars['ID'];
 };
 
-export type Query = {
-  __typename?: 'Query';
-  signIn?: Maybe<Scalars['String']>;
-  signUp?: Maybe<User>;
-};
 
-
-export type QuerySignInArgs = {
+export type MutationSignInArgs = {
   id: Scalars['String'];
   password: Scalars['String'];
 };
 
 
-export type QuerySignUpArgs = {
+export type MutationSignUpArgs = {
   answerForSearch: Scalars['String'];
   name: Scalars['String'];
   password: Scalars['String'];
   questionForSearch: Scalars['String'];
   userId: Scalars['String'];
+};
+
+export type Query = {
+  __typename?: 'Query';
+  queryTest?: Maybe<Scalars['String']>;
 };
 
 export type User = {
@@ -61,13 +62,13 @@ export type User = {
   userId: Scalars['String'];
 };
 
-export type SignInQueryVariables = Exact<{
+export type SignInMutationVariables = Exact<{
   id: Scalars['String'];
   password: Scalars['String'];
 }>;
 
 
-export type SignInQuery = { __typename?: 'Query', signIn?: string | null };
+export type SignInMutation = { __typename?: 'Mutation', signIn?: string | null };
 
 
-export const SignInDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SignIn"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signIn"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}]}]}}]} as unknown as DocumentNode<SignInQuery, SignInQueryVariables>;
+export const SignInDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignIn"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signIn"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}]}]}}]} as unknown as DocumentNode<SignInMutation, SignInMutationVariables>;

@@ -1,7 +1,6 @@
-query SignIn(
+mutation SignIn(
   $id: String!
   $password: String!
-
 ) {
   signIn(
     id: $id

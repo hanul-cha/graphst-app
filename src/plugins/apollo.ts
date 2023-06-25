@@ -14,15 +14,15 @@ declare module '@vue/runtime-core' {
 }
 
 const httpLink = createHttpLink({
-  uri: `${process.env.API_URL ?? ''}/graphql`,
+  uri: 'http://localhost:4000/graphql',
 })
 
 const authLink = setContext((_, { headers }) => {
-//   const token = auth.token()
+  //   const token = auth.token()
   return {
     headers: {
       ...headers,
-    //   Authorization: token ? `Bearer ${token}` : '',
+      //   Authorization: token ? `Bearer ${token}` : '',
     },
   }
 })

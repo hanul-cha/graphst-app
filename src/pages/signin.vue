@@ -10,7 +10,7 @@ const dialog = useDialog()
 
 async function signIn() {
   if (!inputId.value || !inputPassword.value) {
-    dialog.open({
+    await dialog.open({
       title: '로그인 실패',
       message: '아이디와 비밀번호를 입력해주세요.',
       confirmText: '확인',
@@ -27,13 +27,11 @@ async function signIn() {
 </script>
 
 <template>
-  <div>{{ userData }}</div>
   <div>
-    <input v-model="inputId" />
+    <Validator @submit="signIn">
+      <ValidateField v-model="inputId" name="id" roles="string" />
+      <ValidateField v-model="inputPassword" name="password" roles="string" />
+      <button type="submit">Load</button>
+    </Validator>
   </div>
-  <div>
-    <input v-model="inputPassword" />
-  </div>
-  <div>{{ loading }}</div>
-  <button @click="signIn()">Load</button>
 </template>

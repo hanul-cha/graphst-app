@@ -13,11 +13,26 @@ export type Scalars = {
   Float: number;
 };
 
+export enum AuthQuestion {
+  /** 가장 좋아하는 동물은? */
+  FavoriteAnimal = 'FAVORITE_ANIMAL',
+  /** 가장 좋아하는 색깔은? */
+  FavoriteColor = 'FAVORITE_COLOR',
+  /** 가장 좋아하는 음식은? */
+  FavoriteFood = 'FAVORITE_FOOD',
+  /** 가장 좋아하는 영화는? */
+  FavoriteMovie = 'FAVORITE_MOVIE',
+  /** 가장 좋아하는 숫자는? */
+  FavoriteNumber = 'FAVORITE_NUMBER',
+  /** 가장 좋아하는 운동은? */
+  FavoriteSports = 'FAVORITE_SPORTS'
+}
+
 export enum AuthRole {
   /** 개발자(전체권한) */
-  AdminDeveloper = 'ADMIN_DEVELOPER',
+  Developer = 'DEVELOPER',
   /** 일반사용자 */
-  AdminUser = 'ADMIN_USER'
+  User = 'USER'
 }
 
 export type Mutation = {
@@ -43,13 +58,27 @@ export type MutationSignUpArgs = {
   answerForSearch: Scalars['String'];
   name: Scalars['String'];
   password: Scalars['String'];
-  questionForSearch: Scalars['String'];
+  questionForSearch: AuthQuestion;
   userId: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  queryTest?: Maybe<Scalars['String']>;
+  changePassword?: Maybe<Scalars['Boolean']>;
+  validateQuestion?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type QueryChangePasswordArgs = {
+  password: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+
+export type QueryValidateQuestionArgs = {
+  answerForSearch: Scalars['String'];
+  questionForSearch: AuthQuestion;
+  userId: Scalars['String'];
 };
 
 export type User = {
@@ -57,7 +86,7 @@ export type User = {
   answerForSearch: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
-  questionForSearch: Scalars['String'];
+  questionForSearch: AuthQuestion;
   roles?: Maybe<Array<Maybe<AuthRole>>>;
   userId: Scalars['String'];
 };

@@ -16,6 +16,7 @@ export default defineConfig({
         '@vueuse/core',
         'vue-router',
         { '@vueuse/router': ['useRouteQuery', 'useRouteParams'] },
+        { 'vee-validate': ['useForm', 'useField'] },
         {
           '@vue/apollo-composable': ['useQuery', 'useLazyQuery', 'useMutation'],
         },

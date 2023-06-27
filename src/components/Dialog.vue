@@ -7,9 +7,9 @@ interface DialogProps {
 }
 
 interface DialogEmits {
-  (e: 'confirm'): void
-  (e: 'cancel'): void
-  (e: 'close'): void
+  (_: 'confirm'): void
+  (_: 'cancel'): void
+  (_: 'close'): void
 }
 
 withDefaults(defineProps<DialogProps>(), {

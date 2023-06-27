@@ -30,6 +30,13 @@ module.exports = {
     'types/auto-components.d.ts',
   ],
   rules: {
+    'no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      },
+    ],
     'no-constant-condition': 'off',
     'import/newline-after-import': 'error',
     'vue/no-restricted-syntax': [
@@ -50,7 +57,7 @@ module.exports = {
     ],
     'vue/require-explicit-emits': 'off',
     'vue/no-unused-vars': [
-      'error',
+      'warn',
       {
         ignorePattern: '^_',
       },

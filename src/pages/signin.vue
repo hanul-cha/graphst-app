@@ -29,8 +29,34 @@ async function signIn() {
 <template>
   <div>
     <Validator @submit="signIn">
-      <ValidateField v-model="inputId" name="id" roles="string" />
-      <ValidateField v-model="inputPassword" name="password" roles="string" />
+      <ValidateField
+        v-slot="{ errorMessage }"
+        :model-value="inputId"
+        name="id"
+        roles="string"
+      >
+        <input
+          v-model="inputId"
+          placeholder="id"
+          :error="errorMessage"
+          class="w-full rounded-2xl border p-2 focus:outline-none"
+          type="text"
+        />
+      </ValidateField>
+      <ValidateField
+        v-slot="{ errorMessage }"
+        :model-value="inputPassword"
+        name="password"
+        roles="string"
+      >
+        <input
+          v-bind="inputPassword"
+          placeholder="password"
+          :error="errorMessage"
+          class="w-full rounded-2xl border p-2 focus:outline-none"
+          type="text"
+        />
+      </ValidateField>
       <button type="submit">Load</button>
     </Validator>
   </div>

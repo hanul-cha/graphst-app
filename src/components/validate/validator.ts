@@ -54,6 +54,7 @@ type SingleValidateProps = 'required' | 'password'
 export type ValidateProps =
   | {
       required?: boolean
+      password?: boolean
       min?: number
       max?: number
     }
@@ -65,7 +66,7 @@ export function validator(
   rules: ValidateProps
 ): boolean | string {
   if (typeof rules === 'string') {
-    const rule = validateRoles[rules as ValidateRolesKey]
+    const rule = validateRoles[rules]
     if (rule.validate(value)) {
       return true
     } else {

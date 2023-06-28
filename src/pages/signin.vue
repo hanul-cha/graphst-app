@@ -4,7 +4,7 @@ import { SignInDocument } from '@/api/graphql'
 const { mutate, loading } = useMutation(SignInDocument)
 
 const userData = ref('')
-const inputId = ref<string | null>('asdf')
+const inputId = ref<string | null>(null)
 const inputPassword = ref<string | null>(null)
 const dialog = useDialog()
 
@@ -33,11 +33,7 @@ async function signIn() {
         v-slot="{ field, errorMessage }"
         v-model="inputId"
         name="id"
-        :roles="{
-          required: true,
-          min: 4,
-          max: 12,
-        }"
+        roles="required"
       >
         <input
           v-bind="field"
@@ -51,11 +47,11 @@ async function signIn() {
         v-slot="{ field, errorMessage }"
         v-model="inputPassword"
         name="password"
-        :roles="'password'"
+        roles="required"
       >
         <input
           v-bind="field"
-          placeholder="영문, 숫자포함 6~12자리여야 합니다."
+          placeholder="password"
           :error="errorMessage"
           class="w-full rounded-2xl border p-2 focus:outline-none"
           type="text"

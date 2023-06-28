@@ -1,0 +1,6 @@
+fragment UserFull on User {
+  id
+  name
+  questionForSearch
+  answerForSearch
+}

@@ -1,0 +1,17 @@
+mutation SignUp(
+  $userId: String!
+  $password: String!
+  $name: String!
+  $questionForSearch: AuthQuestion!
+  $answerForSearch: String!
+) {
+  signUp(
+    userId: $userId
+    password: $password
+    name: $name
+    questionForSearch: $questionForSearch
+    answerForSearch: $answerForSearch
+  ) {
+    ...UserFull
+  }
+}

@@ -4,7 +4,7 @@ import { SignInDocument } from '@/api/graphql'
 const { mutate, loading } = useMutation(SignInDocument)
 
 const userData = ref('')
-const inputId = ref<string | null>(null)
+const inputId = ref<string | null>('asdf')
 const inputPassword = ref<string | null>(null)
 const dialog = useDialog()
 
@@ -30,13 +30,17 @@ async function signIn() {
   <div>
     <Validator @submit="signIn">
       <ValidateField
-        v-slot="{ errorMessage }"
-        :model-value="inputId"
+        v-slot="{ field, errorMessage }"
+        v-model="inputId"
         name="id"
-        roles="string"
+        :roles="{
+          required: true,
+          min: 4,
+          max: 12,
+        }"
       >
         <input
-          v-model="inputId"
+          v-bind="field"
           placeholder="id"
           :error="errorMessage"
           class="w-full rounded-2xl border p-2 focus:outline-none"
@@ -44,20 +48,20 @@ async function signIn() {
         />
       </ValidateField>
       <ValidateField
-        v-slot="{ errorMessage }"
-        :model-value="inputPassword"
+        v-slot="{ field, errorMessage }"
+        v-model="inputPassword"
         name="password"
-        roles="string"
+        :roles="'password'"
       >
         <input
-          v-bind="inputPassword"
-          placeholder="password"
+          v-bind="field"
+          placeholder="영문, 숫자포함 6~12자리여야 합니다."
           :error="errorMessage"
           class="w-full rounded-2xl border p-2 focus:outline-none"
           type="text"
         />
       </ValidateField>
-      <button type="submit">Load</button>
+      <button type="submit">로그인</button>
     </Validator>
   </div>
 </template>

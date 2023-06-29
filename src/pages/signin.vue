@@ -28,6 +28,12 @@ async function signIn() {
 
 <template>
   <div>
+    <!--
+      // test
+      <InputSelect />
+    <InputSelect />
+    <InputSelect />
+  -->
     <Validator @submit="signIn">
       <ValidateField
         v-slot="{ field, errorMessage }"
@@ -35,13 +41,7 @@ async function signIn() {
         name="id"
         roles="required"
       >
-        <input
-          v-bind="field"
-          placeholder="id"
-          :error="errorMessage"
-          class="w-full rounded-2xl border p-2 focus:outline-none"
-          type="text"
-        />
+        <InputText v-bind="field" placeholder="id" :error="!!errorMessage" />
       </ValidateField>
       <ValidateField
         v-slot="{ field, errorMessage }"
@@ -49,12 +49,10 @@ async function signIn() {
         name="password"
         roles="required"
       >
-        <input
+        <InputText
           v-bind="field"
           placeholder="password"
-          :error="errorMessage"
-          class="w-full rounded-2xl border p-2 focus:outline-none"
-          type="text"
+          :error="!!errorMessage"
         />
       </ValidateField>
       <button type="submit">로그인</button>

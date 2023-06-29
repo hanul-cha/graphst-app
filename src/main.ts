@@ -1,10 +1,13 @@
 import { createApp, h, provide } from 'vue'
 import './style.css'
 import App from './App.vue'
+import { createPinia } from 'pinia'
 import { ApolloClients } from '@vue/apollo-composable'
 import apollo, { apolloClient } from './plugins/apollo'
 import router from './plugins/router'
 import dialog from './plugins/dialog'
+
+const pinia = createPinia()
 
 const app = createApp({
   setup() {
@@ -15,7 +18,7 @@ const app = createApp({
   render: () => h(App),
 })
 
-app.use(router).use(apollo).use(dialog).mount('#app')
+app.use(router).use(apollo).use(dialog).use(pinia).mount('#app')
 
 app.config.errorHandler = (error: any) => {
   app.config.globalProperties.$dialog.open({

@@ -65,13 +65,7 @@ async function signUp() {
           max: 12,
         }"
       >
-        <input
-          v-bind="field"
-          placeholder="id"
-          :error="errorMessage"
-          class="w-full rounded-2xl border p-2 focus:outline-none"
-          type="text"
-        />
+        <InputText v-bind="field" placeholder="id" :error="!!errorMessage" />
       </ValidateField>
       <ValidateField
         v-slot="{ field, errorMessage }"
@@ -83,12 +77,10 @@ async function signUp() {
           max: 10,
         }"
       >
-        <input
+        <InputText
           v-bind="field"
           placeholder="사용자 이름"
-          :error="errorMessage"
-          class="w-full rounded-2xl border p-2 focus:outline-none"
-          type="text"
+          :error="!!errorMessage"
         />
       </ValidateField>
       <ValidateField
@@ -97,12 +89,10 @@ async function signUp() {
         name="password"
         roles="password"
       >
-        <input
+        <InputText
           v-bind="field"
           placeholder="영문, 숫자포함 6~12자리여야 합니다."
-          :error="errorMessage"
-          class="w-full rounded-2xl border p-2 focus:outline-none"
-          type="text"
+          :error="!!errorMessage"
         />
       </ValidateField>
       <ValidateField
@@ -111,12 +101,10 @@ async function signUp() {
         name="questionForSearch"
         roles="required"
       >
-        <input
+        <InputText
           v-bind="field"
           placeholder="본인확인 질문"
-          :error="errorMessage"
-          class="w-full rounded-2xl border p-2 focus:outline-none"
-          type="text"
+          :error="!!errorMessage"
         />
       </ValidateField>
       <ValidateField
@@ -129,12 +117,10 @@ async function signUp() {
           max: 20,
         }"
       >
-        <input
+        <InputText
           v-bind="field"
           placeholder="본인확인 답변"
-          :error="errorMessage"
-          class="w-full rounded-2xl border p-2 focus:outline-none"
-          type="text"
+          :error="!!errorMessage"
         />
       </ValidateField>
       <button type="submit">회원가입</button>

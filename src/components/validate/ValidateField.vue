@@ -35,7 +35,12 @@ const rules = (value: any, field: any) => {
     @update:model-value="emit('update:modelValue', $event)"
   >
     <div>
-      <slot :="slotOption" />
+      <slot
+        :="{
+          ...slotOption,
+          field: { ...slotOption.field, modelValue: slotOption.field.value },
+        }"
+      />
 
       <slot name="error">
         <ErrorMessage

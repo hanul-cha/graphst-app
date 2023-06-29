@@ -28,12 +28,6 @@ async function signIn() {
 
 <template>
   <div>
-    <!--
-      // test
-      <InputSelect />
-    <InputSelect />
-    <InputSelect />
-  -->
     <Validator @submit="signIn">
       <ValidateField
         v-slot="{ field, errorMessage }"

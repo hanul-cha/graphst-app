@@ -6,11 +6,20 @@ const router = useRouter()
 
 const { mutate, loading } = useMutation(SignUpDocument)
 
-const inputUserId = ref<string | null>(null)
+const inputUserId = ref<string | null>()
 const inputPassword = ref<string | null>(null)
 const inputName = ref<string | null>(null)
-const inputQuestionForSearch = ref<AuthQuestion>(AuthQuestion.FavoriteColor)
+const inputQuestionForSearch = ref<AuthQuestion>()
 const inputAnswerForSearch = ref<string | null>(null)
+
+const questionOptions = [
+  { label: '내가 가장 좋아하는 동물은?', value: AuthQuestion.FavoriteAnimal },
+  { label: '내가 가장 좋아하는 색은?', value: AuthQuestion.FavoriteColor },
+  { label: '내가 가장 좋아하는 음식은?', value: AuthQuestion.FavoriteFood },
+  { label: '내가 가장 좋아하는 영화는?', value: AuthQuestion.FavoriteMovie },
+  { label: '내가 가장 좋아하는 숫자는?', value: AuthQuestion.FavoriteNumber },
+  { label: '내가 가장 좋아하는 운동은??', value: AuthQuestion.FavoriteSports },
+]
 
 async function signUp() {
   if (
@@ -98,13 +107,14 @@ async function signUp() {
       <ValidateField
         v-slot="{ field, errorMessage }"
         v-model="inputQuestionForSearch"
-        name="questionForSearch"
+        name="본인확인질문"
         roles="required"
       >
-        <InputText
+        <InputSelect
           v-bind="field"
-          placeholder="본인확인 질문"
           :error="!!errorMessage"
+          :options="questionOptions"
+          placeholder="본인확인 질문을 선택해 주세요"
         />
       </ValidateField>
       <ValidateField

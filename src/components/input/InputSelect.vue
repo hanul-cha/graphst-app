@@ -15,7 +15,7 @@ interface InputSelectProps {
 }
 
 interface InputSelectEmits {
-  (_e: 'select:modelValue', _value: string | null): void
+  (_e: 'update:modelValue', _value: string | null): void
 }
 
 const props = withDefaults(defineProps<InputSelectProps>(), {
@@ -28,22 +28,19 @@ const props = withDefaults(defineProps<InputSelectProps>(), {
 
 const emit = defineEmits<InputSelectEmits>()
 
-const { active } = useGlobalActiveStore()
-
-const selectedOption = ref<InputSelectOption | null>(
-  getSelectedOption(props.modelValue)
-)
+const { active, close } = useGlobalActiveStore()
 
 const $inputSelect = ref<HTMLElement | null>(null)
 const isOpen = ref(false)
+const selectedLabel = ref<string | null>(getSelectedLabel(props.modelValue))
 
-function getSelectedOption(value: string | null) {
+function getSelectedLabel(value: string | null) {
   if (!value) null
-  return props.options?.find((option) => option.value === value) ?? null
+  return props.options?.find((option) => option.value === value)?.label ?? null
 }
 
 function open(e: FocusEvent) {
-  if (!$inputSelect.value) return
+  if (!$inputSelect.value || props.disabled) return
   isOpen.value = true
   active({
     target: $inputSelect.value,
@@ -54,15 +51,22 @@ function open(e: FocusEvent) {
     },
   })
 }
+
+function select(option: InputSelectOption) {
+  selectedLabel.value = option.label
+  emit('update:modelValue', option.value)
+  close()
+}
 </script>
 
 <template>
   <div ref="$inputSelect" class="relative">
     <input
-      v-bind="selectedOption?.label"
+      :value="selectedLabel"
       class="w-full rounded-2xl border p-2 focus:select-none focus:caret-transparent focus:outline-none"
       :class="{
         'border-red-500': error,
+        'rounded-b-none': isOpen,
       }"
       :placeholder="placeholder"
       :disabled="disabled"
@@ -72,7 +76,18 @@ function open(e: FocusEvent) {
     />
     <div
       v-if="isOpen"
-      class="absolute bottom-0 z-10 h-9 w-full translate-y-full bg-black"
-    />
+      class="absolute bottom-0 z-10 w-full translate-y-full rounded-b-2xl border border-t-0 bg-white"
+    >
+      <template v-if="options?.length > 0">
+        <template v-for="(option, index) of options" :key="index">
+          <div class="p-2 hover:bg-gray-100" @click="select(option)">
+            {{ option.label }}
+          </div>
+        </template>
+      </template>
+      <template v-else>
+        <div class="p-2 text-gray-400">선택할 수 있는 옵션이 없습니다.</div>
+      </template>
+    </div>
   </div>
 </template>

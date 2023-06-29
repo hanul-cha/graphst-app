@@ -47,7 +47,15 @@ export const useGlobalActiveStore = defineStore('globalActive', () => {
     activeItem.value = activeProps
   }
 
+  async function close() {
+    if (activeItem.value) {
+      await activeItem.value.callback()
+      activeItem.value = null
+    }
+  }
+
   return {
     active,
+    close,
   }
 })

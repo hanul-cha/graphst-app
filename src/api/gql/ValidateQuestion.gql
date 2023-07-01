@@ -1,0 +1,11 @@
+mutation ValidateQuestion(
+  $userId: String!
+  $questionForSearch: AuthQuestion!
+  $answerForSearch: String!
+) {
+  result: validateQuestion(
+    userId: $userId
+    questionForSearch: $questionForSearch
+    answerForSearch: $answerForSearch
+  )
+}

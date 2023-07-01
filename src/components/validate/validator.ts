@@ -7,21 +7,28 @@ export interface FieldValidationMetaInfo {
 }
 
 export interface FieldValidationRule {
+  // _: 입력값, __: 비교값
   validate: (_: any, __?: any) => boolean
   errorMessage?: (_: FieldValidationMetaInfo) => string
 }
 
 // <Rules>
+const custom: FieldValidationRule = {
+  validate: (_value: any, roleValue: boolean) => roleValue,
+  errorMessage: ({ name }: FieldValidationMetaInfo) =>
+    name + '값을 확인해주세요',
+}
+
 const required: FieldValidationRule = {
   validate: (value: any) => !!value,
   errorMessage: ({ name }: FieldValidationMetaInfo) =>
-    name + ' 은 필수값 입니다.',
+    name + '은 필수값 입니다.',
 }
 
 const min: FieldValidationRule = {
   validate: (value: any, min: number) => value.length >= min,
   errorMessage: ({ name, compareValue }: FieldValidationMetaInfo) =>
-    `${name} 은 최소 ${compareValue}자 이상이어야 합니다.`,
+    `${name}은 최소 ${compareValue}자 이상이어야 합니다.`,
 }
 
 const max: FieldValidationRule = {
@@ -45,6 +52,7 @@ const validateRoles = {
   min,
   max,
   password,
+  custom,
 }
 
 type ValidateRolesKey = keyof typeof validateRoles
@@ -53,6 +61,7 @@ type SingleValidateProps = 'required' | 'password'
 
 export type ValidateProps =
   | {
+      custom?: boolean
       required?: boolean
       password?: boolean
       min?: number
@@ -70,25 +79,20 @@ export function validator(
     if (rule.validate(value)) {
       return true
     } else {
-      if (rule.errorMessage) {
-        return rule.errorMessage({ ...field, value })
-      }
-      return `${field.name} 은 유효하지 않습니다.`
+      return rule.errorMessage
+        ? rule.errorMessage({ ...field, value, compareValue: undefined })
+        : `${field.name} 은 유효하지 않습니다.`
     }
   }
   for (const [key, ruleValue] of Object.entries(rules)) {
     const rule = validateRoles[key as ValidateRolesKey]
 
-    if (
-      (typeof ruleValue === 'boolean' && !ruleValue) ||
-      rule.validate(value, ruleValue)
-    ) {
+    if (rule.validate(value, ruleValue)) {
       continue
     } else {
-      if (rule.errorMessage) {
-        return rule.errorMessage({ ...field, value, compareValue: ruleValue })
-      }
-      return `${field.name} 은 유효하지 않습니다.`
+      return rule.errorMessage
+        ? rule.errorMessage({ ...field, value, compareValue: ruleValue })
+        : `${field.name} 은 유효하지 않습니다.`
     }
   }
   return true

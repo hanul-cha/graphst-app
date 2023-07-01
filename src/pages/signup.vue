@@ -8,6 +8,7 @@ const { mutate, loading } = useMutation(SignUpDocument)
 
 const inputUserId = ref<string | null>()
 const inputPassword = ref<string | null>(null)
+const inputPasswordDup = ref<string | null>(null)
 const inputName = ref<string | null>(null)
 const inputQuestionForSearch = ref<AuthQuestion>()
 const inputAnswerForSearch = ref<string | null>(null)
@@ -25,6 +26,7 @@ async function signUp() {
   if (
     !inputUserId.value ||
     !inputPassword.value ||
+    !inputPasswordDup.value ||
     !inputName.value ||
     !inputAnswerForSearch.value ||
     !inputQuestionForSearch.value
@@ -36,22 +38,35 @@ async function signUp() {
     })
     return
   }
-  const result = await mutate({
-    userId: inputUserId.value,
-    password: inputPassword.value,
-    name: inputName.value,
-    questionForSearch: inputQuestionForSearch.value,
-    answerForSearch: inputAnswerForSearch.value,
-  })
 
-  if (result?.data?.signUp?.id) {
+  if (inputPassword.value !== inputPasswordDup.value) {
     await dialog.open({
-      title: '회원가입 성공',
-      message: '회원가입에 성공했습니다.',
+      title: '회원가입 실패',
+      message: '비밀번호가 일치하지 않습니다.',
       confirmText: '확인',
     })
-    router.push('/signin')
-  } else {
+    return
+  }
+
+  try {
+    const result = await mutate({
+      userId: inputUserId.value,
+      password: inputPassword.value,
+      name: inputName.value,
+      questionForSearch: inputQuestionForSearch.value,
+      answerForSearch: inputAnswerForSearch.value,
+    })
+
+    if (result?.data?.signUp?.id) {
+      await dialog.open({
+        title: '회원가입 완료!',
+        confirmText: '확인',
+      })
+      router.push('/signin')
+    } else {
+      throw new Error('signUp.id is null')
+    }
+  } catch (e) {
     await dialog.open({
       title: '회원가입 실패',
       message: '같은 현상이 발생하면 1대1 문의를 이용해주세요.',
@@ -67,7 +82,7 @@ async function signUp() {
       <ValidateField
         v-slot="{ field, errorMessage }"
         v-model="inputUserId"
-        name="userId"
+        name="id"
         :roles="{
           required: true,
           min: 6,
@@ -79,7 +94,7 @@ async function signUp() {
       <ValidateField
         v-slot="{ field, errorMessage }"
         v-model="inputName"
-        name="name"
+        name="사용자이름"
         :roles="{
           required: true,
           min: 2,
@@ -95,7 +110,7 @@ async function signUp() {
       <ValidateField
         v-slot="{ field, errorMessage }"
         v-model="inputPassword"
-        name="password"
+        name="비밀번호"
         roles="password"
       >
         <InputText
@@ -103,6 +118,27 @@ async function signUp() {
           placeholder="영문, 숫자포함 6~12자리여야 합니다."
           :error="!!errorMessage"
         />
+      </ValidateField>
+      <ValidateField
+        v-model="inputPasswordDup"
+        name="비밀번호확인"
+        :roles="{
+          required: true,
+          custom: inputPassword === inputPasswordDup,
+        }"
+      >
+        <template #default="{ field, errorMessage }">
+          <InputText
+            v-bind="field"
+            placeholder="비밀번호 확인"
+            :error="!!errorMessage"
+          />
+        </template>
+        <template #error>
+          <div class="block text-xs text-red-500">
+            입력한 비밀번호와 같아야합니다.
+          </div>
+        </template>
       </ValidateField>
       <ValidateField
         v-slot="{ field, errorMessage }"

@@ -76,7 +76,7 @@ function select(option: InputSelectOption) {
     />
     <div
       v-if="isOpen"
-      class="absolute bottom-0 z-10 w-full translate-y-full rounded-b-2xl border border-t-0 bg-white"
+      class="absolute bottom-0 z-10 max-h-40 w-full translate-y-full overflow-y-auto rounded-b-2xl border border-t-0 bg-white shadow-md"
     >
       <template v-if="options?.length > 0">
         <template v-for="(option, index) of options" :key="index">

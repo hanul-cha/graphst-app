@@ -7,7 +7,6 @@ import {
   UserFullFragment,
 } from '@/api/graphql'
 import { apolloClient } from '@/plugins/apollo'
-import { useRouter } from 'vue-router'
 import Cookies from 'universal-cookie'
 
 interface InternalJwtToken {
@@ -18,7 +17,6 @@ interface InternalJwtToken {
 }
 
 const cookies = new Cookies()
-const router = useRouter()
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<UserFullFragment | null>(null)
@@ -52,6 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
       return null
     }
+    user.value = null
     return user.value
   }
 
@@ -65,9 +64,8 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const logout = () => {
-    cookies.remove('toy_actok')
     user.value = null
-    router.push('/signin')
+    cookies.remove('graphst_actok')
   }
   return {
     user,

@@ -14,7 +14,6 @@ interface ValidateFieldEmits {
 }
 
 const props = defineProps<ValidateFieldProps>()
-
 const emit = defineEmits<ValidateFieldEmits>()
 
 const rules = (value: any, field: any) => {
@@ -42,11 +41,12 @@ const rules = (value: any, field: any) => {
         }"
       />
 
-      <slot name="error">
-        <ErrorMessage
-          :name="props.name"
-          class="block text-xs text-red-500"
-        ></ErrorMessage>
+      <slot
+        v-if="slotOption.errorMessage"
+        name="error"
+        :error-message="slotOption.errorMessage"
+      >
+        <ErrorMessage :name="props.name" class="block text-xs text-red-500" />
       </slot>
     </div>
   </Field>

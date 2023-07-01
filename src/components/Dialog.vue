@@ -35,7 +35,7 @@ onMounted(() => {
     @close.prevent="$emit('close')"
     @cancel.prevent="$emit('cancel')"
   >
-    <div>{{ title }}</div>
+    <div class="text-lg font-bold">{{ title }}</div>
     <div>{{ message }}</div>
     <div class="flex w-full justify-end">
       <button v-if="cancelText" @click="$emit('cancel')">

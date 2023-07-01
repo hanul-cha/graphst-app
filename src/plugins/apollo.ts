@@ -6,6 +6,7 @@ import {
   InMemoryCache,
 } from '@apollo/client/core'
 import { setContext } from '@apollo/client/link/context'
+import Cookies from 'universal-cookie'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -17,12 +18,14 @@ const httpLink = createHttpLink({
   uri: 'http://localhost:4000/graphql',
 })
 
+const cookies = new Cookies()
+
 const authLink = setContext((_, { headers }) => {
-  //   const token = auth.token()
+  const token = cookies.get('graphst_actok')
   return {
     headers: {
       ...headers,
-      //   Authorization: token ? `Bearer ${token}` : '',
+      Authorization: token ? `Bearer ${token}` : '',
     },
   }
 })

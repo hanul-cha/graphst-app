@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { SignInDocument } from '@/api/graphql'
+import { useAuthStore } from '@/store/auth'
 
-const { mutate, loading } = useMutation(SignInDocument)
+const auth = useAuthStore()
 
-const userData = ref('')
 const inputId = ref<string | null>(null)
 const inputPassword = ref<string | null>(null)
 const dialog = useDialog()
@@ -17,12 +16,7 @@ async function signIn() {
     })
     return
   }
-  const result = await mutate({
-    id: inputId.value,
-    password: inputPassword.value,
-  })
-
-  userData.value = result?.data?.signIn ?? ''
+  await auth.login(inputId.value, inputPassword.value)
 }
 </script>
 

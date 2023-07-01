@@ -6,6 +6,7 @@ import { ApolloClients } from '@vue/apollo-composable'
 import apollo, { apolloClient } from './plugins/apollo'
 import router from './plugins/router'
 import dialog from './plugins/dialog'
+import auth from './plugins/auth'
 
 const pinia = createPinia()
 
@@ -18,7 +19,7 @@ const app = createApp({
   render: () => h(App),
 })
 
-app.use(router).use(apollo).use(dialog).use(pinia).mount('#app')
+app.use(router).use(apollo).use(dialog).use(pinia).use(auth).mount('#app')
 
 app.config.errorHandler = (error: any) => {
   app.config.globalProperties.$dialog.open({

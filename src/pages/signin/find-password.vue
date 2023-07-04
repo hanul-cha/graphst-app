@@ -132,7 +132,7 @@ const questionOptions = [
           :error="!!errorMessage"
         />
       </ValidateField>
-      <BasicButton type="submit">본인확인 체크</BasicButton>
+      <BasicButton class="mt-6" type="submit">본인확인 체크</BasicButton>
     </Validator>
     <Validator
       v-show="validateQuestionResult"
@@ -172,7 +172,7 @@ const questionOptions = [
           </div>
         </template>
       </ValidateField>
-      <BasicButton type="submit">비밀번호 변경</BasicButton>
+      <BasicButton class="mt-6" type="submit">비밀번호 변경</BasicButton>
     </Validator>
   </div>
 </template>

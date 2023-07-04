@@ -33,21 +33,19 @@ const rules = (value: any, field: any) => {
     :validate-on-input="!validateOnSubmit"
     @update:model-value="emit('update:modelValue', $event)"
   >
-    <div>
-      <slot
-        :="{
-          ...slotOption,
-          field: { ...slotOption.field, modelValue: slotOption.field.value },
-        }"
-      />
+    <slot
+      :="{
+        ...slotOption,
+        field: { ...slotOption.field, modelValue: slotOption.field.value },
+      }"
+    />
 
-      <slot
-        v-if="slotOption.errorMessage"
-        name="error"
-        :error-message="slotOption.errorMessage"
-      >
-        <ErrorMessage :name="props.name" class="block text-xs text-red-500" />
-      </slot>
-    </div>
+    <slot
+      v-if="slotOption.errorMessage"
+      name="error"
+      :error-message="slotOption.errorMessage"
+    >
+      <ErrorMessage :name="props.name" class="block text-xs text-red-500" />
+    </slot>
   </Field>
 </template>

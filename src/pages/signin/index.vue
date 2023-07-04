@@ -46,7 +46,7 @@ async function signIn() {
           :error="!!errorMessage"
         />
       </ValidateField>
-      <BasicButton type="submit"> 로그인 </BasicButton>
+      <BasicButton class="mt-6" type="submit"> 로그인 </BasicButton>
     </Validator>
     <div class="flex gap-x-1">
       <div>

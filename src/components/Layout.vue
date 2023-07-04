@@ -5,6 +5,8 @@ const auth = useAuthStore()
 const dialog = useDialog()
 const router = useRouter()
 
+const openRightSidebar = ref(false)
+
 onMounted(async () => {
   await auth.getUser()
 })
@@ -32,21 +34,58 @@ async function logout() {
     >
       <slot />
     </div>
-    <div class="border-l bg-white">
+    <div
+      class="absolute right-0 top-0 flex h-full flex-col bg-white p-3 shadow-md transition-all duration-300"
+      :class="{
+        'translate-x-full': !openRightSidebar,
+      }"
+    >
+      <div
+        class="absolute -left-10 top-2"
+        @click="openRightSidebar = !openRightSidebar"
+      >
+        <IconDoubleRight
+          class="fill-current text-gray-300 transition-transform duration-300"
+          :class="{
+            'rotate-180 text-gray-400': !openRightSidebar,
+          }"
+        />
+      </div>
       <template v-if="auth.user">
-        <div class="flex flex-col gap-x-2 text-center">
-          <div class="h-20 w-20 rounded-full bg-white" />
-          <div class="pt-3">{{ auth.user.name }}</div>
-          <button @click="logout">로그아웃</button>
+        <div class="mb-10 flex flex-none justify-center gap-x-2">
+          <div class="h-20 w-20 rounded-full bg-white shadow-sm" />
+          <div class="flex flex-col items-center justify-center px-2">
+            <div>{{ auth.user.name }}</div>
+            <div>팔로워</div>
+          </div>
         </div>
       </template>
-      <template v-else>
-        <div class="flex flex-col gap-x-2 text-center">
-          <div class="h-20 w-20 rounded-full bg-white" />
-          <RouterLink class="pt-3" to="/signin">로그인</RouterLink>
-          <RouterLink to="/signup">회원가입</RouterLink>
+      <div class="h-full flex-1">
+        <div
+          class="flex flex-none flex-col items-center justify-center gap-y-2 px-14"
+        >
+          <div>내정보</div>
+          <div>팔로워</div>
+          <div>팔로우</div>
+          <div>1대1 문의</div>
+          <div>신고내역</div>
         </div>
-      </template>
+      </div>
+      <div class="flex-none">
+        <template v-if="auth.user">
+          <BasicButton class="w-full" @click="logout"> 로그아웃 </BasicButton>
+        </template>
+        <template v-else>
+          <div class="flex flex-col gap-y-2">
+            <BasicButton
+              ><RouterLink to="/signin">로그인</RouterLink></BasicButton
+            >
+            <BasicButton
+              ><RouterLink to="/signup">회원가입</RouterLink></BasicButton
+            >
+          </div>
+        </template>
+      </div>
     </div>
   </div>
 </template>

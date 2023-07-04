@@ -175,7 +175,7 @@ async function signUp() {
           />
         </ValidateField>
       </div>
-      <BasicButton> 회원가입 </BasicButton>
+      <BasicButton class="mt-6"> 회원가입 </BasicButton>
     </Validator>
   </div>
 </template>

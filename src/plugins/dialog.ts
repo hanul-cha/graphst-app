@@ -14,8 +14,8 @@ declare module '@vue/runtime-core' {
 }
 
 export interface Dialog {
-  open(options: DialogOptions): Promise<boolean>
-  close(confirmed?: boolean | null): void
+  open(_options: DialogOptions): Promise<boolean>
+  close(_confirmed?: boolean | null): void
   option: ComputedRef<DialogOptions | undefined>
   opened: ComputedRef<boolean>
 }
@@ -29,7 +29,7 @@ export function useDialog(): Dialog {
 function create(): Dialog {
   const opened = ref(false)
   const options = ref<DialogOptions | undefined>(undefined)
-  let resolve: ((confirmed: boolean) => void) | undefined
+  let resolve: ((_confirmed: boolean) => void) | undefined
 
   function open(opts: DialogOptions): Promise<boolean> {
     opened.value = true

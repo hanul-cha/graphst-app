@@ -15,8 +15,6 @@ export interface FieldValidationRule {
 // <Rules>
 const custom: FieldValidationRule = {
   validate: (_value: any, roleValue: boolean) => roleValue,
-  errorMessage: ({ name }: FieldValidationMetaInfo) =>
-    name + '값을 확인해주세요',
 }
 
 const required: FieldValidationRule = {
@@ -56,9 +54,7 @@ const validateRoles = {
 }
 
 type ValidateRolesKey = keyof typeof validateRoles
-
 type SingleValidateProps = 'required' | 'password'
-
 export type ValidateProps =
   | {
       custom?: boolean

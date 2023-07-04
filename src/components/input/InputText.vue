@@ -29,7 +29,7 @@ const inputValue = useVModel(props, 'modelValue', emit)
 <template>
   <input
     v-model="inputValue"
-    class="w-full rounded-2xl border p-2 focus:outline-none"
+    class="w-full rounded-xl border p-2 pl-3 text-sm focus:outline-none"
     :class="{
       'border-red-500': error,
     }"

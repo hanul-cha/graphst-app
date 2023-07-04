@@ -8,6 +8,12 @@ const router = createRouter({
   routes: [...routes, { path: '/:pathMatch(.*)*', redirect: '/' }],
 })
 
+router.beforeEach((to, from, next) => {
+  const { path } = to
+
+  next()
+})
+
 export default {
   install(app) {
     app.use(router)

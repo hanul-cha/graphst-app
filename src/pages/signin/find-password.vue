@@ -93,8 +93,12 @@ const questionOptions = [
 </script>
 
 <template>
-  <div>
-    <Validator v-show="!validateQuestionResult" @submit="validateQuestion">
+  <div class="flex h-full w-full flex-col items-center justify-center gap-y-4">
+    <Validator
+      v-show="!validateQuestionResult"
+      class="flex w-80 flex-col gap-y-2 rounded-xl bg-white p-10"
+      @submit="validateQuestion"
+    >
       <ValidateField
         v-slot="{ field, errorMessage }"
         v-model="inputUserId"
@@ -128,9 +132,13 @@ const questionOptions = [
           :error="!!errorMessage"
         />
       </ValidateField>
-      <button type="submit">본인확인 체크</button>
+      <BasicButton type="submit">본인확인 체크</BasicButton>
     </Validator>
-    <Validator v-show="validateQuestionResult" @submit="changePassword">
+    <Validator
+      v-show="validateQuestionResult"
+      class="flex w-80 flex-col gap-y-2 rounded-xl bg-white p-10"
+      @submit="changePassword"
+    >
       <ValidateField
         v-slot="{ field, errorMessage }"
         v-model="inputPassword"
@@ -164,12 +172,7 @@ const questionOptions = [
           </div>
         </template>
       </ValidateField>
-      <button type="submit">비밀번호 변경</button>
+      <BasicButton type="submit">비밀번호 변경</BasicButton>
     </Validator>
-
-    <div>
-      문제가 생겼나요???
-      <RouterLink to="/signin">1대1문의</RouterLink>
-    </div>
   </div>
 </template>

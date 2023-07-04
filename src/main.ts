@@ -19,7 +19,7 @@ const app = createApp({
   render: () => h(App),
 })
 
-app.use(router).use(apollo).use(dialog).use(pinia).use(auth).mount('#app')
+app.use(apollo).use(dialog).use(pinia).use(router).use(auth).mount('#app')
 
 app.config.errorHandler = (error: any) => {
   app.config.globalProperties.$dialog.open({

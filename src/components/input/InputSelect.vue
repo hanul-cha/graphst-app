@@ -63,7 +63,7 @@ function select(option: InputSelectOption) {
   <div ref="$inputSelect" class="relative">
     <input
       :value="selectedLabel"
-      class="w-full rounded-2xl border p-2 focus:select-none focus:caret-transparent focus:outline-none"
+      class="w-full rounded-xl border p-2 pl-3 text-sm focus:select-none focus:caret-transparent focus:outline-none"
       :class="{
         'border-red-500': error,
         'rounded-b-none': isOpen,
@@ -74,9 +74,17 @@ function select(option: InputSelectOption) {
       @keydown.prevent
       @focus="open"
     />
+    <div class="absolute right-2 top-0 flex h-full rotate-90 items-center">
+      <IconRight
+        class="fill-current text-gray-300 transition-transform duration-300"
+        :class="{
+          'rotate-180 text-gray-800': isOpen,
+        }"
+      />
+    </div>
     <div
-      v-if="isOpen"
-      class="absolute bottom-0 z-10 max-h-40 w-full translate-y-full overflow-y-auto rounded-b-2xl border border-t-0 bg-white shadow-md"
+      v-show="isOpen"
+      class="absolute bottom-0 z-10 max-h-40 w-full translate-y-full overflow-y-auto rounded-b-xl border border-t-0 bg-white text-sm"
     >
       <template v-if="options?.length > 0">
         <template v-for="(option, index) of options" :key="index">

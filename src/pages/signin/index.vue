@@ -21,8 +21,11 @@ async function signIn() {
 </script>
 
 <template>
-  <div>
-    <Validator @submit="signIn">
+  <div class="flex h-full w-full flex-col items-center justify-center gap-y-4">
+    <Validator
+      class="flex w-80 flex-col gap-y-2 rounded-xl bg-white p-10"
+      @submit="signIn"
+    >
       <ValidateField
         v-slot="{ field, errorMessage }"
         v-model="inputId"
@@ -43,17 +46,20 @@ async function signIn() {
           :error="!!errorMessage"
         />
       </ValidateField>
-      <button type="submit">로그인</button>
-
-      <div>
-        비밀번호를 잊으셨나요?
-        <RouterLink to="/signin/find-password">비밀번호 찾기</RouterLink>
-      </div>
-
-      <div>
-        혹시 회원이 아니신가요?
-        <RouterLink to="/signup">회원가입</RouterLink>
-      </div>
+      <BasicButton type="submit"> 로그인 </BasicButton>
     </Validator>
+    <div class="flex gap-x-1">
+      <div>
+        <RouterLink class="hover:text-[#5a469f]" to="/signin/find-password"
+          >비밀번호 찾기</RouterLink
+        >
+      </div>
+      <div>/</div>
+      <div>
+        <RouterLink class="hover:text-[#5a469f]" to="/signup"
+          >회원가입</RouterLink
+        >
+      </div>
+    </div>
   </div>
 </template>

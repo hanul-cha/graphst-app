@@ -25,31 +25,28 @@ async function logout() {
 </script>
 
 <template>
-  <div class="absolute inset-0 flex min-h-full flex-col">
+  <div class="absolute inset-0 flex min-h-full bg-[#5a469f]">
+    <div class="flex w-28 flex-none flex-col items-center p-3 text-white"></div>
     <div
-      class="flex w-full flex-none justify-end rounded-b-2xl bg-yellow-400 p-3 text-white"
+      class="relative h-full w-full flex-1 overflow-auto rounded-l-2xl bg-violet-50"
     >
+      <slot />
+    </div>
+    <div class="border-l bg-white">
       <template v-if="auth.user">
-        <div class="flex gap-x-2">
-          <div>
-            <div class="h-6 w-6 rounded-full bg-white" />
-          </div>
-          <div>{{ auth.user.name }}</div>
+        <div class="flex flex-col gap-x-2 text-center">
+          <div class="h-20 w-20 rounded-full bg-white" />
+          <div class="pt-3">{{ auth.user.name }}</div>
           <button @click="logout">로그아웃</button>
         </div>
       </template>
       <template v-else>
-        <div class="flex gap-x-2">
-          <div>
-            <div class="h-6 w-6 rounded-full bg-white" />
-          </div>
-          <RouterLink to="/signin">로그인</RouterLink>
+        <div class="flex flex-col gap-x-2 text-center">
+          <div class="h-20 w-20 rounded-full bg-white" />
+          <RouterLink class="pt-3" to="/signin">로그인</RouterLink>
           <RouterLink to="/signup">회원가입</RouterLink>
         </div>
       </template>
-    </div>
-    <div class="relative h-full w-full flex-1 overflow-auto">
-      <slot />
     </div>
   </div>
 </template>

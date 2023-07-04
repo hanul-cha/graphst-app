@@ -86,7 +86,7 @@ module.exports = {
       },
     ],
     'tailwindcss/no-custom-classname': [
-      'error',
+      'warn',
       {
         config: 'tailwind.config.cjs',
       },

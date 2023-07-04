@@ -25,7 +25,7 @@ async function logout() {
 </script>
 
 <template>
-  <div class="absolute inset-0 flex min-h-full bg-[#5a469f]">
+  <div class="absolute inset-0 flex min-h-full bg-origin">
     <div class="flex w-28 flex-none flex-col items-center p-3 text-white"></div>
     <div
       class="relative h-full w-full flex-1 overflow-auto rounded-l-2xl bg-violet-50"

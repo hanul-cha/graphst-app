@@ -50,15 +50,13 @@ async function signIn() {
     </Validator>
     <div class="flex gap-x-1">
       <div>
-        <RouterLink class="hover:text-[#5a469f]" to="/signin/find-password"
+        <RouterLink class="hover:text-origin" to="/signin/find-password"
           >비밀번호 찾기</RouterLink
         >
       </div>
       <div>/</div>
       <div>
-        <RouterLink class="hover:text-[#5a469f]" to="/signup"
-          >회원가입</RouterLink
-        >
+        <RouterLink class="hover:text-origin" to="/signup">회원가입</RouterLink>
       </div>
     </div>
   </div>

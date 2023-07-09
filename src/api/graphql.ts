@@ -15,24 +15,24 @@ export type Scalars = {
 
 export enum AuthQuestion {
   /** 가장 좋아하는 동물은? */
-  FavoriteAnimal = 'FAVORITE_ANIMAL',
+  FavoriteAnimal = 'favorite_animal',
   /** 가장 좋아하는 색깔은? */
-  FavoriteColor = 'FAVORITE_COLOR',
+  FavoriteColor = 'favorite_color',
   /** 가장 좋아하는 음식은? */
-  FavoriteFood = 'FAVORITE_FOOD',
+  FavoriteFood = 'favorite_food',
   /** 가장 좋아하는 영화는? */
-  FavoriteMovie = 'FAVORITE_MOVIE',
+  FavoriteMovie = 'favorite_movie',
   /** 가장 좋아하는 숫자는? */
-  FavoriteNumber = 'FAVORITE_NUMBER',
+  FavoriteNumber = 'favorite_number',
   /** 가장 좋아하는 운동은? */
-  FavoriteSports = 'FAVORITE_SPORTS'
+  FavoriteSports = 'favorite_sports'
 }
 
 export enum AuthRole {
   /** 개발자(전체권한) */
-  Developer = 'DEVELOPER',
+  Developer = 'developer',
   /** 일반사용자 */
-  User = 'USER'
+  User = 'user'
 }
 
 export type Mutation = {
@@ -41,6 +41,8 @@ export type Mutation = {
   deleteUser?: Maybe<Scalars['Boolean']>;
   signIn?: Maybe<Scalars['String']>;
   signUp?: Maybe<User>;
+  toggleLikePost?: Maybe<Scalars['Boolean']>;
+  toggleLikeUser?: Maybe<Scalars['Boolean']>;
   validateQuestion?: Maybe<Scalars['Boolean']>;
 };
 
@@ -71,25 +73,80 @@ export type MutationSignUpArgs = {
 };
 
 
+export type MutationToggleLikePostArgs = {
+  like: Scalars['Boolean'];
+  targetId: Scalars['String'];
+};
+
+
+export type MutationToggleLikeUserArgs = {
+  like: Scalars['Boolean'];
+  targetId: Scalars['String'];
+};
+
+
 export type MutationValidateQuestionArgs = {
   answerForSearch: Scalars['String'];
   questionForSearch: AuthQuestion;
   userId: Scalars['String'];
 };
 
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  endPath: Scalars['String'];
+  hasNextPage: Scalars['Boolean'];
+  startPath: Scalars['String'];
+};
+
+export type PageOptionInput = {
+  after?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<OrderInput>;
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+};
+
+export type Post = {
+  __typename?: 'Post';
+  contents: Scalars['String'];
+  countLike: Scalars['Int'];
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  user: User;
+};
+
 export type Query = {
   __typename?: 'Query';
   getUser?: Maybe<User>;
+  users?: Maybe<UserPaginate>;
+};
+
+
+export type QueryUsersArgs = {
+  pageOptions?: InputMaybe<PageOptionInput>;
 };
 
 export type User = {
   __typename?: 'User';
   answerForSearch: Scalars['String'];
+  countFollower: Scalars['Int'];
+  countFollowing: Scalars['Int'];
   id: Scalars['ID'];
   name: Scalars['String'];
   questionForSearch: AuthQuestion;
-  roles?: Maybe<Array<Maybe<AuthRole>>>;
+  roles: Array<AuthRole>;
   userId: Scalars['String'];
+};
+
+export type OrderInput = {
+  asc: Scalars['String'];
+  column: Scalars['String'];
+};
+
+export type UserPaginate = {
+  __typename?: 'userPaginate';
+  nodes: Array<User>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
 };
 
 export type ChangePasswordMutationVariables = Exact<{

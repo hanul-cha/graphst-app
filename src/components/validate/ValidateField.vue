@@ -14,7 +14,7 @@ interface ValidateFieldEmits {
 }
 
 const props = defineProps<ValidateFieldProps>()
-const emit = defineEmits<ValidateFieldEmits>()
+defineEmits<ValidateFieldEmits>()
 
 const rules = (value: any, field: any) => {
   if (props.roles) {
@@ -31,7 +31,7 @@ const rules = (value: any, field: any) => {
     :name="name"
     :rules="rules"
     :validate-on-input="!validateOnSubmit"
-    @update:model-value="emit('update:modelValue', $event)"
+    @update:model-value="$emit('update:modelValue', $event)"
   >
     <slot
       :="{

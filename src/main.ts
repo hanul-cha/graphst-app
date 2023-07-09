@@ -22,6 +22,7 @@ const app = createApp({
 app.use(apollo).use(dialog).use(pinia).use(router).use(auth).mount('#app')
 
 app.config.errorHandler = (error: any) => {
+  console.error(error)
   app.config.globalProperties.$dialog.open({
     title: error.message,
   })

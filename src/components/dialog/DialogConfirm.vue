@@ -20,18 +20,11 @@ withDefaults(defineProps<DialogProps>(), {
 })
 
 defineEmits<DialogEmits>()
-
-const $dialog = ref<HTMLDialogElement | null>(null)
-
-onMounted(() => {
-  $dialog.value?.showModal()
-})
 </script>
 
 <template>
-  <dialog
-    ref="$dialog"
-    class="flex flex-col items-center justify-center rounded-xl border-none bg-white p-8"
+  <Dialog
+    class="flex flex-col items-center justify-center"
     @close.prevent="$emit('close')"
     @cancel.prevent="$emit('cancel')"
   >
@@ -43,5 +36,5 @@ onMounted(() => {
       </button>
       <button @click="$emit('confirm')">{{ confirmText }}</button>
     </div>
-  </dialog>
+  </Dialog>
 </template>

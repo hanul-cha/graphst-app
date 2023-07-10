@@ -54,9 +54,9 @@ async function logout() {
       <template v-if="auth.user">
         <div class="mb-10 flex flex-none justify-center gap-x-2">
           <div class="h-20 w-20 rounded-full bg-white shadow-sm" />
-          <div class="flex flex-col items-center justify-center px-2">
+          <div class="flex flex-col justify-center px-2">
             <div>{{ auth.user.name }}</div>
-            <div>팔로워</div>
+            <div>팔로워: {{ auth.user.countFollower }}</div>
           </div>
         </div>
       </template>

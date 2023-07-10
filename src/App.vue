@@ -4,7 +4,7 @@
   <Layout>
     <RouterView />
   </Layout>
-  <Dialog
+  <DialogConfirm
     v-if="$dialog.opened.value"
     v-bind="$dialog.option.value"
     @confirm="$dialog.close(true)"

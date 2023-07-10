@@ -3,4 +3,6 @@ fragment UserFull on User {
   name
   questionForSearch
   answerForSearch
+  countFollower
+  countFollowing
 }

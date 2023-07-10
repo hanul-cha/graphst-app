@@ -12,7 +12,7 @@ withDefaults(defineProps<BasicButtonProps>(), {
 
 <template>
   <button
-    class="rounded-xl bg-origin p-2 text-white"
+    class="rounded-xl bg-current p-2 text-white"
     :type="type"
     :disabled="disabled"
   >

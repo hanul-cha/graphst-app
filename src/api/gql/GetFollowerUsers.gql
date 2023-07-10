@@ -1,0 +1,18 @@
+query GetFollowerUsers(
+  $followerId: String!
+) {
+  users(
+    userOptions: {
+      followerId: $followerId
+    }
+  ) {
+    totalCount
+    nodes {
+      name
+      countFollower
+    }
+    pageInfo{
+      hasNextPage
+    }
+  }
+}

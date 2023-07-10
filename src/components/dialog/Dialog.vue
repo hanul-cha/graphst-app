@@ -16,7 +16,7 @@ onMounted(() => {
 <template>
   <dialog
     ref="$dialog"
-    class="rounded-xl border-none bg-white p-8"
+    class="rounded-xl border-none bg-white p-8 outline-0"
     @close.prevent="$emit('close')"
     @cancel.prevent="$emit('cancel')"
   >

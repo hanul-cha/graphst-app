@@ -1,15 +1,30 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/store/auth'
+import { DialogFollowType } from './dialog/dialogTypes'
 
 const auth = useAuthStore()
 const dialog = useDialog()
 const router = useRouter()
+
+const id = useRouteQuery<string | null>('id')
+const follow = useRouteQuery<DialogFollowType | null>('follow')
 
 const openRightSidebar = ref(false)
 
 onMounted(async () => {
   await auth.getUser()
 })
+
+function openDialogFollow(type: DialogFollowType) {
+  if (!auth.user) return
+  follow.value = type
+  id.value = auth.user.id
+}
+
+function closeDialogFollow() {
+  follow.value = null
+  id.value = null
+}
 
 async function logout() {
   const result = await dialog.open({
@@ -27,7 +42,7 @@ async function logout() {
 </script>
 
 <template>
-  <div class="absolute inset-0 flex min-h-full bg-origin">
+  <div class="absolute inset-0 flex min-h-full bg-current">
     <div class="flex w-28 flex-none flex-col items-center p-3 text-white"></div>
     <div
       class="relative h-full w-full flex-1 overflow-auto rounded-l-2xl bg-violet-50"
@@ -65,8 +80,10 @@ async function logout() {
           class="flex flex-none flex-col items-center justify-center gap-y-2 px-14"
         >
           <div>내정보</div>
-          <div>팔로워</div>
-          <div>팔로우</div>
+          <div @click="openDialogFollow(DialogFollowType.Follower)">팔로워</div>
+          <div @click="openDialogFollow(DialogFollowType.Following)">
+            팔로잉
+          </div>
           <div>1대1 문의</div>
           <div>신고내역</div>
         </div>
@@ -87,5 +104,12 @@ async function logout() {
         </template>
       </div>
     </div>
+    <DialogFollow
+      v-if="follow && id"
+      v-model:type="follow"
+      :target-id="id"
+      @close="closeDialogFollow"
+      @cancel="closeDialogFollow"
+    />
   </div>
 </template>

@@ -25,8 +25,8 @@ defineEmits<DialogEmits>()
 <template>
   <Dialog
     class="flex flex-col items-center justify-center"
-    @close.prevent="$emit('close')"
-    @cancel.prevent="$emit('cancel')"
+    @close="$emit('close')"
+    @cancel="$emit('cancel')"
   >
     <div class="text-lg font-bold">{{ title }}</div>
     <div>{{ message }}</div>

@@ -1,0 +1,13 @@
+query GetPost(
+  $id: ID!
+) {
+  getPost(
+    id: $id
+  ) {
+    title
+    user {
+      id
+    }
+    contents
+  }
+}

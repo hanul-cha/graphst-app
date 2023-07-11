@@ -6,14 +6,18 @@ import { Ref } from 'vue'
 
 interface InputEditorProps {
   modelValue?: string | null
+  placeholder?: string
+  error?: boolean
 }
 
 interface InputEditorEmits {
-  (_e: 'input:modelValue', _value: string | null): void
+  (_e: 'update:modelValue', _value: string | null): void
 }
 
 const props = withDefaults(defineProps<InputEditorProps>(), {
   modelValue: null,
+  placeholder: 'Write something contents …',
+  error: false,
 })
 
 const emit = defineEmits<InputEditorEmits>()
@@ -21,7 +25,7 @@ const emit = defineEmits<InputEditorEmits>()
 const editor: Ref<Editor | null> = ref(null)
 
 function updateContent(updateValue: string | null) {
-  emit('input:modelValue', updateValue)
+  emit('update:modelValue', updateValue)
 }
 
 onMounted(() => {
@@ -30,7 +34,7 @@ onMounted(() => {
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: 'Write something contents …',
+        placeholder: props.placeholder,
       }),
     ],
     onUpdate: ({ editor }) => {
@@ -48,54 +52,72 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="rounded-2xl border">
+  <div
+    class="rounded-2xl border bg-white"
+    :class="{
+      'border-red-500': error,
+    }"
+  >
     <div
       v-if="editor"
       class="flex flex-wrap border-b"
+      :class="{
+        'border-red-500': error,
+      }"
       :style="{
         gridTemplateColumns: 'repeat(auto-fill, 41px)',
       }"
     >
       <div
         class="rounded-tl-2xl p-2"
-        :class="{ 'bg-black fill-white': editor.isActive('bold') }"
+        :class="{
+          'bg-current fill-white': editor.isActive('bold'),
+          'fill-current': !editor.isActive('bold'),
+        }"
       >
         <div
           class="flex h-6 w-6 cursor-pointer items-center justify-center"
           :disabled="!editor.can().chain().focus().toggleBold().run()"
           @click="editor?.chain().focus().toggleBold().run()"
         >
-          <IconTextBold class="fill-black" />
+          <IconTextBold />
         </div>
       </div>
       <div
         class="p-2"
-        :class="{ 'bg-black fill-white': editor.isActive('italic') }"
+        :class="{
+          'bg-current fill-white': editor.isActive('italic'),
+          'fill-current': !editor.isActive('italic'),
+        }"
       >
         <div
           class="flex h-6 w-6 cursor-pointer items-center justify-center"
           :disabled="!editor.can().chain().focus().toggleItalic().run()"
           @click="editor?.chain().focus().toggleItalic().run()"
         >
-          <IconTextItalic class="fill-black" />
+          <IconTextItalic />
         </div>
       </div>
       <div
         class="p-2"
-        :class="{ 'bg-black fill-white': editor.isActive('strike') }"
+        :class="{
+          'bg-current fill-white': editor.isActive('strike'),
+          'fill-current': !editor.isActive('strike'),
+        }"
       >
         <div
           class="flex h-6 w-6 cursor-pointer items-center justify-center"
           :disabled="!editor.can().chain().focus().toggleStrike().run()"
           @click="editor?.chain().focus().toggleStrike().run()"
         >
-          <IconTextStrike class="fill-black" />
+          <IconTextStrike />
         </div>
       </div>
       <div
         class="p-2"
         :class="{
-          'bg-black fill-white': editor.isActive('heading', { level: 1 }),
+          'bg-current text-white': editor.isActive('heading', { level: 1 }),
+          'text-current': !editor.isActive('heading', { level: 1 }),
         }"
       >
         <div
@@ -108,7 +130,8 @@ onBeforeUnmount(() => {
       <div
         class="p-2"
         :class="{
-          'bg-black fill-white': editor.isActive('heading', { level: 2 }),
+          'bg-current text-white': editor.isActive('heading', { level: 2 }),
+          'text-current': !editor.isActive('heading', { level: 2 }),
         }"
       >
         <div
@@ -121,7 +144,8 @@ onBeforeUnmount(() => {
       <div
         class="p-2"
         :class="{
-          'bg-black fill-white': editor.isActive('heading', { level: 3 }),
+          'bg-current text-white': editor.isActive('heading', { level: 3 }),
+          'text-current': !editor.isActive('heading', { level: 3 }),
         }"
       >
         <div
@@ -133,35 +157,44 @@ onBeforeUnmount(() => {
       </div>
       <div
         class="p-2"
-        :class="{ 'bg-black fill-white': editor.isActive('bulletList') }"
+        :class="{
+          'bg-current fill-white': editor.isActive('bulletList'),
+          'fill-current': !editor.isActive('bulletList'),
+        }"
       >
         <div
           class="flex h-6 w-6 cursor-pointer items-center justify-center"
           @click="editor?.chain().focus().toggleBulletList().run()"
         >
-          <IconTextUl class="fill-black" />
+          <IconTextUl />
         </div>
       </div>
       <div
         class="p-2"
-        :class="{ 'bg-black fill-white': editor.isActive('orderedList') }"
+        :class="{
+          'bg-current fill-white': editor.isActive('orderedList'),
+          'fill-current': !editor.isActive('orderedList'),
+        }"
       >
         <div
           class="flex h-6 w-6 cursor-pointer items-center justify-center"
           @click="editor?.chain().focus().toggleOrderedList().run()"
         >
-          <IconTextOl class="fill-black" />
+          <IconTextOl />
         </div>
       </div>
       <div
         class="p-2"
-        :class="{ 'bg-black fill-white': editor.isActive('codeBlock') }"
+        :class="{
+          'bg-current fill-white': editor.isActive('codeBlock'),
+          'fill-current': !editor.isActive('codeBlock'),
+        }"
       >
         <div
           class="flex h-6 w-6 cursor-pointer items-center justify-center"
           @click="editor?.chain().focus().toggleCodeBlock().run()"
         >
-          <IconCode class="fill-black" />
+          <IconCode />
         </div>
       </div>
       <div class="p-2">
@@ -170,7 +203,7 @@ onBeforeUnmount(() => {
           :disabled="!editor.can().chain().focus().undo().run()"
           @click="editor?.chain().focus().undo().run()"
         >
-          <IconBack class="fill-black" />
+          <IconBack class="fill-current" />
         </div>
       </div>
       <div class="p-2">
@@ -179,7 +212,7 @@ onBeforeUnmount(() => {
           :disabled="!editor.can().chain().focus().redo().run()"
           @click="editor?.chain().focus().redo().run()"
         >
-          <IconBack class="rotate-180 fill-black" />
+          <IconBack class="rotate-180 fill-current" />
         </div>
       </div>
     </div>

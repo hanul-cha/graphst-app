@@ -57,7 +57,7 @@ async function logout() {
 </script>
 
 <template>
-  <div class="absolute inset-0 flex min-h-full bg-current">
+  <div class="absolute inset-0 flex min-h-full overflow-x-hidden bg-current">
     <div class="flex w-28 flex-none flex-col items-center p-3 text-white">
       <template v-for="({ icon, path }, index) of menuItems" :key="index">
         <RouterLink class="block" :to="path"

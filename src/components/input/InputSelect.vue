@@ -76,9 +76,9 @@ function select(option: InputSelectOption) {
     />
     <div class="absolute right-2 top-0 flex h-full rotate-90 items-center">
       <IconRight
-        class="fill-current text-gray-300 transition-transform duration-300"
+        class="fill-gray-300 transition-transform duration-300"
         :class="{
-          'rotate-180 text-gray-800': isOpen,
+          'rotate-180 fill-gray-800': isOpen,
         }"
       />
     </div>

@@ -3,7 +3,7 @@ import {
   GetFollowerUsersDocument,
   GetFollowingUsersDocument,
 } from '@/api/graphql'
-import { DialogFollowType } from './dialogTypes'
+import { DialogFollowType } from './types'
 
 interface DialogProps {
   type: DialogFollowType

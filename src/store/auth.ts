@@ -50,14 +50,18 @@ export const useAuthStore = defineStore('auth', () => {
       }
       return null
     }
-    user.value = null
     return user.value
   }
 
   const setUser = async () => {
-    const { data } = await apolloClient.query({
+    const { data, error } = await apolloClient.query({
       query: GetUserDocument,
     })
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
     if (data) {
       user.value = data.user ?? null
     }

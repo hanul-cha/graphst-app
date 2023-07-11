@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/store/auth'
-import { DialogFollowType } from './dialog/dialogTypes'
+import { DialogFollowType } from './dialog/follow/types'
+import IconHome from './icons/IconHome.vue'
+import IconPlus from './icons/IconPlus.vue'
 
 const auth = useAuthStore()
 const dialog = useDialog()
@@ -10,6 +12,19 @@ const id = useRouteQuery<string | null>('id')
 const follow = useRouteQuery<DialogFollowType | null>('follow')
 
 const openRightSidebar = ref(false)
+
+const menuItems = [
+  {
+    label: '홈',
+    icon: IconHome,
+    path: '/',
+  },
+  {
+    label: '포스팅 추가',
+    icon: IconPlus,
+    path: '/post/create',
+  },
+]
 
 onMounted(async () => {
   await auth.getUser()
@@ -43,7 +58,13 @@ async function logout() {
 
 <template>
   <div class="absolute inset-0 flex min-h-full bg-current">
-    <div class="flex w-28 flex-none flex-col items-center p-3 text-white"></div>
+    <div class="flex w-28 flex-none flex-col items-center p-3 text-white">
+      <template v-for="({ icon, path }, index) of menuItems" :key="index">
+        <RouterLink class="block" :to="path"
+          ><Component :is="icon" class="h-6 w-6 fill-white"
+        /></RouterLink>
+      </template>
+    </div>
     <div
       class="relative h-full w-full flex-1 overflow-auto rounded-l-2xl bg-violet-50"
     >
@@ -60,9 +81,9 @@ async function logout() {
         @click="openRightSidebar = !openRightSidebar"
       >
         <IconDoubleRight
-          class="fill-current text-gray-300 transition-transform duration-300"
+          class="fill-gray-300 transition-transform duration-300"
           :class="{
-            'rotate-180 text-gray-400': !openRightSidebar,
+            'rotate-180 ': !openRightSidebar,
           }"
         />
       </div>

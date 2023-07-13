@@ -3,14 +3,14 @@ import { Field, ErrorMessage } from 'vee-validate'
 import { ValidateProps, validator } from './validator'
 
 interface ValidateFieldProps {
-  modelValue?: string | null
+  modelValue?: any
   name: string
   roles?: ValidateProps
   validateOnSubmit?: boolean
 }
 
 interface ValidateFieldEmits {
-  (_: 'update:modelValue', _value: string | null): void
+  (_: 'update:modelValue', _value: any): void
 }
 
 const props = defineProps<ValidateFieldProps>()

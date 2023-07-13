@@ -1,0 +1,6 @@
+query GetCategoryAll {
+  categories {
+    id
+    label
+  }
+}

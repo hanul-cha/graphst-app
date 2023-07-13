@@ -3,7 +3,7 @@ import { useGlobalActiveStore } from '@/store/globalActive'
 
 export interface InputSelectOption {
   label: string
-  value: string
+  value: string | null
 }
 
 interface InputSelectProps {

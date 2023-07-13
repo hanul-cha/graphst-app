@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { GetPostDocument } from '@/api/graphql'
+import { GetPostDocument, GetCategoryAllDocument } from '@/api/graphql'
 
 interface PostEditProps {
   id?: string | null
 }
-
 interface PostEditEmits {
   (_e: 'submit', _value: any): void
 }
@@ -12,9 +11,9 @@ interface PostEditEmits {
 const props = withDefaults(defineProps<PostEditProps>(), {
   id: '',
 })
-
 const emit = defineEmits<PostEditEmits>()
 
+const { result } = useQuery(GetCategoryAllDocument)
 const { onResult } = useQuery(GetPostDocument, () => ({
   id: props.id ?? '',
 }))
@@ -24,16 +23,38 @@ onResult((result) => {
   if (post) {
     inputTitle.value = post.title
     inputContents.value = post.contents
+    inputCategoryId.value = post.category?.id ?? null
+    inputActive.value = post.activeAt
   }
 })
 
 const inputTitle = ref<string | null>(null)
 const inputContents = ref<string | null>(null)
+const inputActive = ref(false)
+const inputCategoryId = ref<string | null>(null)
 const dialog = useDialog()
 
 const enableTagContents = computed(() => {
   return inputContents.value?.replace(/<[^>]*>?/gm, '') ?? ''
 })
+
+const categoryOptions = computed<
+  {
+    label: string
+    value: string | null
+  }[]
+>(() => [
+  ...(result.value?.categories
+    ? result.value.categories.map(({ id, label }) => ({
+        label,
+        value: id,
+      }))
+    : []),
+  {
+    label: '카테고리 없음',
+    value: null,
+  },
+])
 
 async function submit() {
   if (!inputTitle.value || !inputContents.value) {
@@ -68,6 +89,24 @@ async function submit() {
         }"
       >
         <InputText v-bind="field" placeholder="제목" :error="!!errorMessage" />
+      </ValidateField>
+      <ValidateField
+        v-slot="{ field, errorMessage }"
+        v-model="inputActive"
+        name="활성화"
+      >
+        <InputCheckToggle v-bind="field" :error="!!errorMessage" />
+      </ValidateField>
+      <ValidateField
+        v-slot="{ field, errorMessage }"
+        v-model="inputCategoryId"
+        name="카테고리"
+      >
+        <InputSelect
+          v-bind="field"
+          :error="!!errorMessage"
+          :options="categoryOptions"
+        />
       </ValidateField>
       <ValidateField
         v-model="inputContents"

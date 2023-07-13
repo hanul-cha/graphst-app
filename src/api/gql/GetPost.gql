@@ -9,5 +9,10 @@ query GetPost(
       id
     }
     contents
+    category {
+      id
+      label
+    }
+    activeAt
   }
 }

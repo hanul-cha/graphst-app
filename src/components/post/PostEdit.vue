@@ -1,15 +1,21 @@
 <script setup lang="ts">
-import { GetPostDocument, GetCategoryAllDocument } from '@/api/graphql'
+import {
+  GetPostDocument,
+  GetCategoryAllDocument,
+  CreatePostMutationVariables,
+} from '@/api/graphql'
 
 interface PostEditProps {
   id?: string | null
+  loading?: boolean
 }
 interface PostEditEmits {
-  (_e: 'submit', _value: any): void
+  (_e: 'submit', _value: CreatePostMutationVariables): void
 }
 
 const props = withDefaults(defineProps<PostEditProps>(), {
   id: '',
+  loading: false,
 })
 const emit = defineEmits<PostEditEmits>()
 
@@ -68,6 +74,8 @@ async function submit() {
   emit('submit', {
     title: inputTitle.value,
     contents: inputContents.value,
+    activeAt: inputActive.value,
+    categoryId: inputCategoryId.value,
   })
 }
 </script>
@@ -90,12 +98,16 @@ async function submit() {
       >
         <InputText v-bind="field" placeholder="제목" :error="!!errorMessage" />
       </ValidateField>
+
       <ValidateField
         v-slot="{ field, errorMessage }"
         v-model="inputActive"
         name="활성화"
       >
-        <InputCheckToggle v-bind="field" :error="!!errorMessage" />
+        <div class="flex items-center gap-x-2">
+          <InputCheckToggle v-bind="field" :error="!!errorMessage" />
+          <div class="text-xs">포스팅 활성화</div>
+        </div>
       </ValidateField>
       <ValidateField
         v-slot="{ field, errorMessage }"
@@ -128,7 +140,9 @@ async function submit() {
           </div>
         </template>
       </ValidateField>
-      <BasicButton class="mt-6" type="submit"> 발행하기 </BasicButton>
+      <BasicButton :disabled="loading" class="mt-6" type="submit">
+        발행하기
+      </BasicButton>
     </Validator>
   </div>
 </template>

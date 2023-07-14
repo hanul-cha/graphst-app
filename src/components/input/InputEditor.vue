@@ -28,9 +28,11 @@ function updateContent(updateValue: string | null) {
   emit('update:modelValue', updateValue)
 }
 
+const inputContent = useVModel(props, 'modelValue', emit)
+
 onMounted(() => {
-  const instance = new Editor({
-    content: props.modelValue,
+  editor.value = new Editor({
+    content: inputContent,
     extensions: [
       StarterKit,
       Placeholder.configure({
@@ -41,7 +43,6 @@ onMounted(() => {
       updateContent(editor.getText() ? editor.getHTML() : null)
     },
   })
-  editor.value = instance
 })
 
 onBeforeUnmount(() => {
@@ -49,6 +50,15 @@ onBeforeUnmount(() => {
     editor.value.destroy()
   }
 })
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (editor.value) {
+      editor.value.commands.setContent(value ?? '')
+    }
+  }
+)
 </script>
 
 <template>
@@ -217,10 +227,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <template v-if="editor">
-      <EditorContent
-        :editor="(editor as Editor)"
-        class="input-editor-content p-2"
-      />
+      <EditorContent :editor="editor" class="input-editor-content p-2" />
     </template>
   </div>
 </template>

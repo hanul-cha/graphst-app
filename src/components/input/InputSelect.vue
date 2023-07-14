@@ -32,7 +32,7 @@ const { active, close } = useGlobalActiveStore()
 
 const $inputSelect = ref<HTMLElement | null>(null)
 const isOpen = ref(false)
-const selectedLabel = ref<string | null>(getSelectedLabel(props.modelValue))
+const selectedLabel = computed(() => getSelectedLabel(props.modelValue))
 
 function getSelectedLabel(value: string | null) {
   if (!value) null
@@ -53,7 +53,6 @@ function open(e: FocusEvent) {
 }
 
 function select(option: InputSelectOption) {
-  selectedLabel.value = option.label
   emit('update:modelValue', option.value)
   close()
 }
@@ -88,7 +87,13 @@ function select(option: InputSelectOption) {
     >
       <template v-if="options?.length > 0">
         <template v-for="(option, index) of options" :key="index">
-          <div class="p-2 hover:bg-gray-100" @click="select(option)">
+          <div
+            :class="{
+              'text-gray-300': modelValue === option.value,
+            }"
+            class="p-2 hover:bg-gray-100"
+            @click="select(option)"
+          >
             {{ option.label }}
           </div>
         </template>

@@ -1,0 +1,15 @@
+mutation CreatePost(
+  $title: String!
+  $contents: String!
+  $activeAt: Boolean
+  $categoryId: String
+) {
+  post: createPost(
+    title: $title
+    contents: $contents
+    activeAt: $activeAt
+    categoryId: $categoryId
+  ) {
+    id
+  }
+}

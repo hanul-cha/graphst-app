@@ -1,73 +1,81 @@
 <script setup lang="ts">
-type FilterHistoryValue =
-  | string
-  | number
-  | boolean
-  | (string | number | boolean)[]
-  | null
+import { FilterHistoryValue } from '@/store/filter'
+
 export interface FilterHistoryItem {
   label: string
   value: FilterHistoryValue
+  type?: StringConstructor | NumberConstructor | BooleanConstructor
+  isMultiple?: boolean
 }
 
 interface FilterHistoryProps {
-  items?: {
+  modelValue: {
     [key: string]: FilterHistoryItem
   }
 }
 
+export interface UpdateFilter {
+  key: string
+  value: FilterHistoryValue
+}
+
 interface FilterHistoryEmits {
-  (_e: 'delete', _value: string): void
   (
-    _e: 'update',
+    _e: 'update:modelValue',
     _value: {
-      key: string
-      value: FilterHistoryValue
+      [key: string]: FilterHistoryItem
     }
   ): void
 }
 
-const props = withDefaults(defineProps<FilterHistoryProps>(), {
-  items: undefined,
-})
+const props = defineProps<FilterHistoryProps>()
 const emit = defineEmits<FilterHistoryEmits>()
 
 const histories = computed(() => {
-  return props.items
-    ? Object.entries(props.items).map(([key, value]) => ({
+  return props.modelValue
+    ? Object.entries(props.modelValue).map(([key, value]) => ({
         ...value,
         key,
       }))
     : []
 })
 
-function deleteHistory(key: string) {
-  emit('delete', key)
-}
-
 function updateHistory(key: string, value: FilterHistoryValue) {
-  emit('update', {
-    key,
-    value,
+  emit('update:modelValue', {
+    ...props.modelValue,
+    [key]: {
+      ...(props.modelValue?.[key] ?? {}),
+      value,
+    },
   })
 }
 </script>
 
 <template>
   <div class="w-full">
-    {{ histories }}
     <div class="flex w-full gap-x-1">
       <template v-for="(data, index) of histories" :key="index">
-        <div v-if="data.value" class="flex justify-between">
-          <div>
-            <span class="text-sm text-gray-700">{{ data.label }}: </span>
-            <span class="text-sm text-gray-500">{{
-              Array.isArray(data.value) ? data.value.join(', ') : data.value
-            }}</span>
+        <div
+          v-if="data.value"
+          class="flex items-center justify-between gap-x-2 rounded-full border bg-white p-2"
+        >
+          <div class="flex">
+            <div class="pr-1 text-sm font-semibold text-gray-700">
+              {{ data.label }}:
+            </div>
+            <div class="text-sm text-gray-700">
+              {{
+                Array.isArray(data.value) ? data.value.join(', ') : data.value
+              }}
+            </div>
           </div>
-          <IconPlus class="rotate-45" />
+          <IconCross
+            class="w-3 fill-gray-500"
+            @click="updateHistory(data.key, null)"
+          />
         </div>
       </template>
     </div>
   </div>
 </template>
+@/store/filter

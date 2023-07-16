@@ -1,9 +1,9 @@
 <template>
   <svg
+    id="Layer_1"
     width="24"
     height="24"
     viewBox="0 -8 72 72"
-    id="Layer_1"
     data-name="Layer 1"
     xmlns="http://www.w3.org/2000/svg"
   >

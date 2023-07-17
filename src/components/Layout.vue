@@ -68,14 +68,16 @@ async function logout() {
       </template>
     </div>
     <div
-      class="relative h-full w-full flex-1 overflow-auto rounded-l-2xl bg-violet-50"
+      class="relative flex h-full w-full flex-1 flex-col rounded-l-2xl bg-violet-50"
     >
       <template v-if="useFilter.filter">
         <div class="p-4 pb-0">
           <FilterHistory v-model:model-value="useFilter.filter" />
         </div>
       </template>
-      <slot />
+      <div class="h-full flex-1 overflow-auto">
+        <slot />
+      </div>
     </div>
     <div
       class="absolute right-0 top-0 flex h-full flex-col bg-white p-3 shadow-md transition-all duration-300"

@@ -21,5 +21,5 @@ const filter = useFilter.on({
 </script>
 
 <template>
-  <div class="h-full w-full p-4">본문</div>
+  <LayoutInner><div class="h-[2000px]">asdfsdf</div></LayoutInner>
 </template>

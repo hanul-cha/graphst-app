@@ -3,9 +3,7 @@ import { useAuthStore } from '@/store/auth'
 import { DialogFollowType } from './dialog/follow/types'
 import IconHome from './icons/IconHome.vue'
 import IconPlus from './icons/IconPlus.vue'
-import { useFilterStore } from '@/store/filter'
 
-const useFilter = useFilterStore()
 const auth = useAuthStore()
 const dialog = useDialog()
 const router = useRouter()
@@ -70,11 +68,6 @@ async function logout() {
     <div
       class="relative flex h-full w-full flex-1 flex-col rounded-l-2xl bg-violet-50"
     >
-      <template v-if="useFilter.filter">
-        <div class="p-4 pb-0">
-          <FilterHistory v-model:model-value="useFilter.filter" />
-        </div>
-      </template>
       <div class="h-full flex-1 overflow-auto">
         <slot />
       </div>

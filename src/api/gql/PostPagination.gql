@@ -1,0 +1,32 @@
+query PostPagination(
+    $perPage: Int
+    $page: Int
+    $likeUserId: String
+    $userId: String
+) {
+    posts(
+      pageOptions: {
+        perPage: $perPage
+        page: $page
+      }
+      postOptions: {
+        likeUserId: $likeUserId
+        userId: $userId
+      }
+    ) {
+      totalCount
+      nodes {
+        title
+        countLike
+        user {
+          name
+        }
+        category {
+          label
+        }
+      }
+      pageInfo {
+        hasNextPage
+      }
+    }
+}

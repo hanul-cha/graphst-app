@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { FilterHistoryValue } from '@/store/filter'
-import { useGlobalActiveStore } from '@/store/globalActive'
 
 export interface FilterHistoryItem {
   label: string
@@ -32,8 +31,6 @@ interface FilterHistoryEmits {
 const props = defineProps<FilterHistoryProps>()
 const emit = defineEmits<FilterHistoryEmits>()
 
-const { active, close } = useGlobalActiveStore()
-
 const $plus = ref<HTMLElement | null>(null)
 const isOpen = ref(false)
 
@@ -64,19 +61,12 @@ function updateHistory(key: string, value: FilterHistoryValue) {
 }
 
 function toggle() {
-  if (isOpen.value) {
-    close()
+  if (!isOpen.value) {
+    isOpen.value = true
     return
   }
-  if (!$plus.value) return
-  isOpen.value = true
-  active({
-    target: $plus.value,
-    callback: () => {
-      activeItem.value = null
-      isOpen.value = false
-    },
-  })
+  activeItem.value = null
+  isOpen.value = false
 }
 </script>
 
@@ -94,9 +84,13 @@ function toggle() {
                 {{ data.label }}:
               </div>
               <div class="text-sm text-gray-700">
-                {{
-                  Array.isArray(data.value) ? data.value.join(', ') : data.value
-                }}
+                <slot :name="`value-${data.key}`" :value="data.value">
+                  {{
+                    Array.isArray(data.value)
+                      ? data.value.join(', ')
+                      : data.value
+                  }}
+                </slot>
               </div>
             </div>
             <IconCross
@@ -138,47 +132,57 @@ function toggle() {
           </div>
 
           <div v-if="data.key === activeItem?.key" class="p-2">
-            <template v-if="activeItem.type === Boolean">
-              <div class="flex gap-x-1">
-                <ValidateField
-                  v-slot="{ field, errorMessage }"
-                  v-model="activeItem.value"
-                  name="활성화"
-                >
-                  <div class="flex items-center gap-x-2">
-                    <InputCheckToggle v-bind="field" :error="!!errorMessage" />
-                  </div>
-                </ValidateField>
-                <BasicButton
-                  class="text-sm"
-                  @click="updateHistory(activeItem.key, activeItem.value)"
-                >
-                  확인
-                </BasicButton>
-              </div>
-            </template>
-            <template v-else-if="activeItem.type === Number">
-              <!-- TODO -->
-            </template>
-            <template v-else-if="activeItem.type === String">
-              <div class="flex gap-x-1">
-                <ValidateField
-                  v-slot="{ field, errorMessage }"
-                  v-model="activeItem.value"
-                  name="boolean"
-                >
-                  <div class="flex items-center gap-x-2">
-                    <InputText v-bind="field" :error="!!errorMessage" />
-                  </div>
-                </ValidateField>
-                <BasicButton
-                  class="text-sm"
-                  @click="updateHistory(activeItem.key, activeItem.value)"
-                >
-                  확인
-                </BasicButton>
-              </div>
-            </template>
+            <slot
+              :name="`active-${data.key}`"
+              :update-history="updateHistory"
+              :active-item="activeItem"
+              :value="data.value"
+            >
+              <template v-if="activeItem.type === Boolean">
+                <div class="flex gap-x-1">
+                  <ValidateField
+                    v-slot="{ field, errorMessage }"
+                    v-model="activeItem.value"
+                    :name="data.label"
+                  >
+                    <div class="flex items-center gap-x-2">
+                      <InputCheckToggle
+                        v-bind="field"
+                        :error="!!errorMessage"
+                      />
+                    </div>
+                  </ValidateField>
+                  <BasicButton
+                    class="text-sm"
+                    @click="updateHistory(activeItem.key, activeItem.value)"
+                  >
+                    확인
+                  </BasicButton>
+                </div>
+              </template>
+              <template v-else-if="activeItem.type === Number">
+                <!-- TODO -->
+              </template>
+              <template v-else-if="activeItem.type === String">
+                <div class="flex gap-x-1">
+                  <ValidateField
+                    v-slot="{ field, errorMessage }"
+                    v-model="activeItem.value"
+                    name="boolean"
+                  >
+                    <div class="flex items-center gap-x-2">
+                      <InputText v-bind="field" :error="!!errorMessage" />
+                    </div>
+                  </ValidateField>
+                  <BasicButton
+                    class="text-sm"
+                    @click="updateHistory(activeItem.key, activeItem.value)"
+                  >
+                    확인
+                  </BasicButton>
+                </div>
+              </template>
+            </slot>
           </div>
         </template>
       </div>

@@ -6,7 +6,6 @@ const dialog = useDialog()
 const { mutate, loading } = useMutation(CreatePostDocument)
 
 async function submit(props: CreatePostMutationVariables) {
-  console.log(props)
   await mutate(props)
 
   await dialog.open({

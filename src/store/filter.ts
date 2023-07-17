@@ -1,4 +1,4 @@
-import { Ref, computed, onBeforeUnmount } from 'vue'
+import { Ref, computed, onBeforeUnmount, ref } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
 import { defineStore } from 'pinia'
 import { FilterHistoryItem } from '@/components/page/FilterHistory.vue'
@@ -46,54 +46,64 @@ export const useFilterStore = defineStore('filter', () => {
 
   let metadata:
     | {
-        [_ in string]: FilterItem
+        [_ in string]: FilterItem & {
+          label?: string
+        }
       }
     | null = null
+
+  const init = ref(false)
 
   const filter = computed<{
     [key: string]: FilterHistoryItem
   } | null>({
     get: () => {
-      if (!definedData || !metadata) {
-        return null
-      }
-      return Object.entries(definedData).reduce(
-        (prev, [key, value]) => {
-          prev[key] = {
-            value: value.value,
-            // TODO: fix type
-            label: key,
-            type: metadata![key].type,
-            isMultiple: metadata![key].isMultiple,
+      if (init.value) {
+        return Object.entries(definedData ?? {}).reduce(
+          (prev, [key, value]) => {
+            prev[key] = {
+              value: value.value,
+              label: metadata ? metadata[key].label ?? key : key,
+              type: metadata ? metadata[key].type : String,
+              isMultiple: metadata ? metadata[key].isMultiple : undefined,
+            }
+            return prev
+          },
+          {} as {
+            [key: string]: FilterHistoryItem
           }
-          return prev
-        },
-        {} as {
-          [key: string]: FilterHistoryItem
-        }
-      )
+        )
+      }
+      return null
     },
     set: (value) => {
       if (!value) {
         definedData = null
-      }
-      if (definedData) {
-        Object.entries(value!).forEach(([key, value]) => {
+      } else if (definedData) {
+        Object.entries(value).forEach(([key, value]) => {
           definedData![key].value = value.value as any
         })
       }
     },
   })
 
-  function filterOn<U extends { [_: string]: FilterItem }>(item: U) {
-    console.log('???')
+  function filterOn<
+    U extends {
+      [_: string]: FilterItem & {
+        label?: string
+      }
+    }
+  >(item: U) {
     onBeforeUnmount(() => {
       definedData = null
       metadata = null
+      filter.value = null
+      init.value = false
     })
     const value = useFilter(item)
     definedData = value
     metadata = item
+    init.value = true
     return value
   }
 

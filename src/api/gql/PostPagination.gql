@@ -2,6 +2,7 @@ fragment PostInPage on Post {
   id
   title
   countLike
+  isLike
   user {
     id
     name

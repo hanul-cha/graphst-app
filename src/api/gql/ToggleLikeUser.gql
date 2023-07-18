@@ -1,0 +1,9 @@
+mutation ToggleLikeUser(
+  $targetId: String!
+  $like: Boolean!
+) {
+  result: toggleLikeUser(
+    targetId: $targetId
+    like: $like
+  )
+}

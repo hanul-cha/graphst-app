@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { GetCategoryAllDocument, PostPaginationDocument } from '@/api/graphql'
+import {
+  GetCategoryAllDocument,
+  PostPaginationDocument,
+  PostInPageFragment,
+} from '@/api/graphql'
 import { useAuthStore } from '@/store/auth'
 import { useFilterStore } from '@/store/filter'
 import { useGlobalActiveStore } from '@/store/globalActive'
@@ -35,8 +39,8 @@ const { result: pagination, loading } = useQuery(
   () => ({
     perPage: perPage.value ? Number(perPage.value) : undefined,
     page: page.value ? Number(page.value) : undefined,
-    likeUserId: filter.myLike.value ? auth.user?.id : undefined,
-    userId: filter.my.value ? auth.user?.id : undefined,
+    likeUserId: filter.myLike.value ? auth.user?.id ?? '0' : undefined,
+    userId: filter.my.value ? auth.user?.id ?? '0' : undefined,
     categoryId: filter.category.value,
     query: filter.query.value,
   })
@@ -62,6 +66,20 @@ const categoryOptions = computed<
     value: null,
   },
 ])
+
+function updatePost(post: PostInPageFragment) {
+  if (!pagination.value?.posts) return
+  pagination.value = {
+    ...pagination.value,
+    posts: {
+      ...pagination.value?.posts,
+      nodes:
+        pagination.value?.posts?.nodes.map((node) =>
+          node.id === post.id ? post : node
+        ) ?? [],
+    },
+  }
+}
 
 function getLabel(id: string) {
   return result.value?.categories.find((category) => category.id === id)?.label
@@ -106,7 +124,7 @@ function getLabel(id: string) {
       </div>
 
       <div class="mt-6 pb-2 text-sm">
-        total count: <span class="text-current">{{ totalCount }}</span>
+        Total Count: <span class="text-current">{{ totalCount }}</span>
       </div>
     </template>
     <div>
@@ -123,7 +141,7 @@ function getLabel(id: string) {
       <template v-else>
         <div class="grid grid-cols-3 gap-6">
           <template v-for="(post, index) of posts" :key="index">
-            <PostCard :post="post" />
+            <PostCard :post="post" @update="updatePost" />
           </template>
         </div>
       </template>

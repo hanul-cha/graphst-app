@@ -1,0 +1,9 @@
+mutation ToggleLikePost(
+  $targetId: String!
+  $like: Boolean!
+) {
+  result: toggleLikePost(
+    targetId: $targetId
+    like: $like
+  )
+}

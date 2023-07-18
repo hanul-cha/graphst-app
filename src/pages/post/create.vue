@@ -13,7 +13,7 @@ async function submit(props: CreatePostMutationVariables) {
     confirmText: '확인',
   })
 
-  router.push('/')
+  router.push('/post?my=true')
 }
 </script>
 

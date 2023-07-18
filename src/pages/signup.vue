@@ -67,12 +67,20 @@ async function signUp() {
     } else {
       throw new Error('signUp.id is null')
     }
-  } catch (e) {
-    await dialog.open({
-      title: '회원가입 실패',
-      message: '같은 현상이 발생하면 1대1 문의를 이용해주세요.',
-      confirmText: '확인',
-    })
+  } catch (e: any) {
+    if (e.message === '이미 사용중인 아이디 입니다.') {
+      await dialog.open({
+        title: '회원가입 실패',
+        message: '이미 사용중인 아이디 입니다.',
+        confirmText: '확인',
+      })
+    } else {
+      await dialog.open({
+        title: '회원가입 실패',
+        message: '같은 현상이 발생하면 1대1 문의를 이용해주세요.',
+        confirmText: '확인',
+      })
+    }
   }
 }
 </script>

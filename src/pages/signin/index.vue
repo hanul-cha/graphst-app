@@ -6,6 +6,7 @@ const auth = useAuthStore()
 const inputId = ref<string | null>(null)
 const inputPassword = ref<string | null>(null)
 const dialog = useDialog()
+const router = useRouter()
 
 async function signIn() {
   if (!inputId.value || !inputPassword.value) {
@@ -17,6 +18,8 @@ async function signIn() {
     return
   }
   await auth.login(inputId.value, inputPassword.value)
+
+  router.back()
 }
 </script>
 

@@ -1,3 +1,17 @@
+fragment PostInPage on Post {
+  id
+  title
+  countLike
+  user {
+    id
+    name
+  }
+  category {
+    id
+    label
+  }
+}
+
 query PostPagination(
     $perPage: Int
     $page: Int
@@ -20,14 +34,7 @@ query PostPagination(
     ) {
       totalCount
       nodes {
-        title
-        countLike
-        user {
-          name
-        }
-        category {
-          label
-        }
+        ...PostInPage
       }
       pageInfo {
         hasNextPage

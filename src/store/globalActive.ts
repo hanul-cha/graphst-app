@@ -17,7 +17,6 @@ export const useGlobalActiveStore = defineStore('globalActive', () => {
         document.addEventListener('click', unActive)
         document.addEventListener('keydown', clickEsc)
       } else {
-        console.log('remove')
         document.removeEventListener('click', unActive)
         document.removeEventListener('keydown', clickEsc)
       }

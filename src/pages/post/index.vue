@@ -30,14 +30,17 @@ const filter = useFilter.on({
 })
 
 const { result } = useQuery(GetCategoryAllDocument)
-const { result: pagination } = useQuery(PostPaginationDocument, () => ({
-  perPage: perPage.value ? Number(perPage.value) : undefined,
-  page: page.value ? Number(page.value) : undefined,
-  likeUserId: filter.myLike.value ? auth.user?.id : undefined,
-  userId: filter.my.value ? auth.user?.id : undefined,
-  categoryId: filter.category.value,
-  query: filter.query.value,
-}))
+const { result: pagination, loading } = useQuery(
+  PostPaginationDocument,
+  () => ({
+    perPage: perPage.value ? Number(perPage.value) : undefined,
+    page: page.value ? Number(page.value) : undefined,
+    likeUserId: filter.myLike.value ? auth.user?.id : undefined,
+    userId: filter.my.value ? auth.user?.id : undefined,
+    categoryId: filter.category.value,
+    query: filter.query.value,
+  })
+)
 
 const posts = computed(() => pagination.value?.posts?.nodes ?? [])
 const totalCount = computed(() => pagination.value?.posts?.totalCount ?? 0)
@@ -60,13 +63,6 @@ const categoryOptions = computed<
   },
 ])
 
-const testOption = [
-  {
-    label: '!!',
-    value: '??',
-  },
-]
-
 function getLabel(id: string) {
   return result.value?.categories.find((category) => category.id === id)?.label
 }
@@ -75,6 +71,7 @@ function getLabel(id: string) {
 <template>
   <LayoutInner>
     <template #header>
+      <div class="pb-4 text-2xl font-bold">모든 포스팅</div>
       <div v-if="useFilter.filter" class="z-10 pb-4">
         <FilterHistory
           v-model:model-value="useFilter.filter"
@@ -107,10 +104,29 @@ function getLabel(id: string) {
           </template>
         </FilterHistory>
       </div>
+
+      <div class="mt-6 pb-2 text-sm">
+        total count: <span class="text-current">{{ totalCount }}</span>
+      </div>
     </template>
     <div>
-      {{ totalCount }}
-      {{ posts }}
+      <template v-if="loading">
+        <div class="flex h-full w-full items-center justify-center">
+          로딩중...
+        </div>
+      </template>
+      <template v-else-if="posts.length === 0">
+        <div class="flex h-full w-full items-center justify-center">
+          포스팅이 없습니다.
+        </div>
+      </template>
+      <template v-else>
+        <div class="grid grid-cols-3 gap-6">
+          <template v-for="(post, index) of posts" :key="index">
+            <PostCard :post="post" />
+          </template>
+        </div>
+      </template>
     </div>
   </LayoutInner>
 </template>

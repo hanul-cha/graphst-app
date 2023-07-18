@@ -27,6 +27,8 @@ interface FilterHistoryEmits {
       [key: string]: FilterHistoryItem
     }
   ): void
+  (_e: 'open'): void
+  (_e: 'close'): void
 }
 
 const { active, close } = useGlobalActiveStore()
@@ -64,18 +66,22 @@ function updateHistory(key: string, value: FilterHistoryValue) {
   isOpen.value = false
 }
 
-function toggle() {
+async function toggle() {
   if (isOpen.value) {
-    close()
+    await close('filter-history')
+    emit('close')
     return
   }
   if (!$plus.value) return
   isOpen.value = true
+  emit('open')
   active({
+    key: 'filter-history',
     target: $plus.value,
     callback: () => {
       activeItem.value = null
       isOpen.value = false
+      emit('close')
     },
   })
 }

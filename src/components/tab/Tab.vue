@@ -27,6 +27,7 @@ const position = ref<{
   left: 0,
   width: 0,
 })
+const isInit = ref(false)
 
 onMounted(() => {
   update(props.modelValue)
@@ -41,23 +42,28 @@ watch(
 )
 
 function update(value: string) {
-  nextTick(() => {
-    $tab.value.forEach((tab) => {
-      if (tab.dataset.value === value) {
-        position.value = {
-          left: tab.offsetLeft,
-          width: tab.offsetWidth,
-        }
+  $tab.value.forEach((tab) => {
+    if (tab.dataset.value === value) {
+      position.value = {
+        left: tab.offsetLeft,
+        width: tab.offsetWidth,
       }
-    })
+    }
   })
+  if (isInit.value) return
+  setTimeout(() => {
+    isInit.value = true
+  }, 300)
 }
 </script>
 
 <template>
   <div class="relative flex w-full">
     <div
-      class="absolute bottom-0 h-1 bg-current transition-all duration-300 ease-in-out"
+      class="absolute bottom-0 h-1 bg-current"
+      :class="{
+        'transition-all duration-300': isInit,
+      }"
       :style="{
         left: position.left + 'px',
         width: position.width + 'px',

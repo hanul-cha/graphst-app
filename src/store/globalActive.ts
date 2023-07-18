@@ -11,12 +11,13 @@ export const useGlobalActiveStore = defineStore('globalActive', () => {
   const activeItems = ref<ActiveProps[] | null>(null)
 
   watch(
-    activeItems,
-    (item) => {
-      if (item && item.length > 0) {
+    () => activeItems.value?.length,
+    (length) => {
+      if (length && length > 0) {
         document.addEventListener('click', unActive)
         document.addEventListener('keydown', clickEsc)
       } else {
+        console.log('remove')
         document.removeEventListener('click', unActive)
         document.removeEventListener('keydown', clickEsc)
       }
@@ -25,7 +26,7 @@ export const useGlobalActiveStore = defineStore('globalActive', () => {
   )
 
   async function unActive(e: MouseEvent) {
-    if (!activeItems.value) return
+    if (!activeItems.value || isOpenDialog()) return
     const target = e.target as HTMLElement
     const lastItem = activeItems.value.at(-1)
     if (!lastItem?.target?.contains(target)) {
@@ -34,36 +35,52 @@ export const useGlobalActiveStore = defineStore('globalActive', () => {
   }
 
   async function clickEsc(e: KeyboardEvent) {
-    if (!activeItems.value) return
+    if (!activeItems.value || isOpenDialog()) return
     if (e.key === 'Escape') {
       await close()
     }
   }
 
+  function isOpenDialog() {
+    return document.activeElement?.tagName === 'DIALOG'
+  }
+
   async function active(activeProps: ActiveProps) {
-    if (activeProps.key) {
-      await Promise.all(
-        activeItems.value
-          ?.filter((item) => item.key === activeProps.key)
-          .forEach((item) => item.callback()) ?? []
-      )
-      activeItems.value =
-        activeItems.value?.filter((item) => item.key !== activeProps.key) ||
-        null
-    }
     activeItems.value = [...(activeItems.value || []), activeProps]
   }
 
-  async function close() {
-    const lastItem = activeItems.value?.at(-1)
-    if (lastItem) {
-      await lastItem.callback()
-      activeItems.value?.pop()
+  async function closeKey(key: string) {
+    await Promise.all(
+      activeItems.value
+        ?.filter((item) => item.key === key)
+        .forEach((item) => item.callback()) ?? []
+    )
+    activeItems.value =
+      activeItems.value?.filter((item) => item.key !== key) || null
+  }
+
+  async function close(key?: string) {
+    if (key) {
+      await closeKey(key)
+    } else {
+      const lastItem = activeItems.value?.at(-1)
+      if (lastItem) {
+        await lastItem.callback()
+        activeItems.value?.pop()
+      }
     }
+  }
+
+  async function closeAll() {
+    await Promise.all(
+      activeItems.value?.forEach((item) => item.callback()) ?? []
+    )
+    activeItems.value = null
   }
 
   return {
     active,
     close,
+    closeAll,
   }
 })

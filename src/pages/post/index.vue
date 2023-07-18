@@ -2,10 +2,11 @@
 import { GetCategoryAllDocument, PostPaginationDocument } from '@/api/graphql'
 import { useAuthStore } from '@/store/auth'
 import { useFilterStore } from '@/store/filter'
+import { useGlobalActiveStore } from '@/store/globalActive'
 
 const useFilter = useFilterStore()
 const auth = useAuthStore()
-
+const { close } = useGlobalActiveStore()
 const perPage = useRouteQuery<string>('perPage')
 const page = useRouteQuery<string>('page')
 
@@ -75,7 +76,10 @@ function getLabel(id: string) {
   <LayoutInner>
     <template #header>
       <div v-if="useFilter.filter" class="z-10 pb-4">
-        <FilterHistory v-model:model-value="useFilter.filter">
+        <FilterHistory
+          v-model:model-value="useFilter.filter"
+          @close="() => close('category-history')"
+        >
           <template #value-category="{ value }">
             {{ getLabel(value as string) }}
           </template>
@@ -88,6 +92,7 @@ function getLabel(id: string) {
               >
                 <InputSelect
                   v-bind="field"
+                  key-name="category-history"
                   :error="!!errorMessage"
                   :options="categoryOptions"
                 />

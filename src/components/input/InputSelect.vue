@@ -17,6 +17,8 @@ interface InputSelectProps {
 
 interface InputSelectEmits {
   (_e: 'update:modelValue', _value: string | null): void
+  (_e: 'open'): void
+  (_e: 'close'): void
 }
 
 const props = withDefaults(defineProps<InputSelectProps>(), {
@@ -41,23 +43,28 @@ function getSelectedLabel(value: string | null) {
   return props.options?.find((option) => option.value === value)?.label ?? null
 }
 
-function open(e: FocusEvent) {
+async function open(e: FocusEvent) {
   if (!$inputSelect.value || props.disabled) return
   isOpen.value = true
-  active({
+  emit('open')
+
+  await close(props.keyName ?? 'input-select')
+  await active({
     key: props.keyName ?? 'input-select',
     target: $inputSelect.value,
     callback: () => {
       isOpen.value = false
       const target = e.target as HTMLInputElement
       target?.blur()
+      emit('close')
     },
   })
 }
 
-function select(option: InputSelectOption) {
+async function select(option: InputSelectOption) {
   emit('update:modelValue', option.value)
-  close()
+  await close(props.keyName ?? 'input-select')
+  emit('close')
 }
 </script>
 

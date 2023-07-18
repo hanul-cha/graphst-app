@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/store/auth'
+import { useGlobalActiveStore } from '@/store/globalActive'
 import { DialogFollowType } from './dialog/follow/types'
 import IconHome from './icons/IconHome.vue'
 import IconPlus from './icons/IconPlus.vue'
@@ -7,11 +8,13 @@ import IconPlus from './icons/IconPlus.vue'
 const auth = useAuthStore()
 const dialog = useDialog()
 const router = useRouter()
+const { active, closeAll, close } = useGlobalActiveStore()
 
 const id = useRouteQuery<string | null>('id')
 const follow = useRouteQuery<DialogFollowType | null>('follow')
 
 const openRightSidebar = ref(false)
+const $rightSidebar = ref<HTMLElement | null>(null)
 
 const menuItems = [
   {
@@ -39,6 +42,24 @@ function openDialogFollow(type: DialogFollowType) {
 function closeDialogFollow() {
   follow.value = null
   id.value = null
+}
+
+async function open() {
+  if (!$rightSidebar.value) return
+
+  if (!openRightSidebar.value) {
+    openRightSidebar.value = true
+    await closeAll()
+    active({
+      key: 'right-sidebar',
+      target: $rightSidebar.value,
+      callback: () => {
+        openRightSidebar.value = false
+      },
+    })
+  } else {
+    await close('right-sidebar')
+  }
 }
 
 async function logout() {
@@ -73,15 +94,13 @@ async function logout() {
       </div>
     </div>
     <div
+      ref="$rightSidebar"
       class="absolute right-0 top-0 z-20 flex h-full flex-col bg-white p-3 shadow-md transition-all duration-300"
       :class="{
         'translate-x-full': !openRightSidebar,
       }"
     >
-      <div
-        class="absolute -left-10 top-2"
-        @click="openRightSidebar = !openRightSidebar"
-      >
+      <div class="absolute -left-10 top-2" @click="open">
         <IconDoubleRight
           class="fill-gray-300 transition-transform duration-300"
           :class="{

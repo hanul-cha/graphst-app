@@ -1,27 +1,13 @@
 <script setup lang="ts">
-import { GetCategoryAllDocument } from '@/api/graphql'
+import { GetCategoryAllDocument, PostPaginationDocument } from '@/api/graphql'
+import { useAuthStore } from '@/store/auth'
 import { useFilterStore } from '@/store/filter'
 
 const useFilter = useFilterStore()
-const { result } = useQuery(GetCategoryAllDocument)
+const auth = useAuthStore()
 
-const categoryOptions = computed<
-  {
-    label: string
-    value: string | null
-  }[]
->(() => [
-  ...(result.value?.categories
-    ? result.value.categories.map(({ id, label }) => ({
-        label,
-        value: id,
-      }))
-    : []),
-  {
-    label: '카테고리 없음',
-    value: null,
-  },
-])
+const perPage = useRouteQuery<string>('perPage')
+const page = useRouteQuery<string>('page')
 
 const filter = useFilter.on({
   my: {
@@ -42,6 +28,44 @@ const filter = useFilter.on({
   },
 })
 
+const { result } = useQuery(GetCategoryAllDocument)
+const { result: pagination } = useQuery(PostPaginationDocument, () => ({
+  perPage: perPage.value ? Number(perPage.value) : undefined,
+  page: page.value ? Number(page.value) : undefined,
+  likeUserId: filter.myLike.value ? auth.user?.id : undefined,
+  userId: filter.my.value ? auth.user?.id : undefined,
+  categoryId: filter.category.value,
+  query: filter.query.value,
+}))
+
+const posts = computed(() => pagination.value?.posts?.nodes ?? [])
+const totalCount = computed(() => pagination.value?.posts?.totalCount ?? 0)
+
+const categoryOptions = computed<
+  {
+    label: string
+    value: string | null
+  }[]
+>(() => [
+  ...(result.value?.categories
+    ? result.value.categories.map(({ id, label }) => ({
+        label,
+        value: id,
+      }))
+    : []),
+  {
+    label: '카테고리 없음',
+    value: null,
+  },
+])
+
+const testOption = [
+  {
+    label: '!!',
+    value: '??',
+  },
+]
+
 function getLabel(id: string) {
   return result.value?.categories.find((category) => category.id === id)?.label
 }
@@ -50,7 +74,7 @@ function getLabel(id: string) {
 <template>
   <LayoutInner>
     <template #header>
-      <div v-if="useFilter.filter" class="pb-4">
+      <div v-if="useFilter.filter" class="z-10 pb-4">
         <FilterHistory v-model:model-value="useFilter.filter">
           <template #value-category="{ value }">
             {{ getLabel(value as string) }}
@@ -79,6 +103,9 @@ function getLabel(id: string) {
         </FilterHistory>
       </div>
     </template>
-    <div class="h-[2000px]">asdfsdf</div></LayoutInner
-  >
+    <div>
+      {{ totalCount }}
+      {{ posts }}
+    </div>
+  </LayoutInner>
 </template>

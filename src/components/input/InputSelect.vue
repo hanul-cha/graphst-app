@@ -12,6 +12,7 @@ interface InputSelectProps {
   error?: boolean
   disabled?: boolean
   options?: InputSelectOption[]
+  keyName?: string
 }
 
 interface InputSelectEmits {
@@ -24,6 +25,7 @@ const props = withDefaults(defineProps<InputSelectProps>(), {
   error: false,
   disabled: false,
   options: () => [],
+  keyName: undefined,
 })
 
 const emit = defineEmits<InputSelectEmits>()
@@ -43,6 +45,7 @@ function open(e: FocusEvent) {
   if (!$inputSelect.value || props.disabled) return
   isOpen.value = true
   active({
+    key: props.keyName ?? 'input-select',
     target: $inputSelect.value,
     callback: () => {
       isOpen.value = false
@@ -83,7 +86,7 @@ function select(option: InputSelectOption) {
     </div>
     <div
       v-show="isOpen"
-      class="absolute bottom-0 z-10 max-h-40 w-full translate-y-full overflow-y-auto rounded-b-xl border border-t-0 bg-white text-sm"
+      class="absolute bottom-0 z-[1] max-h-40 w-full translate-y-full overflow-y-auto rounded-b-xl border border-t-0 bg-white text-sm"
     >
       <template v-if="options?.length > 0">
         <template v-for="(option, index) of options" :key="index">

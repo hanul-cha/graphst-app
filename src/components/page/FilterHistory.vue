@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { FilterHistoryValue } from '@/store/filter'
+import { useGlobalActiveStore } from '@/store/globalActive'
 
 export interface FilterHistoryItem {
   label: string
@@ -27,6 +28,8 @@ interface FilterHistoryEmits {
     }
   ): void
 }
+
+const { active, close } = useGlobalActiveStore()
 
 const props = defineProps<FilterHistoryProps>()
 const emit = defineEmits<FilterHistoryEmits>()
@@ -58,15 +61,23 @@ function updateHistory(key: string, value: FilterHistoryValue) {
       value,
     },
   })
+  isOpen.value = false
 }
 
 function toggle() {
-  if (!isOpen.value) {
-    isOpen.value = true
+  if (isOpen.value) {
+    close()
     return
   }
-  activeItem.value = null
-  isOpen.value = false
+  if (!$plus.value) return
+  isOpen.value = true
+  active({
+    target: $plus.value,
+    callback: () => {
+      activeItem.value = null
+      isOpen.value = false
+    },
+  })
 }
 </script>
 

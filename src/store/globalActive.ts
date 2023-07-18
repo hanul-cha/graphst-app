@@ -2,17 +2,18 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 
 interface ActiveProps {
+  key?: string
   target: HTMLElement
   callback: () => void | Promise<void>
 }
 
 export const useGlobalActiveStore = defineStore('globalActive', () => {
-  const activeItem = ref<ActiveProps | null>(null)
+  const activeItems = ref<ActiveProps[] | null>(null)
 
   watch(
-    activeItem,
+    activeItems,
     (item) => {
-      if (item) {
+      if (item && item.length > 0) {
         document.addEventListener('click', unActive)
         document.addEventListener('keydown', clickEsc)
       } else {
@@ -24,33 +25,40 @@ export const useGlobalActiveStore = defineStore('globalActive', () => {
   )
 
   async function unActive(e: MouseEvent) {
-    if (!activeItem.value) return
+    if (!activeItems.value) return
     const target = e.target as HTMLElement
-    if (!activeItem.value.target?.contains(target)) {
-      await activeItem.value.callback()
-      activeItem.value = null
+    const lastItem = activeItems.value.at(-1)
+    if (!lastItem?.target?.contains(target)) {
+      await close()
     }
   }
 
   async function clickEsc(e: KeyboardEvent) {
-    if (!activeItem.value) return
+    if (!activeItems.value) return
     if (e.key === 'Escape') {
-      await activeItem.value.callback()
-      activeItem.value = null
+      await close()
     }
   }
 
   async function active(activeProps: ActiveProps) {
-    if (activeItem.value) {
-      await activeItem.value.callback()
+    if (activeProps.key) {
+      await Promise.all(
+        activeItems.value
+          ?.filter((item) => item.key === activeProps.key)
+          .forEach((item) => item.callback()) ?? []
+      )
+      activeItems.value =
+        activeItems.value?.filter((item) => item.key !== activeProps.key) ||
+        null
     }
-    activeItem.value = activeProps
+    activeItems.value = [...(activeItems.value || []), activeProps]
   }
 
   async function close() {
-    if (activeItem.value) {
-      await activeItem.value.callback()
-      activeItem.value = null
+    const lastItem = activeItems.value?.at(-1)
+    if (lastItem) {
+      await lastItem.callback()
+      activeItems.value?.pop()
     }
   }
 

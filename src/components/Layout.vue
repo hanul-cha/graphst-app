@@ -73,7 +73,7 @@ async function logout() {
       </div>
     </div>
     <div
-      class="absolute right-0 top-0 flex h-full flex-col bg-white p-3 shadow-md transition-all duration-300"
+      class="absolute right-0 top-0 z-20 flex h-full flex-col bg-white p-3 shadow-md transition-all duration-300"
       :class="{
         'translate-x-full': !openRightSidebar,
       }"

@@ -3,6 +3,8 @@ query PostPagination(
     $page: Int
     $likeUserId: String
     $userId: String
+    $query: String
+    $categoryId: String
 ) {
     posts(
       pageOptions: {
@@ -12,6 +14,8 @@ query PostPagination(
       postOptions: {
         likeUserId: $likeUserId
         userId: $userId
+        categoryId: $categoryId
+        query: $query
       }
     ) {
       totalCount

@@ -22,16 +22,12 @@ query PostPagination(
     $categoryId: String
 ) {
     posts(
-      pageOptions: {
-        perPage: $perPage
-        page: $page
-      }
-      postOptions: {
-        likeUserId: $likeUserId
-        userId: $userId
-        categoryId: $categoryId
-        query: $query
-      }
+      perPage: $perPage
+      page: $page
+      likeUserId: $likeUserId
+      userId: $userId
+      categoryId: $categoryId
+      query: $query
     ) {
       totalCount
       nodes {

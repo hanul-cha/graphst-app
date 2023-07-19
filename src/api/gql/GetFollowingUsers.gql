@@ -2,9 +2,7 @@ query GetFollowingUsers(
   $followingId: String!
 ) {
   users(
-    userOptions: {
-      followingId: $followingId
-    }
+    followingId: $followingId
   ) {
     totalCount
     nodes {

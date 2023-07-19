@@ -11,8 +11,8 @@ import { useGlobalActiveStore } from '@/store/globalActive'
 const useFilter = useFilterStore()
 const auth = useAuthStore()
 const { close } = useGlobalActiveStore()
-const perPage = useRouteQuery<string>('perPage')
-const page = useRouteQuery<string>('page')
+const perPage = useRouteQuery<string>('perPage', '10')
+const page = useRouteQuery<string>('page', '1')
 
 const filter = useFilter.on({
   my: {
@@ -37,8 +37,8 @@ const { result } = useQuery(GetCategoryAllDocument)
 const { result: pagination, loading } = useQuery(
   PostPaginationDocument,
   () => ({
-    perPage: perPage.value ? Number(perPage.value) : undefined,
-    page: page.value ? Number(page.value) : undefined,
+    perPage: perPage.value ? +perPage.value : undefined,
+    page: page.value ? +page.value : undefined,
     likeUserId: filter.myLike.value ? auth.user?.id ?? '0' : undefined,
     userId: filter.my.value ? auth.user?.id ?? '0' : undefined,
     categoryId: filter.category.value,
@@ -81,6 +81,11 @@ function updatePost(post: PostInPageFragment) {
   }
 }
 
+function resetPage() {
+  page.value = '1'
+  perPage.value = '10'
+}
+
 function getLabel(id: string) {
   return result.value?.categories.find((category) => category.id === id)?.label
 }
@@ -94,6 +99,7 @@ function getLabel(id: string) {
         <FilterHistory
           v-model:model-value="useFilter.filter"
           @close="() => close('category-history')"
+          @update:model-value="resetPage"
         >
           <template #value-category="{ value }">
             {{ getLabel(value as string) }}

@@ -30,11 +30,20 @@ defineEmits<DialogEmits>()
   >
     <div class="text-lg font-bold">{{ title }}</div>
     <div>{{ message }}</div>
-    <div class="flex w-full justify-end">
-      <button v-if="cancelText" @click="$emit('cancel')">
+    <div class="flex w-full justify-between gap-x-2 pt-6">
+      <button
+        v-if="cancelText"
+        class="w-full rounded-lg bg-gray-400 p-2 text-white outline-0"
+        @click="$emit('cancel')"
+      >
         {{ cancelText }}
       </button>
-      <button @click="$emit('confirm')">{{ confirmText }}</button>
+      <button
+        class="w-full rounded-lg bg-current p-2 text-white outline-0"
+        @click="$emit('confirm')"
+      >
+        {{ confirmText }}
+      </button>
     </div>
   </Dialog>
 </template>

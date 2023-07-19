@@ -43,7 +43,7 @@ async function signIn() {
         name="password"
         roles="required"
       >
-        <InputText
+        <InputPassword
           v-bind="field"
           placeholder="password"
           :error="!!errorMessage"

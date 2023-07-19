@@ -126,9 +126,9 @@ async function signUp() {
           name="비밀번호"
           roles="password"
         >
-          <InputText
+          <InputPassword
             v-bind="field"
-            placeholder="영문, 숫자포함 6~12자리여야 합니다."
+            placeholder="영문, 숫자포함 6~12자리"
             :error="!!errorMessage"
           />
         </ValidateField>
@@ -141,7 +141,7 @@ async function signUp() {
           }"
         >
           <template #default="{ field, errorMessage }">
-            <InputText
+            <InputPassword
               v-bind="field"
               placeholder="비밀번호 확인"
               :error="!!errorMessage"

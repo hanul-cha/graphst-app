@@ -136,11 +136,11 @@ async function logout() {
         </template>
         <template v-else>
           <div class="flex flex-col gap-y-2">
-            <BasicButton
-              ><RouterLink to="/signin">로그인</RouterLink></BasicButton
+            <RouterLink to="/signin"
+              ><BasicButton class="w-full">로그인</BasicButton></RouterLink
             >
-            <BasicButton
-              ><RouterLink to="/signup">회원가입</RouterLink></BasicButton
+            <RouterLink to="/signup"
+              ><BasicButton class="w-full">회원가입</BasicButton></RouterLink
             >
           </div>
         </template>

@@ -14,13 +14,17 @@ interface ValidateFieldEmits {
 }
 
 const props = defineProps<ValidateFieldProps>()
-defineEmits<ValidateFieldEmits>()
+const emit = defineEmits<ValidateFieldEmits>()
 
 const rules = (value: any, field: any) => {
   if (props.roles) {
     return validator(value, field, props.roles)
   }
   return true
+}
+
+function update(value: any) {
+  emit('update:modelValue', value)
 }
 </script>
 
@@ -31,12 +35,15 @@ const rules = (value: any, field: any) => {
     :name="name"
     :rules="rules"
     :validate-on-input="!validateOnSubmit"
-    @update:model-value="$emit('update:modelValue', $event)"
+    @update:model-value="update"
   >
     <slot
       :="{
         ...slotOption,
-        field: { ...slotOption.field, modelValue: slotOption.field.value },
+        field: {
+          ...slotOption.field,
+          modelValue: modelValue,
+        },
       }"
     />
 

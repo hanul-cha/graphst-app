@@ -28,19 +28,18 @@ function updateContent(updateValue: string | null) {
   emit('update:modelValue', updateValue)
 }
 
-const inputContent = useVModel(props, 'modelValue', emit)
-
 onMounted(() => {
   editor.value = new Editor({
-    content: inputContent,
+    content: props.modelValue,
     extensions: [
       StarterKit,
       Placeholder.configure({
         placeholder: props.placeholder,
       }),
     ],
-    onUpdate: ({ editor }) => {
-      updateContent(editor.getText() ? editor.getHTML() : null)
+    onUpdate: async ({ editor }) => {
+      const onlyText = editor.getText()
+      updateContent(onlyText && onlyText.length > 0 ? editor.getHTML() : null)
     },
   })
 })
@@ -50,15 +49,6 @@ onBeforeUnmount(() => {
     editor.value.destroy()
   }
 })
-
-watch(
-  () => props.modelValue,
-  (value) => {
-    if (editor.value) {
-      editor.value.commands.setContent(value ?? '')
-    }
-  }
-)
 </script>
 
 <template>

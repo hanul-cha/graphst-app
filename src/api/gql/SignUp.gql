@@ -12,6 +12,6 @@ mutation SignUp(
     questionForSearch: $questionForSearch
     answerForSearch: $answerForSearch
   ) {
-    ...UserFull
+    id
   }
 }

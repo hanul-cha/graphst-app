@@ -11,10 +11,8 @@ import { useGlobalActiveStore } from '@/store/globalActive'
 const useFilter = useFilterStore()
 const auth = useAuthStore()
 const { close } = useGlobalActiveStore()
-const perPage = useRouteQuery<string>('perPage', '10')
-const page = useRouteQuery<string>('page', '1')
 
-const filter = useFilter.on({
+const { my, myLike, query, category, page, perPage } = useFilter.on({
   my: {
     type: Boolean,
     label: '내 포스팅',
@@ -31,18 +29,30 @@ const filter = useFilter.on({
     type: String,
     label: '카테고리',
   },
+  perPage: {
+    type: Number,
+    ignore: true,
+    default: 10,
+  },
+  page: {
+    type: Number,
+    ignore: true,
+    default: 1,
+  },
 })
+
+const asdf = ref<number | null>(1)
 
 const { result } = useQuery(GetCategoryAllDocument)
 const { result: pagination, loading } = useQuery(
   PostPaginationDocument,
   () => ({
-    perPage: perPage.value ? +perPage.value : undefined,
-    page: page.value ? +page.value : undefined,
-    likeUserId: filter.myLike.value ? auth.user?.id ?? '0' : undefined,
-    userId: filter.my.value ? auth.user?.id ?? '0' : undefined,
-    categoryId: filter.category.value,
-    query: filter.query.value,
+    perPage: perPage.value ? perPage.value : undefined,
+    page: page.value ? page.value : undefined,
+    likeUserId: myLike.value ? auth.user?.id ?? '0' : undefined,
+    userId: my.value ? auth.user?.id ?? '0' : undefined,
+    categoryId: category.value,
+    query: query.value,
   })
 )
 
@@ -82,8 +92,8 @@ function updatePost(post: PostInPageFragment) {
 }
 
 function resetPage() {
-  page.value = '1'
-  perPage.value = '10'
+  page.value = 1
+  perPage.value = 10
 }
 
 function getLabel(id: string) {
@@ -152,5 +162,14 @@ function getLabel(id: string) {
         </div>
       </template>
     </div>
+    <template #bottom>
+      <Pagination
+        v-model:page="page"
+        v-model:perPage="perPage"
+        :total="totalCount"
+        @update:page="perPage = 10"
+        @update:per-page="page = 1"
+      />
+    </template>
   </LayoutInner>
 </template>

@@ -14,6 +14,7 @@ export interface FilterItem {
   default?: FilterHistoryValue
   type?: StringConstructor | NumberConstructor | BooleanConstructor
   isMultiple?: boolean
+  ignore?: boolean
 }
 
 type FilterItemTypeToValue<
@@ -66,6 +67,7 @@ export const useFilterStore = defineStore('filter', () => {
               label: metadata ? metadata[key].label ?? key : key,
               type: metadata ? metadata[key].type : String,
               isMultiple: metadata ? metadata[key].isMultiple : undefined,
+              ignore: metadata ? metadata[key].ignore : undefined,
             }
             return prev
           },
@@ -142,7 +144,7 @@ function useFilter<T extends keyof U, U extends { [_: string]: FilterItem }>(
           const values = toArray(value)
 
           if (type === Number) {
-            return values.map((v) => parseInt(v))
+            return values.map((v) => parseFloat(v))
           }
           if (type === Boolean) {
             return values.map((v) => v === 'true')
@@ -193,8 +195,5 @@ function toArray(stringOrArray: string | string[] | null): string[] {
 }
 
 function toSingle(stringOrArray: string | string[]) {
-  if (!stringOrArray) {
-    return stringOrArray ?? null
-  }
   return Array.isArray(stringOrArray) ? stringOrArray[0] : stringOrArray
 }

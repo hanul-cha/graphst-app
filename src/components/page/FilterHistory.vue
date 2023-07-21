@@ -7,6 +7,7 @@ export interface FilterHistoryItem {
   value: FilterHistoryValue
   type?: StringConstructor | NumberConstructor | BooleanConstructor
   isMultiple?: boolean
+  ignore?: boolean
 }
 
 interface FilterHistoryProps {
@@ -48,10 +49,12 @@ const activeItem = ref<
 
 const histories = computed(() => {
   return props.modelValue
-    ? Object.entries(props.modelValue).map(([key, value]) => ({
-        ...value,
-        key,
-      }))
+    ? Object.entries(props.modelValue)
+        .map(([key, value]) => ({
+          ...value,
+          key,
+        }))
+        .filter(({ ignore }) => !ignore)
     : []
 })
 

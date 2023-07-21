@@ -30,13 +30,33 @@ const left = computed(() => {
   return baseWidth * 2 - ((props.page ?? 1) - 1) * baseWidth
 })
 
+const pageSelectOption = computed(() => {
+  return pages.value.map((page) => ({
+    label: page.toString(),
+    value: page,
+  }))
+})
+
 function updatePage(value: number) {
   emit('update:page', value)
 }
 </script>
 
 <template>
-  <div class="mx-auto mt-4 rounded-xl bg-white p-2">
+  <div class="mx-auto mt-4 flex items-center rounded-xl bg-white p-2">
+    <InputSelect
+      class="w-16"
+      :options="[
+        { label: '10', value: 10 },
+        { label: '20', value: 20 },
+        { label: '30', value: 30 },
+        { label: '40', value: 40 },
+        { label: '50', value: 50 },
+      ]"
+      :model-value="props.perPage"
+      is-up-list
+      @update:model-value="emit('update:perPage', $event)"
+    />
     <div class="relative h-8 w-[160px] overflow-hidden">
       <div class="absolute left-16 top-0 h-8 w-8 rounded-xl bg-current" />
       <div
@@ -69,5 +89,12 @@ function updatePage(value: number) {
         </template>
       </div>
     </div>
+    <InputSelect
+      class="w-16"
+      :options="pageSelectOption"
+      :model-value="props.page"
+      is-up-list
+      @update:model-value="emit('update:page', $event)"
+    />
   </div>
 </template>

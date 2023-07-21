@@ -3,20 +3,21 @@ import { useGlobalActiveStore } from '@/store/globalActive'
 
 export interface InputSelectOption {
   label: string
-  value: string | null
+  value: any
 }
 
 interface InputSelectProps {
-  modelValue?: string | null
+  modelValue?: any
   placeholder?: string
   error?: boolean
   disabled?: boolean
   options?: InputSelectOption[]
   keyName?: string
+  isUpList?: boolean
 }
 
 interface InputSelectEmits {
-  (_e: 'update:modelValue', _value: string | null): void
+  (_e: 'update:modelValue', _value: any): void
   (_e: 'open'): void
   (_e: 'close'): void
 }
@@ -28,6 +29,7 @@ const props = withDefaults(defineProps<InputSelectProps>(), {
   disabled: false,
   options: () => [],
   keyName: undefined,
+  isUpList: false,
 })
 
 const emit = defineEmits<InputSelectEmits>()
@@ -75,7 +77,8 @@ async function select(option: InputSelectOption) {
       class="w-full rounded-xl border p-2 pl-3 text-sm focus:select-none focus:caret-transparent focus:outline-none"
       :class="{
         'border-red-500': error,
-        'rounded-b-none': isOpen,
+        'rounded-b-none': isOpen && !props.isUpList,
+        'rounded-t-none': isOpen && props.isUpList,
       }"
       :placeholder="placeholder"
       :disabled="disabled"
@@ -83,7 +86,12 @@ async function select(option: InputSelectOption) {
       @keydown.prevent
       @focus="open"
     />
-    <div class="absolute right-2 top-0 flex h-full rotate-90 items-center">
+    <div
+      class="absolute right-2 top-0 flex h-full rotate-90 items-center"
+      :class="{
+        'rotate-180': isUpList,
+      }"
+    >
       <IconRight
         class="fill-gray-300 transition-transform duration-300"
         :class="{
@@ -93,7 +101,11 @@ async function select(option: InputSelectOption) {
     </div>
     <div
       v-show="isOpen"
-      class="absolute bottom-0 z-[1] max-h-40 w-full translate-y-full overflow-y-auto rounded-b-xl border border-t-0 bg-white text-sm"
+      class="absolute z-[1] max-h-40 w-full overflow-y-auto border bg-white text-sm"
+      :class="{
+        'bottom-0 translate-y-full rounded-b-xl border-t-0': !props.isUpList,
+        'top-0 -translate-y-full rounded-t-xl border-b-0': props.isUpList,
+      }"
     >
       <template v-if="options?.length > 0">
         <template v-for="(option, index) of options" :key="index">

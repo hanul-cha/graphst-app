@@ -180,7 +180,12 @@ async function toggle() {
                 <!-- TODO -->
               </template>
               <template v-else-if="activeItem.type === String">
-                <div class="flex gap-x-1">
+                <form
+                  class="flex gap-x-1"
+                  @submit.prevent="
+                    updateHistory(activeItem.key, activeItem.value)
+                  "
+                >
                   <ValidateField
                     v-slot="{ field, errorMessage }"
                     v-model="activeItem.value"
@@ -190,13 +195,10 @@ async function toggle() {
                       <InputText v-bind="field" :error="!!errorMessage" />
                     </div>
                   </ValidateField>
-                  <BasicButton
-                    class="text-sm"
-                    @click="updateHistory(activeItem.key, activeItem.value)"
-                  >
+                  <BasicButton class="text-sm" type="submit">
                     확인
                   </BasicButton>
-                </div>
+                </form>
               </template>
             </slot>
           </div>

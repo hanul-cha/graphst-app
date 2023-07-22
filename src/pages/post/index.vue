@@ -54,19 +54,20 @@ const { my, myLike, query, category, page, perPage, asc, order } = useFilter.on(
 )
 
 const { result } = useQuery(GetCategoryAllDocument)
-const { result: pagination, loading } = useQuery(
-  PostPaginationDocument,
-  () => ({
-    perPage: perPage.value ? perPage.value : undefined,
-    page: page.value ? page.value : undefined,
-    likeUserId: myLike.value ? auth.user?.id ?? '0' : undefined,
-    userId: my.value ? auth.user?.id ?? '0' : undefined,
-    categoryId: category.value,
-    query: query.value,
-    order: order.value as PostOrder | null,
-    asc: asc.value,
-  })
-)
+const {
+  result: pagination,
+  loading,
+  refetch,
+} = useQuery(PostPaginationDocument, () => ({
+  perPage: perPage.value ? perPage.value : undefined,
+  page: page.value ? page.value : undefined,
+  likeUserId: myLike.value ? auth.user?.id ?? '0' : undefined,
+  userId: my.value ? auth.user?.id ?? '0' : undefined,
+  categoryId: category.value,
+  query: query.value,
+  order: order.value as PostOrder | null,
+  asc: asc.value,
+}))
 
 const posts = computed(() => pagination.value?.posts?.nodes ?? [])
 const totalCount = computed(() => pagination.value?.posts?.totalCount ?? 0)
@@ -178,12 +179,7 @@ function getLabel(id: string) {
       </div>
     </template>
     <div>
-      <template v-if="loading">
-        <div class="flex h-full w-full items-center justify-center">
-          로딩중...
-        </div>
-      </template>
-      <template v-else-if="posts.length === 0">
+      <template v-if="!loading && posts.length === 0">
         <div class="flex h-full w-full items-center justify-center">
           포스팅이 없습니다.
         </div>
@@ -191,7 +187,14 @@ function getLabel(id: string) {
       <template v-else>
         <div class="grid grid-cols-4 gap-6">
           <template v-for="(post, index) of posts" :key="index">
-            <PostCard :post="post" @update="updatePost" />
+            <PostCard
+              :post="post"
+              @update="
+                ($event) => {
+                  order === PostOrder.Follower ? refetch() : updatePost($event)
+                }
+              "
+            />
           </template>
         </div>
       </template>

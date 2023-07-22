@@ -177,7 +177,8 @@ function useFilter<T extends keyof U, U extends { [_: string]: FilterItem }>(
         } else if (typeof value === 'boolean' && !value) {
           query.value = null
         } else {
-          query.value = value?.toString() ?? null
+          const str = value?.toString()
+          query.value = str && str.length > 0 ? str : null
         }
       },
     })

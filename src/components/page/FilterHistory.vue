@@ -66,7 +66,6 @@ function updateHistory(key: string, value: FilterHistoryValue) {
       value,
     },
   })
-  isOpen.value = false
 }
 
 async function toggle() {
@@ -164,6 +163,9 @@ async function toggle() {
                     v-slot="{ field, errorMessage }"
                     v-model="activeItem.value"
                     :name="data.label"
+                    @update:model-value="
+                      updateHistory(activeItem.key, activeItem.value)
+                    "
                   >
                     <div class="flex items-center gap-x-2">
                       <InputCheckToggle
@@ -172,12 +174,6 @@ async function toggle() {
                       />
                     </div>
                   </ValidateField>
-                  <BasicButton
-                    class="text-sm"
-                    @click="updateHistory(activeItem.key, activeItem.value)"
-                  >
-                    확인
-                  </BasicButton>
                 </div>
               </template>
               <template v-else-if="activeItem.type === Number">

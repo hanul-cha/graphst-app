@@ -85,6 +85,10 @@ const categoryOptions = computed<
     : []),
   {
     label: '카테고리 없음',
+    value: '_NULL_',
+  },
+  {
+    label: '필터 적용 안함',
     value: null,
   },
 ])
@@ -120,6 +124,7 @@ function resetPage() {
 }
 
 function getLabel(id: string) {
+  if (id === '_NULL_') return '카테고리 없음'
   return result.value?.categories.find((category) => category.id === id)?.label
 }
 </script>
@@ -143,6 +148,9 @@ function getLabel(id: string) {
                 v-slot="{ field, errorMessage }"
                 v-model="activeItem.value"
                 name="카테고리"
+                @update:model-value="
+                  updateHistory(activeItem.key, activeItem.value)
+                "
               >
                 <InputSelect
                   v-bind="field"
@@ -151,23 +159,21 @@ function getLabel(id: string) {
                   :options="categoryOptions"
                 />
               </ValidateField>
-              <BasicButton
-                class="text-sm"
-                @click="updateHistory(activeItem.key, activeItem.value)"
-              >
-                확인
-              </BasicButton>
             </div>
           </template>
         </FilterHistory>
       </div>
 
-      <div class="mt-6 flex justify-between pb-2">
+      <div class="mt-6 flex items-center justify-between pb-2">
         <div class="text-sm">
           Total Count: <span class="text-current">{{ totalCount }}</span>
         </div>
         <div>
-          <Sort v-model:asc="asc" v-model:order="order" :options="sortOption" />
+          <InputSort
+            v-model:asc="asc"
+            v-model:order="order"
+            :options="sortOption"
+          />
         </div>
       </div>
     </template>

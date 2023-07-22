@@ -7,7 +7,7 @@ interface InputPasswordProps {
 }
 
 interface InputPasswordEmits {
-  (_e: 'input:modelValue', _value: string | null): void
+  (_e: 'update:modelValue', _value: string | null): void
 }
 
 const props = withDefaults(defineProps<InputPasswordProps>(), {

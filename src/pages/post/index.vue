@@ -3,6 +3,7 @@ import {
   GetCategoryAllDocument,
   PostPaginationDocument,
   PostInPageFragment,
+  PostOrder,
 } from '@/api/graphql'
 import { useAuthStore } from '@/store/auth'
 import { useFilterStore } from '@/store/filter'
@@ -12,36 +13,45 @@ const useFilter = useFilterStore()
 const auth = useAuthStore()
 const { close } = useGlobalActiveStore()
 
-const { my, myLike, query, category, page, perPage } = useFilter.on({
-  my: {
-    type: Boolean,
-    label: '내 포스팅',
-  },
-  myLike: {
-    type: Boolean,
-    label: '좋아요한 포스팅',
-  },
-  query: {
-    type: String,
-    label: '검색어',
-  },
-  category: {
-    type: String,
-    label: '카테고리',
-  },
-  perPage: {
-    type: Number,
-    ignore: true,
-    default: 10,
-  },
-  page: {
-    type: Number,
-    ignore: true,
-    default: 1,
-  },
-})
-
-const asdf = ref<number | null>(1)
+const { my, myLike, query, category, page, perPage, asc, order } = useFilter.on(
+  {
+    my: {
+      type: Boolean,
+      label: '내 포스팅',
+    },
+    myLike: {
+      type: Boolean,
+      label: '좋아요한 포스팅',
+    },
+    query: {
+      type: String,
+      label: '검색어',
+    },
+    category: {
+      type: String,
+      label: '카테고리',
+    },
+    perPage: {
+      type: Number,
+      ignore: true,
+      default: 16,
+    },
+    page: {
+      type: Number,
+      ignore: true,
+      default: 1,
+    },
+    asc: {
+      type: Boolean,
+      ignore: true,
+      default: false,
+    },
+    order: {
+      type: String,
+      ignore: true,
+    },
+  }
+)
 
 const { result } = useQuery(GetCategoryAllDocument)
 const { result: pagination, loading } = useQuery(
@@ -53,6 +63,8 @@ const { result: pagination, loading } = useQuery(
     userId: my.value ? auth.user?.id ?? '0' : undefined,
     categoryId: category.value,
     query: query.value,
+    order: order.value as PostOrder | null,
+    asc: asc.value,
   })
 )
 
@@ -77,6 +89,17 @@ const categoryOptions = computed<
   },
 ])
 
+const sortOption = [
+  {
+    label: '제목',
+    value: PostOrder.Title,
+  },
+  {
+    label: '좋아요',
+    value: PostOrder.Follower,
+  },
+]
+
 function updatePost(post: PostInPageFragment) {
   if (!pagination.value?.posts) return
   pagination.value = {
@@ -93,7 +116,7 @@ function updatePost(post: PostInPageFragment) {
 
 function resetPage() {
   page.value = 1
-  perPage.value = 10
+  perPage.value = 16
 }
 
 function getLabel(id: string) {
@@ -139,8 +162,13 @@ function getLabel(id: string) {
         </FilterHistory>
       </div>
 
-      <div class="mt-6 pb-2 text-sm">
-        Total Count: <span class="text-current">{{ totalCount }}</span>
+      <div class="mt-6 flex justify-between pb-2">
+        <div class="text-sm">
+          Total Count: <span class="text-current">{{ totalCount }}</span>
+        </div>
+        <div>
+          <Sort v-model:asc="asc" v-model:order="order" :options="sortOption" />
+        </div>
       </div>
     </template>
     <div>
@@ -155,7 +183,7 @@ function getLabel(id: string) {
         </div>
       </template>
       <template v-else>
-        <div class="grid grid-cols-3 gap-6">
+        <div class="grid grid-cols-4 gap-6">
           <template v-for="(post, index) of posts" :key="index">
             <PostCard :post="post" @update="updatePost" />
           </template>
@@ -166,8 +194,8 @@ function getLabel(id: string) {
       <Pagination
         v-model:page="page"
         v-model:perPage="perPage"
+        :per-page-option="8"
         :total="totalCount"
-        @update:page="perPage = 10"
         @update:per-page="page = 1"
       />
     </template>

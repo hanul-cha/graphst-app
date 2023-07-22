@@ -20,6 +20,8 @@ query PostPagination(
     $userId: String
     $query: String
     $categoryId: String
+    $order: PostOrder
+    $asc: Boolean
 ) {
     posts(
       perPage: $perPage
@@ -28,6 +30,8 @@ query PostPagination(
       userId: $userId
       categoryId: $categoryId
       query: $query
+      order: $order
+      asc: $asc
     ) {
       totalCount
       nodes {

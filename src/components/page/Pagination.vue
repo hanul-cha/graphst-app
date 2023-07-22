@@ -1,6 +1,7 @@
 <script setup lang="ts">
 export interface PaginationProps {
   perPage?: number | null
+  perPageOption?: number
   page?: number | null
   total?: number | null
 }
@@ -12,6 +13,7 @@ export interface PaginationEmits {
 
 const props = withDefaults(defineProps<PaginationProps>(), {
   perPage: 10,
+  perPageOption: 10,
   page: 1,
   total: 0,
 })
@@ -37,6 +39,16 @@ const pageSelectOption = computed(() => {
   }))
 })
 
+const perPageSelectOption = computed(() =>
+  [1, 2, 3, 4, 5].map((num) => {
+    const perPage = (props.perPageOption ?? 10) * num
+    return {
+      label: perPage.toString(),
+      value: perPage,
+    }
+  })
+)
+
 function updatePage(value: number) {
   emit('update:page', value)
 }
@@ -46,13 +58,7 @@ function updatePage(value: number) {
   <div class="mx-auto mt-4 flex items-center rounded-xl bg-white p-2">
     <InputSelect
       class="w-16"
-      :options="[
-        { label: '10', value: 10 },
-        { label: '20', value: 20 },
-        { label: '30', value: 30 },
-        { label: '40', value: 40 },
-        { label: '50', value: 50 },
-      ]"
+      :options="perPageSelectOption"
       :model-value="props.perPage"
       is-up-list
       @update:model-value="emit('update:perPage', $event)"

@@ -87,9 +87,10 @@ async function select(option: InputSelectOption) {
       @focus="open"
     />
     <div
-      class="absolute right-2 top-0 flex h-full rotate-90 items-center"
+      class="absolute right-2 top-0 flex h-full items-center"
       :class="{
-        'rotate-180': isUpList,
+        '-rotate-90': isUpList,
+        'rotate-90': !isUpList,
       }"
     >
       <IconRight
@@ -109,15 +110,17 @@ async function select(option: InputSelectOption) {
     >
       <template v-if="options?.length > 0">
         <template v-for="(option, index) of options" :key="index">
-          <div
-            :class="{
-              'text-gray-300': modelValue === option.value,
-            }"
-            class="p-2 hover:bg-gray-100"
-            @click="select(option)"
-          >
-            {{ option.label }}
-          </div>
+          <slot name="item" :option="option" :select="select">
+            <div
+              :class="{
+                'text-gray-300': modelValue === option.value,
+              }"
+              class="p-2 hover:bg-gray-100"
+              @click="select(option)"
+            >
+              {{ option.label }}
+            </div>
+          </slot>
         </template>
       </template>
       <template v-else>

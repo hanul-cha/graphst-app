@@ -40,11 +40,23 @@ const menuItems: MenuItem[] = [
 ]
 
 onMounted(async () => {
-  await auth.getUser()
+  if (!auth.user) {
+    await auth.getUser()
+  }
 })
 
-function openDialogFollow(type: DialogFollowType) {
-  if (!auth.user) return
+async function openDialogFollow(type: DialogFollowType) {
+  if (!auth.user) {
+    const confirm = await dialog.open({
+      title: '로그인이 필요합니다',
+      message: '로그인하러 가시겠습니까?',
+      confirmText: '로그인',
+    })
+    if (confirm) {
+      router.push('/signin')
+    }
+    return
+  }
   follow.value = type
   id.value = auth.user.id
 }

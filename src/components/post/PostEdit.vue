@@ -81,9 +81,9 @@ async function submit() {
 </script>
 
 <template>
-  <div class="flex h-full w-full flex-col items-center justify-center gap-y-4">
+  <div class="flex h-full w-full flex-col items-center justify-center">
     <Validator
-      class="flex flex-col gap-y-2 rounded-xl bg-white p-10"
+      class="flex h-full w-full flex-col gap-y-2 rounded-xl bg-white p-10"
       @submit="submit"
     >
       <ValidateField
@@ -129,6 +129,7 @@ async function submit() {
       >
         <template #default="{ field, errorMessage }">
           <InputEditor
+            class="flex h-full flex-col overflow-x-auto"
             v-bind="field"
             placeholder="10자 이상 입력해주세요."
             :error="!!errorMessage"

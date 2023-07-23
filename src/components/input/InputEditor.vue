@@ -49,11 +49,20 @@ onBeforeUnmount(() => {
     editor.value.destroy()
   }
 })
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (editor.value) {
+      editor.value.commands.setContent(value ?? '')
+    }
+  }
+)
 </script>
 
 <template>
   <div
-    class="rounded-2xl border bg-white"
+    class="w-full rounded-2xl border bg-white"
     :class="{
       'border-red-500': error,
     }"
@@ -217,7 +226,10 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <template v-if="editor">
-      <EditorContent :editor="editor" class="input-editor-content p-2" />
+      <EditorContent
+        :editor="editor"
+        class="input-editor-content max-h-full overflow-y-auto p-2"
+      />
     </template>
   </div>
 </template>

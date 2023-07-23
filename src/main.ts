@@ -21,9 +21,21 @@ const app = createApp({
 
 app.use(apollo).use(dialog).use(pinia).use(router).use(auth).mount('#app')
 
-app.config.errorHandler = (error: any) => {
-  console.error(error)
-  app.config.globalProperties.$dialog.open({
-    title: error.message,
-  })
+app.config.errorHandler = async (error: any) => {
+  // TODO: 개발 환경일 땐 에러를 콘솔에 출력한다.
+  // console.error(error)
+  if (error.message === '로그인이 필요한 서비스 입니다.') {
+    const confirm = await app.config.globalProperties.$dialog.open({
+      title: '로그인이 필요합니다',
+      message: '로그인하러 가시겠습니까?',
+      confirmText: '로그인',
+    })
+    if (confirm) {
+      app.config.globalProperties.$router.push('/signin')
+    }
+  } else {
+    await app.config.globalProperties.$dialog.open({
+      title: error.message,
+    })
+  }
 }

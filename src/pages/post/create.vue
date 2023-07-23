@@ -18,7 +18,10 @@ async function submit(props: CreatePostMutationVariables) {
 </script>
 
 <template>
-  <div class="h-full w-full">
+  <LayoutInner>
+    <template #header>
+      <div class="pb-4 text-2xl font-bold">포스팅 작성</div>
+    </template>
     <PostEdit :loading="loading" @submit="submit" />
-  </div>
+  </LayoutInner>
 </template>

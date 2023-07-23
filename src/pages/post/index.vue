@@ -12,6 +12,7 @@ import { useGlobalActiveStore } from '@/store/globalActive'
 const useFilter = useFilterStore()
 const auth = useAuthStore()
 const { close } = useGlobalActiveStore()
+const windowSize = useWindowSize()
 
 const { my, myLike, query, category, page, perPage, asc, order } = useFilter.on(
   {
@@ -69,9 +70,10 @@ const {
   asc: asc.value,
 }))
 
+const perPageOption = ref(8)
+
 const posts = computed(() => pagination.value?.posts?.nodes ?? [])
 const totalCount = computed(() => pagination.value?.posts?.totalCount ?? 0)
-
 const categoryOptions = computed<
   {
     label: string
@@ -94,6 +96,11 @@ const categoryOptions = computed<
   },
 ])
 
+onMounted(() => {
+  setPaginationOption(windowSize.width.value)
+})
+watch(windowSize.width, (width) => setPaginationOption(width))
+
 const sortOption = [
   {
     label: '제목',
@@ -104,6 +111,26 @@ const sortOption = [
     value: PostOrder.Follower,
   },
 ]
+
+const setPaginationOption = useDebounceFn((width: number) => {
+  if (width >= 1280) {
+    perPage.value = 20
+    perPageOption.value = 10
+    page.value = 1
+  } else if (width >= 1024) {
+    perPage.value = 16
+    perPageOption.value = 8
+    page.value = 1
+  } else if (width >= 768) {
+    perPage.value = 18
+    perPageOption.value = 9
+    page.value = 1
+  } else {
+    perPage.value = 10
+    perPageOption.value = 10
+    page.value = 1
+  }
+}, 500)
 
 function updatePost(post: PostInPageFragment) {
   if (!pagination.value?.posts) return
@@ -121,7 +148,6 @@ function updatePost(post: PostInPageFragment) {
 
 function resetPage() {
   page.value = 1
-  perPage.value = 16
 }
 
 function getLabel(id: string) {
@@ -185,7 +211,9 @@ function getLabel(id: string) {
         </div>
       </template>
       <template v-else>
-        <div class="grid grid-cols-4 gap-6">
+        <div
+          class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        >
           <template v-for="(post, index) of posts" :key="index">
             <PostCard
               :post="post"
@@ -203,9 +231,9 @@ function getLabel(id: string) {
       <Pagination
         v-model:page="page"
         v-model:perPage="perPage"
-        :per-page-option="8"
+        :per-page-option="perPageOption"
         :total="totalCount"
-        @update:per-page="page = 1"
+        @update:per-page="resetPage"
       />
     </template>
   </LayoutInner>

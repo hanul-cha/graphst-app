@@ -78,7 +78,7 @@ async function focus() {
 </script>
 
 <template>
-  <div ref="$inputSelect" class="relative" @click="focus">
+  <div ref="$inputSelect" class="relative cursor-pointer" @click="focus">
     <div
       class="absolute right-2 top-0 flex h-full items-center"
       :class="{
@@ -123,7 +123,7 @@ async function focus() {
     <input
       ref="$input"
       :value="selectedLabel"
-      class="w-full rounded-xl border p-2 pl-3 text-sm focus:select-none focus:caret-transparent focus:outline-none"
+      class="w-full cursor-pointer rounded-xl border p-2 pl-3 text-sm focus:select-none focus:caret-transparent focus:outline-none"
       :class="{
         'border-red-500': error,
         'rounded-b-none': isOpen && !props.isUpList,

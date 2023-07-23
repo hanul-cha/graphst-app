@@ -37,6 +37,7 @@ const emit = defineEmits<InputSelectEmits>()
 const { active, close } = useGlobalActiveStore()
 
 const $inputSelect = ref<HTMLElement | null>(null)
+const $input = ref<HTMLInputElement | null>(null)
 const isOpen = ref(false)
 const selectedLabel = computed(() => getSelectedLabel(props.modelValue))
 
@@ -68,24 +69,16 @@ async function select(option: InputSelectOption) {
   await close(props.keyName ?? 'input-select')
   emit('close')
 }
+
+async function focus() {
+  await nextTick()
+  if (isOpen.value) return
+  $input.value?.focus()
+}
 </script>
 
 <template>
-  <div ref="$inputSelect" class="relative">
-    <input
-      :value="selectedLabel"
-      class="w-full rounded-xl border p-2 pl-3 text-sm focus:select-none focus:caret-transparent focus:outline-none"
-      :class="{
-        'border-red-500': error,
-        'rounded-b-none': isOpen && !props.isUpList,
-        'rounded-t-none': isOpen && props.isUpList,
-      }"
-      :placeholder="placeholder"
-      :disabled="disabled"
-      @paste.prevent
-      @keydown.prevent
-      @focus="open"
-    />
+  <div ref="$inputSelect" class="relative" @click="focus">
     <div
       class="absolute right-2 top-0 flex h-full items-center"
       :class="{
@@ -127,5 +120,20 @@ async function select(option: InputSelectOption) {
         <div class="p-2 text-gray-400">선택할 수 있는 옵션이 없습니다.</div>
       </template>
     </div>
+    <input
+      ref="$input"
+      :value="selectedLabel"
+      class="w-full rounded-xl border p-2 pl-3 text-sm focus:select-none focus:caret-transparent focus:outline-none"
+      :class="{
+        'border-red-500': error,
+        'rounded-b-none': isOpen && !props.isUpList,
+        'rounded-t-none': isOpen && props.isUpList,
+      }"
+      :placeholder="placeholder"
+      :disabled="disabled"
+      @paste.prevent
+      @keydown.prevent
+      @focus="open"
+    />
   </div>
 </template>

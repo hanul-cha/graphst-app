@@ -7,6 +7,7 @@ import { Ref } from 'vue'
 interface InputEditorProps {
   modelValue?: string | null
   placeholder?: string
+  readonly?: boolean
   error?: boolean
 }
 
@@ -17,6 +18,7 @@ interface InputEditorEmits {
 const props = withDefaults(defineProps<InputEditorProps>(), {
   modelValue: null,
   placeholder: 'Write something contents …',
+  readonly: false,
   error: false,
 })
 
@@ -24,13 +26,12 @@ const emit = defineEmits<InputEditorEmits>()
 
 const editor: Ref<Editor | null> = ref(null)
 
-function updateContent(updateValue: string | null) {
-  emit('update:modelValue', updateValue)
-}
+const inputValue = useVModel(props, 'modelValue', emit)
 
 onMounted(() => {
   editor.value = new Editor({
-    content: props.modelValue,
+    content: inputValue.value,
+    editable: !props.readonly,
     extensions: [
       StarterKit,
       Placeholder.configure({
@@ -38,8 +39,9 @@ onMounted(() => {
       }),
     ],
     onUpdate: async ({ editor }) => {
+      if (props.readonly) return
       const onlyText = editor.getText()
-      updateContent(onlyText && onlyText.length > 0 ? editor.getHTML() : null)
+      inputValue.value = onlyText ? editor.getHTML() : null
     },
   })
 })
@@ -52,8 +54,9 @@ onBeforeUnmount(() => {
 
 watch(
   () => props.modelValue,
-  (value) => {
-    if (editor.value) {
+  async (value) => {
+    inputValue.value = value ?? ''
+    if (editor.value && value) {
       editor.value.commands.setContent(value ?? '')
     }
   }
@@ -62,13 +65,14 @@ watch(
 
 <template>
   <div
-    class="w-full rounded-2xl border bg-white"
+    class="w-full bg-white"
     :class="{
       'border-red-500': error,
+      'rounded-2xl border': !readonly,
     }"
   >
     <div
-      v-if="editor"
+      v-if="editor && !readonly"
       class="flex flex-wrap border-b"
       :class="{
         'border-red-500': error,
@@ -228,7 +232,11 @@ watch(
     <template v-if="editor">
       <EditorContent
         :editor="editor"
-        class="input-editor-content max-h-full overflow-y-auto p-2"
+        :editable="!readonly"
+        class="input-editor-content max-h-full overflow-y-auto"
+        :class="{
+          'p-2': !readonly,
+        }"
       />
     </template>
   </div>

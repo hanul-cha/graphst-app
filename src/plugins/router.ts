@@ -29,8 +29,7 @@ router.beforeEach(async (to, from, next) => {
     await auth.getUser()
   }
 
-  // TODO: post.id허용
-  if (!auth.user && !passPath.has(to.path)) {
+  if (!auth.user && !passPath.has(to.path) && !/^\/post\/\d+$/.test(to.path)) {
     throw new Error('로그인이 필요한 서비스 입니다.')
   }
   next()

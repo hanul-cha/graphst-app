@@ -53,7 +53,7 @@ async function toggleLike(like: boolean) {
 </script>
 
 <template>
-  <Card>
+  <Card @click="$router.push(`/post/${post.id}`)">
     <div
       class="absolute right-0 top-0 flex cursor-pointer items-center p-2"
       @click="toggleLike(!post.isLike)"

@@ -6,18 +6,25 @@ export interface CardProps {
   alt?: string
 }
 
+interface CardEmits {
+  (_e: 'click', _value: MouseEvent): void
+}
+
 withDefaults(defineProps<CardProps>(), {
   imgUrl: undefined,
   title: undefined,
   content: undefined,
   alt: 'card image',
 })
+
+defineEmits<CardEmits>()
 </script>
 
 <template>
   <div class="relative flex flex-col items-center">
     <div
-      class="flex aspect-square w-full items-center justify-center rounded-xl border bg-white"
+      class="flex aspect-square w-full cursor-pointer items-center justify-center rounded-xl border bg-white"
+      @click="$emit('click', $event)"
     >
       <template v-if="imgUrl">
         <img

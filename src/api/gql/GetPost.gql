@@ -7,12 +7,17 @@ query GetPost(
     title
     user {
       id
+      name
+      countFollower
+      countPost
     }
     contents
     category {
       id
       label
     }
+    createAt
+    updateAt
     activeAt
   }
 }

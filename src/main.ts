@@ -7,6 +7,7 @@ import apollo, { apolloClient } from './plugins/apollo'
 import router from './plugins/router'
 import dialog from './plugins/dialog'
 import auth from './plugins/auth'
+import format from './plugins/format'
 
 const pinia = createPinia()
 
@@ -19,7 +20,14 @@ const app = createApp({
   render: () => h(App),
 })
 
-app.use(apollo).use(dialog).use(pinia).use(router).use(auth).mount('#app')
+app
+  .use(apollo)
+  .use(dialog)
+  .use(pinia)
+  .use(router)
+  .use(auth)
+  .use(format)
+  .mount('#app')
 
 app.config.errorHandler = async (error: any) => {
   // TODO: 개발 환경일 땐 에러를 콘솔에 출력한다.

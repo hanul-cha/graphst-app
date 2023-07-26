@@ -21,6 +21,7 @@ export default defineConfig({
           '@vue/apollo-composable': ['useQuery', 'useLazyQuery', 'useMutation'],
         },
         { '~/src/plugins/dialog': ['useDialog'] },
+        { '~/src/plugins/format': ['useFormat'] },
       ],
       dts: 'types/auto-imports.d.ts',
     }),

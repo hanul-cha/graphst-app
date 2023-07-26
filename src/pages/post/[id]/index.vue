@@ -28,9 +28,43 @@ const post = computed(() => result.value?.getPost)
   <template v-else>
     <LayoutInner>
       <template #header>
-        <div class="pb-4 text-2xl font-bold">{{ post.title }}</div>
+        <div
+          v-if="post.category?.label"
+          class="flex items-center gap-x-1 pb-4 text-current"
+        >
+          <div class="h-[1px] w-2 bg-current" />
+          카테고리: {{ post.category?.label }}
+          <div class="h-[1px] w-2 bg-current" />
+        </div>
+
+        <div class="mb-5 flex flex-none items-center gap-x-2">
+          <div class="h-10 w-10 rounded-full bg-white" />
+          <div class="flex flex-col justify-center px-2">
+            <div>{{ post.user.name }}</div>
+            <div class="flex gap-x-3">
+              <div class="flex items-center gap-x-1">
+                <IconFillHeart class="h-4 w-4" /> {{ post.user.countFollower }}
+              </div>
+              <div class="flex items-center gap-x-1">
+                <IconPost class="h-4 w-4" /> {{ post.user.countPost }}
+              </div>
+            </div>
+          </div>
+        </div>
       </template>
-      <InputEditor :model-value="post.contents" readonly />
+      <div>
+        <div>
+          작성일: {{ $format.date(post.createAt, 'yyyy년MM월dd일HH시mm분') }}
+        </div>
+        <div>
+          마지막 수정일:
+          {{ $format.date(post.updateAt, 'yyyy년MM월dd일HH시mm분') }}
+        </div>
+      </div>
+      <div class="pt-10">
+        <div class="pb-2 text-3xl font-extrabold">{{ post.title }}</div>
+        <InputEditor :model-value="post.contents" readonly />
+      </div>
       <div>여긴 댓글창</div>
     </LayoutInner>
   </template>

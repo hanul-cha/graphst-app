@@ -95,7 +95,7 @@ async function logout() {
     >
       <div class="relative h-full flex-1 overflow-auto">
         <slot />
-        <div class="absolute right-2 top-2 cursor-pointer" @click="open">
+        <div class="absolute right-4 top-4 cursor-pointer" @click="open">
           <IconDoubleRight
             class="fill-gray-300 transition-transform duration-300"
             :class="{

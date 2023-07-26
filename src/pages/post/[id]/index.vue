@@ -66,6 +66,7 @@ const post = computed(() => result.value?.getPost)
         <InputEditor :model-value="post.contents" readonly />
       </div>
       <div>여긴 댓글창</div>
+      <PostComments :post-id="id" />
     </LayoutInner>
   </template>
 </template>

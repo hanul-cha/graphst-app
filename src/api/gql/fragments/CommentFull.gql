@@ -1,0 +1,11 @@
+fragment CommentFull on Comment {
+  contents
+  countLike
+  countUnlike
+  isLike
+  isUnlike
+  isMyComment
+  user {
+    name
+  }
+}

@@ -11,6 +11,7 @@ fragment PostInPage on Post {
     id
     label
   }
+  countComment
 }
 
 query PostPagination(

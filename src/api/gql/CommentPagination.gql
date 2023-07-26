@@ -1,0 +1,19 @@
+query CommentPagination(
+    $perPage: Int
+    $page: Int
+    $postId: String!
+) {
+    comments(
+      perPage: $perPage
+      page: $page
+      postId: $postId
+    ) {
+      totalCount
+      nodes {
+        ...CommentFull
+      }
+      pageInfo {
+        hasNextPage
+      }
+    }
+}

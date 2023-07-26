@@ -1,0 +1,11 @@
+mutation CreateComment(
+  $postId: String!
+  $contents: String!
+) {
+  comment: createComment(
+    postId: $postId
+    contents: $contents
+  ) {
+    ...CommentFull
+  }
+}

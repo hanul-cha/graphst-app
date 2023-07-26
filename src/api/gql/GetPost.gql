@@ -1,23 +1,28 @@
+fragment PostDetail on Post {
+  title
+  user {
+    id
+    name
+    isLike
+    countFollower
+    countPost
+  }
+  contents
+  category {
+    id
+    label
+  }
+  createAt
+  updateAt
+  activeAt
+}
+
 query GetPost(
   $id: ID!
 ) {
   getPost(
     id: $id
   ) {
-    title
-    user {
-      id
-      name
-      countFollower
-      countPost
-    }
-    contents
-    category {
-      id
-      label
-    }
-    createAt
-    updateAt
-    activeAt
+    ...PostDetail
   }
 }

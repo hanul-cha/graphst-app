@@ -7,6 +7,7 @@ interface ActiveProps {
   callback: () => void | Promise<void>
 }
 
+// TODO: 스토어 등록이 아닌 단순한 class로 변경
 export const useGlobalActiveStore = defineStore('globalActive', () => {
   const activeItems = ref<ActiveProps[] | null>(null)
 

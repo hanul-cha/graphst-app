@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { DeletePostDocument, GetPostDocument } from '@/api/graphql'
+import {
+  DeletePostDocument,
+  GetPostDocument,
+  UserFullFragment,
+} from '@/api/graphql'
 import { useAuthStore } from '@/store/auth'
 
 const id = useRouteParams<string>('id')
@@ -13,6 +17,17 @@ const { result, loading } = useQuery(GetPostDocument, () => ({
 const { mutate, loading: mutationLoading } = useMutation(DeletePostDocument)
 
 const post = computed(() => result.value?.getPost)
+
+async function updateUser(user: UserFullFragment) {
+  if (!result.value?.getPost) return
+  result.value = {
+    ...result.value,
+    getPost: {
+      ...result.value.getPost,
+      user,
+    },
+  }
+}
 
 async function deletePost() {
   if (!post.value || mutationLoading.value) return
@@ -72,20 +87,11 @@ async function deletePost() {
           <div class="h-[1px] w-2 bg-current" />
         </div>
 
-        <div class="mb-5 flex flex-none items-center gap-x-2">
-          <div class="h-10 w-10 rounded-full bg-white" />
-          <div class="flex flex-col justify-center px-2">
-            <div>{{ post.user.name }}</div>
-            <div class="flex gap-x-3">
-              <div class="flex items-center gap-x-1">
-                <IconFillHeart class="h-4 w-4" /> {{ post.user.countFollower }}
-              </div>
-              <div class="flex items-center gap-x-1">
-                <IconPost class="h-4 w-4" /> {{ post.user.countPost }}
-              </div>
-            </div>
-          </div>
-        </div>
+        <UserCard
+          class="mb-5 flex-none"
+          :user="post.user"
+          @update:user="updateUser"
+        />
       </template>
       <div>
         <div class="flex justify-between">

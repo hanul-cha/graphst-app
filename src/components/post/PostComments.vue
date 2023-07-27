@@ -117,6 +117,9 @@ async function deleteComment(comment: CommentFullFragment) {
 }
 
 async function toggleLike(comment: CommentFullFragment) {
+  if (toggleLikeCommentLoading.value || toggleUnlikeCommentLoading.value) {
+    return
+  }
   if (!user.value) {
     const confirm = await dialog.open({
       title: '로그인이 필요합니다',
@@ -138,6 +141,9 @@ async function toggleLike(comment: CommentFullFragment) {
 }
 
 async function toggleUnlike(comment: CommentFullFragment) {
+  if (toggleLikeCommentLoading.value || toggleUnlikeCommentLoading.value) {
+    return
+  }
   if (!user.value) {
     const confirm = await dialog.open({
       title: '로그인이 필요합니다',
@@ -220,8 +226,10 @@ async function toggleUnlike(comment: CommentFullFragment) {
                     class="flex cursor-pointer gap-x-1"
                     @click="toggleLike(comment)"
                   >
-                    <IconFillLike v-if="comment.isLike" class="h-5 w-5" />
-                    <IconLineLike v-else class="h-5 w-5" />
+                    <div class="translate-y-1">
+                      <IconFillLike v-if="comment.isLike" class="h-5 w-5" />
+                      <IconLineLike v-else class="h-5 w-5" />
+                    </div>
                     <div>{{ comment.countLike }}</div>
                   </div>
 
@@ -229,7 +237,7 @@ async function toggleUnlike(comment: CommentFullFragment) {
                     class="flex cursor-pointer gap-x-1"
                     @click="toggleUnlike(comment)"
                   >
-                    <div class="flex rotate-180">
+                    <div class="rotate-180">
                       <IconFillLike v-if="comment.isUnlike" class="h-5 w-5" />
                       <IconLineLike v-else class="h-5 w-5" />
                     </div>

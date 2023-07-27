@@ -1,0 +1,5 @@
+query GetUserPublic($id: String!) {
+  user: getUserPublic(id: $id) {
+    ...UserFull
+  }
+}

@@ -86,8 +86,6 @@ async function toggleLike(like: boolean) {
         {{ post.category?.label ?? '카테고리 없음' }}
       </div>
     </div>
-    <div>
-      {{ post.user.name }}
-    </div>
+    <UserTooltip :id="post.user.id" :name="post.user.name" />
   </Card>
 </template>

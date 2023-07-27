@@ -2,11 +2,7 @@ fragment PostDetail on Post {
   id
   title
   user {
-    id
-    name
-    isLike
-    countFollower
-    countPost
+    ...UserFull
   }
   contents
   category {

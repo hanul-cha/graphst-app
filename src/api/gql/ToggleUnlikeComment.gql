@@ -1,0 +1,9 @@
+mutation ToggleUnlikeComment(
+  $targetId: String!
+  $like: Boolean!
+) {
+  result: toggleLikeCommentUnlike(
+    targetId: $targetId
+    like: $like
+  )
+}

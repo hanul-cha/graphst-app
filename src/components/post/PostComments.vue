@@ -4,6 +4,8 @@ import {
   CommentPaginationDocument,
   CreateCommentDocument,
   DeleteCommentDocument,
+  ToggleLikeCommentDocument,
+  ToggleUnlikeCommentDocument,
 } from '@/api/graphql'
 import { useAuthStore } from '@/store/auth'
 import { useFilterStore } from '@/store/filter'
@@ -40,9 +42,14 @@ const { result, refetch } = useQuery(CommentPaginationDocument, () => ({
 
 const { mutate: createCommentMutation, loading: createCommentLoading } =
   useMutation(CreateCommentDocument)
-
 const { mutate: deleteCommentMutation, loading: deleteCommentLoading } =
   useMutation(DeleteCommentDocument)
+const { mutate: toggleLikeCommentMutation, loading: toggleLikeCommentLoading } =
+  useMutation(ToggleLikeCommentDocument)
+const {
+  mutate: toggleUnlikeCommentMutation,
+  loading: toggleUnlikeCommentLoading,
+} = useMutation(ToggleUnlikeCommentDocument)
 
 const user = computed(() => auth.user)
 const comments = computed(() => result.value?.comments?.nodes ?? [])
@@ -109,11 +116,47 @@ async function deleteComment(comment: CommentFullFragment) {
   }
 }
 
-async function toggleLike() {}
+async function toggleLike(comment: CommentFullFragment) {
+  if (!user.value) {
+    const confirm = await dialog.open({
+      title: '로그인이 필요합니다',
+      message: '로그인하러 가시겠습니까?',
+      confirmText: '로그인',
+    })
+    if (confirm) {
+      router.push('/signin')
+    }
+    return
+  }
 
-async function toggleUnlike() {}
+  await toggleLikeCommentMutation({
+    targetId: comment.id,
+    like: !comment.isLike,
+  })
 
-// 리스트가 0일경우
+  await refetch()
+}
+
+async function toggleUnlike(comment: CommentFullFragment) {
+  if (!user.value) {
+    const confirm = await dialog.open({
+      title: '로그인이 필요합니다',
+      message: '로그인하러 가시겠습니까?',
+      confirmText: '로그인',
+    })
+    if (confirm) {
+      router.push('/signin')
+    }
+    return
+  }
+
+  await toggleUnlikeCommentMutation({
+    targetId: comment.id,
+    like: !comment.isUnlike,
+  })
+
+  await refetch()
+}
 </script>
 
 <template>
@@ -173,13 +216,19 @@ async function toggleUnlike() {}
               <div class="text-xs">{{ comment.contents }}</div>
               <div class="flex justify-end pt-4">
                 <div class="flex gap-x-2">
-                  <div class="flex gap-x-1">
+                  <div
+                    class="flex cursor-pointer gap-x-1"
+                    @click="toggleLike(comment)"
+                  >
                     <IconFillLike v-if="comment.isLike" class="h-5 w-5" />
                     <IconLineLike v-else class="h-5 w-5" />
                     <div>{{ comment.countLike }}</div>
                   </div>
 
-                  <div class="flex gap-x-1">
+                  <div
+                    class="flex cursor-pointer gap-x-1"
+                    @click="toggleUnlike(comment)"
+                  >
                     <div class="flex rotate-180">
                       <IconFillLike v-if="comment.isUnlike" class="h-5 w-5" />
                       <IconLineLike v-else class="h-5 w-5" />
@@ -193,13 +242,24 @@ async function toggleUnlike() {}
         </template>
       </div>
       <div class="flex justify-center">
-        <Pagination
-          v-model:page="page"
-          v-model:perPage="perPage"
-          :per-page-option="5"
-          :total="totalCount"
-          @update:per-page="5"
-        />
+        <template v-if="totalCount > 0">
+          <Pagination
+            v-model:page="page"
+            v-model:perPage="perPage"
+            :per-page-option="5"
+            :total="totalCount"
+            @update:per-page="5"
+          />
+        </template>
+        <template v-else>
+          <Pagination
+            v-model:page="page"
+            v-model:perPage="perPage"
+            :per-page-option="5"
+            :total="1"
+            @update:per-page="5"
+          />
+        </template>
       </div>
     </div>
   </div>

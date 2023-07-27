@@ -110,6 +110,10 @@ const sortOption = [
     label: '좋아요',
     value: PostOrder.Follower,
   },
+  {
+    label: '댓글',
+    value: PostOrder.Comment,
+  },
 ]
 
 const setPaginationOption = useDebounceFn((width: number) => {

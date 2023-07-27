@@ -1,38 +1,44 @@
 <script setup lang="ts">
 import {
-  GetPostDocument,
   GetCategoryAllDocument,
   CreatePostMutationVariables,
+  PostDetailFragment,
 } from '@/api/graphql'
 
 interface PostEditProps {
-  id?: string | null
   loading?: boolean
+  post?: PostDetailFragment | null
 }
 interface PostEditEmits {
   (_e: 'submit', _value: CreatePostMutationVariables): void
 }
 
 const props = withDefaults(defineProps<PostEditProps>(), {
-  id: '',
   loading: false,
+  post: null,
 })
 const emit = defineEmits<PostEditEmits>()
 
 const { result } = useQuery(GetCategoryAllDocument)
-const { onResult } = useQuery(GetPostDocument, () => ({
-  id: props.id ?? '',
-}))
-onResult((result) => {
-  const post = result.data.getPost
 
-  if (post) {
-    inputTitle.value = post.title
-    inputContents.value = post.contents
-    inputCategoryId.value = post.category?.id ?? null
-    inputActive.value = post.activeAt
-  }
+onMounted(() => {
+  if (!props.post) return
+  setInput(props.post)
 })
+watch(
+  () => props.post,
+  (post) => {
+    if (!post) return
+    setInput(post)
+  }
+)
+
+function setInput(post: PostDetailFragment) {
+  inputTitle.value = post.title
+  inputContents.value = post.contents
+  inputCategoryId.value = post.category?.id ?? null
+  inputActive.value = post.activeAt
+}
 
 const inputTitle = ref<string | null>(null)
 const inputContents = ref<string | null>(null)
@@ -65,7 +71,7 @@ const categoryOptions = computed<
 async function submit() {
   if (!inputTitle.value || !inputContents.value) {
     dialog.open({
-      title: `${props.id ? '수정' : '작성'} 실패`,
+      title: `${props.post ? '수정' : '작성'} 실패`,
       message: '필수 입력값을 확인해주세요.',
       confirmText: '확인',
     })
@@ -142,7 +148,7 @@ async function submit() {
         </template>
       </ValidateField>
       <BasicButton :disabled="loading" class="mt-6" type="submit">
-        발행하기
+        {{ props.post ? '수정완료' : '작성완료' }}
       </BasicButton>
     </Validator>
   </div>

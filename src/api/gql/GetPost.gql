@@ -1,4 +1,5 @@
 fragment PostDetail on Post {
+  id
   title
   user {
     id

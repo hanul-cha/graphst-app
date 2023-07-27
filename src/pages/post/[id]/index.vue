@@ -65,8 +65,7 @@ const post = computed(() => result.value?.getPost)
         <div class="pb-2 text-3xl font-extrabold">{{ post.title }}</div>
         <InputEditor :model-value="post.contents" readonly />
       </div>
-      <div>여긴 댓글창</div>
-      <PostComments :post-id="id" />
+      <PostComments class="pt-2" :post-id="id" />
     </LayoutInner>
   </template>
 </template>

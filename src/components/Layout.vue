@@ -18,10 +18,6 @@ const openRightSidebar = ref(false)
 
 const menuItems: MenuItem[] = [
   {
-    label: '내정보',
-    action: () => {},
-  },
-  {
     label: '홈',
     action: () => router.push('/'),
   },

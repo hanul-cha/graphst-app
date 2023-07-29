@@ -22,19 +22,24 @@ async function getUser() {
   }
 }
 
+async function updateUser(updatedUser: UserFullFragment) {
+  if (!user.value) return
+  user.value = updatedUser
+}
+
 const user = ref<UserFullFragment | null>(null)
 const loading = ref(false)
 </script>
 
 <template>
   <Tooltip @enter="getUser">
-    {{ name }}
+    <span class="cursor-pointer">{{ name }}</span>
     <template #tooltip>
       <div class="rounded-xl bg-violet-50 p-4">
         <template v-if="loading">로딩중</template>
         <template v-else-if="!user">없는 유저입니다.</template>
         <template v-else>
-          <UserCard :user="user" />
+          <UserCard :user="user" @update:user="updateUser" />
         </template>
       </div>
     </template>

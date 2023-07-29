@@ -2,36 +2,17 @@
 const tooltip = ref<HTMLElement | null>(null)
 const isHovered = ref(false)
 
-export interface CardProps {
-  imgUrl?: string
-}
-
 interface TooltipEmits {
   (_e: 'enter', _value: MouseEvent): void
   (_e: 'leave', _value: MouseEvent): void
 }
 
 defineEmits<TooltipEmits>()
-
-watch(
-  () => tooltip.value,
-  (value) => {
-    if (value) {
-      console.log(value.getBoundingClientRect().height)
-    }
-  }
-)
 </script>
 
 <template>
   <div
     class="relative"
-    @mouseenter="
-      ($event) => {
-        isHovered = true
-        $emit('enter', $event)
-      }
-    "
     @mouseleave="
       ($event) => {
         isHovered = false
@@ -39,8 +20,22 @@ watch(
       }
     "
   >
-    <slot />
-    <div v-if="isHovered" ref="tooltip" class="absolute z-20">
+    <div
+      class="inline-block"
+      @mouseenter="
+        ($event) => {
+          isHovered = true
+          $emit('enter', $event)
+        }
+      "
+    >
+      <slot />
+    </div>
+    <div
+      v-if="isHovered"
+      ref="tooltip"
+      class="absolute bottom-0 left-0 z-20 translate-y-full"
+    >
       <slot name="tooltip" />
     </div>
   </div>

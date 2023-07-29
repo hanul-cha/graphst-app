@@ -76,10 +76,15 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
     cookies.remove('graphst_actok')
   }
+
+  const updateUser = (newUser: UserFullFragment) => {
+    user.value = newUser
+  }
   return {
     user,
     getUser,
     login,
     logout,
+    updateUser,
   }
 })

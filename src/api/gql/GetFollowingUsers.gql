@@ -1,13 +1,16 @@
 query GetFollowingUsers(
   $followingId: String!
+  $perPage: Int
+  $page: Int
 ) {
   users(
     followingId: $followingId
+    perPage: $perPage
+    page: $page
   ) {
     totalCount
     nodes {
-      name
-      countFollower
+      ...UserFull
     }
     pageInfo{
       hasNextPage

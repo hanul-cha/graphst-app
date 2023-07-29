@@ -67,8 +67,8 @@ async function toggleLike(like: boolean) {
         </template>
         <div class="text-gray-500">{{ post.countLike }}</div>
       </div>
-      <div class="flex items-center p-2">
-        <IconPost class="h-4 w-4" />
+      <div class="flex items-center gap-x-1 p-2">
+        <IconComment class="h-4 w-4" />
         <div class="text-gray-500">{{ post.countComment }}</div>
       </div>
     </div>

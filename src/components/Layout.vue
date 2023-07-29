@@ -79,14 +79,6 @@ async function logout() {
     router.push('/signin')
   }
 }
-
-function cancelLike() {
-  if (!auth.user) return
-  auth.updateUser({
-    ...auth.user,
-    countFollowing: auth.user.countFollowing - 1,
-  })
-}
 </script>
 
 <template>
@@ -188,7 +180,6 @@ function cancelLike() {
       :target-id="id"
       @close="closeDialogFollow"
       @cancel="closeDialogFollow"
-      @cancel-like="cancelLike"
     />
   </div>
 </template>

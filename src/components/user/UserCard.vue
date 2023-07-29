@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ToggleLikeUserDocument, UserFullFragment } from '@/api/graphql'
+import { UserFullFragment } from '@/api/graphql'
 import { useAuthStore } from '@/store/auth'
 
 export interface UserCardProps {
@@ -17,12 +17,7 @@ const auth = useAuthStore()
 const router = useRouter()
 const dialog = useDialog()
 
-const { mutate: toggleLikeUser, loading: toggleLikeLoading } = useMutation(
-  ToggleLikeUserDocument
-)
-
 async function toggleLike() {
-  if (toggleLikeLoading.value) return
   if (!auth.user) {
     const confirm = await dialog.open({
       title: '로그인이 필요합니다',
@@ -37,18 +32,21 @@ async function toggleLike() {
 
   if (props.user.id === auth.user?.id) {
     await dialog.open({
-      title: '로그인이 필요합니다',
+      title: '자기 자신은 팔로우할 수 없습니다.',
       confirmText: '확인',
     })
     return
   }
 
-  const data = await toggleLikeUser({
-    targetId: props.user.id,
-    like: !props.user.isLike,
-  })
+  let success = false
 
-  if (data?.data?.result) {
+  if (props.user.isLike) {
+    success = !!(await auth.unFollow(props.user.id))
+  } else {
+    success = !!(await auth.follow(props.user.id))
+  }
+
+  if (success) {
     emit('update:user', {
       ...props.user,
       isLike: !props.user.isLike,

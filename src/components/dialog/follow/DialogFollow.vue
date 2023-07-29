@@ -2,8 +2,8 @@
 import {
   GetFollowerUsersDocument,
   GetFollowingUsersDocument,
-  ToggleLikeUserDocument,
 } from '@/api/graphql'
+import { useAuthStore } from '@/store/auth'
 import { useFilterStore } from '@/store/filter'
 import { DialogFollowType } from './types'
 
@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<DialogProps>(), {
 const emit = defineEmits<DialogEmits>()
 
 const useFilter = useFilterStore()
-const dialog = useDialog()
+const auth = useAuthStore()
 
 const { followPerPage, followPage } = useFilter.on({
   followPerPage: {
@@ -58,9 +58,6 @@ const {
   page: followPage.value,
   perPage: followPerPage.value,
 })
-const { mutate: toggleLikeUser, loading: toggleLikeLoading } = useMutation(
-  ToggleLikeUserDocument
-)
 
 const loading = computed(() => followerLoading.value || followingLoading.value)
 const followers = computed(() => followerResult.value?.users?.nodes ?? [])
@@ -76,21 +73,9 @@ function update(type: string) {
 }
 
 async function cancelLike(likedUserId: string) {
-  if (toggleLikeLoading.value) return
+  const user = await auth.unFollow(likedUserId)
 
-  const confirm = await dialog.open({
-    title: '팔로우를 취소합니다',
-    confirmText: '확인',
-  })
-
-  if (!confirm) return
-
-  const data = await toggleLikeUser({
-    targetId: likedUserId,
-    like: false,
-  })
-
-  if (data?.data?.result) {
+  if (user) {
     await refetch()
     emit('cancelLike')
   }

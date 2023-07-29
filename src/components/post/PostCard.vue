@@ -73,7 +73,7 @@ async function toggleLike(like: boolean) {
       </div>
     </div>
     <div>
-      <div class="text-lg font-semibold">
+      <div class="truncate text-lg font-semibold">
         {{ post.title }}
       </div>
       <div

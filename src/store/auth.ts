@@ -4,6 +4,7 @@ import decodeJwt from 'jwt-decode'
 import {
   GetUserDocument,
   SignInDocument,
+  ToggleLikeUserDocument,
   UserFullFragment,
 } from '@/api/graphql'
 import { apolloClient } from '@/plugins/apollo'
@@ -20,6 +21,53 @@ const cookies = new Cookies()
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<UserFullFragment | null>(null)
+  const toggleLikeLoading = ref(false)
+
+  const follow = async (likeUserId: string) => {
+    if (toggleLikeLoading.value) return null
+    const result = await toggleLikeUser(likeUserId, true)
+
+    if (result && user.value) {
+      const newUser = {
+        ...user.value,
+        countFollowing: user.value.countFollowing + 1,
+      }
+
+      updateUser(newUser)
+
+      return newUser
+    }
+    return null
+  }
+  const unFollow = async (likeUserId: string) => {
+    if (toggleLikeLoading.value) return null
+
+    const result = await toggleLikeUser(likeUserId, false)
+
+    if (result && user.value) {
+      const newUser = {
+        ...user.value,
+        countFollowing: user.value.countFollowing - 1,
+      }
+
+      updateUser(newUser)
+
+      return newUser
+    }
+    return null
+  }
+
+  const toggleLikeUser = async (targetId: string, like: boolean) => {
+    const { data } = await apolloClient.mutate({
+      mutation: ToggleLikeUserDocument,
+      variables: {
+        targetId,
+        like,
+      },
+    })
+
+    return data?.result ?? null
+  }
 
   const login = async (id: string, password: string) => {
     const { data } = await apolloClient.mutate({
@@ -86,5 +134,7 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     logout,
     updateUser,
+    follow,
+    unFollow,
   }
 })

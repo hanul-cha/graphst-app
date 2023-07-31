@@ -82,9 +82,7 @@ async function deletePost() {
           v-if="post.category?.label"
           class="flex items-center gap-x-1 pb-4 text-current"
         >
-          <div class="h-[1px] w-2 bg-current" />
           카테고리: {{ post.category?.label }}
-          <div class="h-[1px] w-2 bg-current" />
         </div>
 
         <UserCard

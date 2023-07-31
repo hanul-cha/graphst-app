@@ -54,27 +54,32 @@ async function toggleLike(like: boolean) {
 
 <template>
   <Card @click="$router.push(`/post/${post.id}`)">
-    <div class="absolute right-0 top-0 flex pr-1">
-      <div
-        class="flex cursor-pointer items-center p-2"
-        @click="toggleLike(!post.isLike)"
-      >
-        <template v-if="post.isLike">
-          <IconFillHeart class="h-5 w-5 fill-red-500" />
-        </template>
-        <template v-else>
-          <IconLineHeart class="h-5 w-5 fill-gray-500" />
-        </template>
-        <div class="text-gray-500">{{ post.countLike }}</div>
+    <template #active>
+      <div class="absolute right-0 top-0 flex pr-1">
+        <div
+          class="flex cursor-pointer items-center p-2"
+          @click="toggleLike(!post.isLike)"
+        >
+          <template v-if="post.isLike">
+            <IconFillHeart class="h-5 w-5 fill-red-500" />
+          </template>
+          <template v-else>
+            <IconLineHeart class="h-5 w-5 fill-gray-500" />
+          </template>
+          <div class="text-gray-500">{{ post.countLike }}</div>
+        </div>
+        <div class="flex items-center gap-x-1 p-2">
+          <IconComment class="h-4 w-4" />
+          <div class="text-gray-500">{{ post.countComment }}</div>
+        </div>
       </div>
-      <div class="flex items-center gap-x-1 p-2">
-        <IconComment class="h-4 w-4" />
-        <div class="text-gray-500">{{ post.countComment }}</div>
-      </div>
-    </div>
-    <div>
+    </template>
+    <div class="p-2">
       <div class="truncate text-lg font-semibold">
         {{ post.title }}
+      </div>
+      <div class="truncate pb-3">
+        {{ post.contents.replace(/<[^>]*>?/gm, '') }}
       </div>
       <div
         class="text-sm"
@@ -85,7 +90,7 @@ async function toggleLike(like: boolean) {
       >
         {{ post.category?.label ?? '카테고리 없음' }}
       </div>
+      <UserTooltip :id="post.user.id" :name="post.user.name" />
     </div>
-    <UserTooltip :id="post.user.id" :name="post.user.name" />
   </Card>
 </template>

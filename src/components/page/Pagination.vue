@@ -77,6 +77,7 @@ function updatePage(value: number) {
         class="h-5 w-5 rotate-180 cursor-pointer"
         :class="{
           'fill-gray-300': !hasPrev,
+          'fill-black': hasPrev,
         }"
         @click="
           () => {
@@ -158,6 +159,7 @@ function updatePage(value: number) {
         class="h-5 w-5 cursor-pointer"
         :class="{
           'fill-gray-300': !hasNext,
+          'fill-black': hasNext,
         }"
         @click="
           () => {

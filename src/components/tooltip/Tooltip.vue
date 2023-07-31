@@ -34,7 +34,7 @@ defineEmits<TooltipEmits>()
     <div
       v-if="isHovered"
       ref="tooltip"
-      class="absolute bottom-0 left-0 z-20 translate-y-full"
+      class="absolute left-0 top-0 z-20 -translate-y-full"
     >
       <slot name="tooltip" />
     </div>

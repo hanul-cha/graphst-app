@@ -17,7 +17,7 @@ defineProps<UserCardProps>()
       </div>
     </template>
     <template v-else>
-      <div>
+      <div class="space-y-5">
         <template v-for="(user, index) of users" :key="index">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-x-3">

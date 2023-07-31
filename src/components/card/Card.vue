@@ -21,7 +21,7 @@ defineEmits<CardEmits>()
 </script>
 
 <template>
-  <div class="relative flex flex-col items-center">
+  <div class="relative mb-6 flex flex-col items-center">
     <div
       class="flex aspect-square w-full cursor-pointer items-center justify-center rounded-xl border bg-white"
       @click="$emit('click', $event)"
@@ -37,7 +37,10 @@ defineEmits<CardEmits>()
         <IconPost class="h-1/2 w-1/2 fill-gray-100" />
       </template>
     </div>
-    <div class="-mt-8 w-5/6 rounded-xl border bg-white p-1">
+    <slot name="active" />
+    <div
+      class="absolute -bottom-5 left-1/2 w-5/6 -translate-x-1/2 rounded-xl border bg-white p-1"
+    >
       <slot>
         <div>{{ title }}</div>
         <div>{{ content }}</div>

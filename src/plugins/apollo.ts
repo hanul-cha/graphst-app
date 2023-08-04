@@ -15,7 +15,8 @@ declare module '@vue/runtime-core' {
 }
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4000/graphql',
+  // eslint-disable-next-line no-undef
+  uri: API_URL,
 })
 
 const cookies = new Cookies()

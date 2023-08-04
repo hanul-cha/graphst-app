@@ -5,6 +5,8 @@ import components from 'unplugin-vue-components/vite'
 import imports from 'unplugin-auto-import/vite'
 import Pages from 'vite-plugin-pages'
 
+const API_URL = process.env.API_URL ?? 'http://localhost:4000/graphql'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
@@ -31,6 +33,10 @@ export default defineConfig({
       dts: 'types/auto-components.d.ts',
     }),
   ],
+
+  define: {
+    API_URL: JSON.stringify(API_URL),
+  },
 
   server: {
     port: 3000,

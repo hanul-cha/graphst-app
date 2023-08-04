@@ -5,7 +5,9 @@ import components from 'unplugin-vue-components/vite'
 import imports from 'unplugin-auto-import/vite'
 import Pages from 'vite-plugin-pages'
 
-const API_URL = process.env.API_URL ?? ''
+const API_URL =
+  process.env.API_URL ??
+  'http://ec2-52-78-4-90.ap-northeast-2.compute.amazonaws.com/'
 
 // https://vitejs.dev/config/
 export default defineConfig({

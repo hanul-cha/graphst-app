@@ -21,12 +21,7 @@
     "preserveValueImports": false,
 
     "skipLibCheck": true,
-    "types": [
-      "vitest/globals",
-      "vitest/importMeta",
-      "@types/chrome",
-      "vite-plugin-pages/client"
-    ],
+    "types": ["vite-plugin-pages/client", "@types/chrome"],
 
     "paths": {
       "@/*": ["./src/*"],

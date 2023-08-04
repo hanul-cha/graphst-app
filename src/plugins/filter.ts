@@ -1,6 +1,5 @@
 import { Ref, computed, onBeforeUnmount, ref } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
-import { defineStore } from 'pinia'
 import { FilterHistoryItem } from '@/components/page/FilterHistory.vue'
 
 export type FilterHistoryValue =
@@ -38,7 +37,7 @@ type FilterItemTypeToValue<
     : boolean
   : null
 
-export const useFilterStore = defineStore('filter', () => {
+export function useFilter() {
   let definedData:
     | {
         [_ in string]: Ref<FilterItemTypeToValue<any, any>>
@@ -102,7 +101,7 @@ export const useFilterStore = defineStore('filter', () => {
       filter.value = null
       init.value = false
     })
-    const value = useFilter(item)
+    const value = setFilter(item)
     definedData = value
     metadata = item
     init.value = true
@@ -113,9 +112,9 @@ export const useFilterStore = defineStore('filter', () => {
     on: filterOn,
     filter,
   }
-})
+}
 
-function useFilter<T extends keyof U, U extends { [_: string]: FilterItem }>(
+function setFilter<T extends keyof U, U extends { [_: string]: FilterItem }>(
   item: U
 ): {
   [key in T]: Ref<FilterItemTypeToValue<

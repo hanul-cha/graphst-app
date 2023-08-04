@@ -6,53 +6,51 @@ import {
   PostOrder,
 } from '@/api/graphql'
 import { useAuthStore } from '@/store/auth'
-import { useFilterStore } from '@/store/filter'
+import { useFilter } from '@/plugins/filter'
 import { useGlobalActiveStore } from '@/store/globalActive'
 
-const useFilter = useFilterStore()
+const { on, filter } = useFilter()
 const auth = useAuthStore()
 const { close } = useGlobalActiveStore()
 const windowSize = useWindowSize()
 
-const { my, myLike, query, category, page, perPage, asc, order } = useFilter.on(
-  {
-    my: {
-      type: Boolean,
-      label: '내 포스팅',
-    },
-    myLike: {
-      type: Boolean,
-      label: '좋아요한 포스팅',
-    },
-    query: {
-      type: String,
-      label: '검색어',
-    },
-    category: {
-      type: String,
-      label: '카테고리',
-    },
-    perPage: {
-      type: Number,
-      ignore: true,
-      default: 16,
-    },
-    page: {
-      type: Number,
-      ignore: true,
-      default: 1,
-    },
-    asc: {
-      type: Boolean,
-      ignore: true,
-      default: false,
-    },
-    order: {
-      type: String,
-      ignore: true,
-    },
-  }
-)
+const { my, myLike, query, category, page, perPage, asc, order } = on({
+  my: {
+    type: Boolean,
+    label: '내 포스팅',
+  },
+  myLike: {
+    type: Boolean,
+    label: '좋아요한 포스팅',
+  },
+  query: {
+    type: String,
+    label: '검색어',
+  },
+  category: {
+    type: String,
+    label: '카테고리',
+  },
+  perPage: {
+    type: Number,
+    ignore: true,
+    default: 16,
+  },
+  page: {
+    type: Number,
+    ignore: true,
+    default: 1,
+  },
+  asc: {
+    type: Boolean,
+    ignore: true,
+    default: false,
+  },
+  order: {
+    type: String,
+    ignore: true,
+  },
+})
 
 const { result } = useQuery(GetCategoryAllDocument)
 const {
@@ -164,9 +162,9 @@ function getLabel(id: string) {
   <LayoutInner>
     <template #header>
       <div class="pb-4 text-2xl font-bold">모든 포스팅</div>
-      <div v-if="useFilter.filter" class="z-10 pb-4">
+      <div v-if="filter" class="z-10 pb-4">
         <FilterHistory
-          v-model:model-value="useFilter.filter"
+          v-model:model-value="filter"
           @close="() => close('category-history')"
           @update:model-value="resetPage"
         >

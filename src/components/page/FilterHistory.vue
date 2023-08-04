@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FilterHistoryValue } from '@/store/filter'
+import { FilterHistoryValue } from '@/plugins/filter'
 import { useGlobalActiveStore } from '@/store/globalActive'
 
 export interface FilterHistoryItem {

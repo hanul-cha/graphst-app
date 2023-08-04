@@ -7,6 +7,10 @@ interface ActiveProps {
   callback: () => void | Promise<void>
 }
 
+function isOpenDialog() {
+  return document.activeElement?.tagName === 'DIALOG'
+}
+
 export const useGlobalActiveStore = defineStore('globalActive', () => {
   const activeItems = ref<ActiveProps[] | null>(null)
 
@@ -38,10 +42,6 @@ export const useGlobalActiveStore = defineStore('globalActive', () => {
     if (e.key === 'Escape') {
       await close()
     }
-  }
-
-  function isOpenDialog() {
-    return document.activeElement?.tagName === 'DIALOG'
   }
 
   async function active(activeProps: ActiveProps) {

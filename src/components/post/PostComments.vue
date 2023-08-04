@@ -8,7 +8,7 @@ import {
   ToggleUnlikeCommentDocument,
 } from '@/api/graphql'
 import { useAuthStore } from '@/store/auth'
-import { useFilterStore } from '@/store/filter'
+import { useFilter } from '@/plugins/filter'
 
 export interface CommentsProps {
   postId: string
@@ -17,11 +17,11 @@ export interface CommentsProps {
 const props = defineProps<CommentsProps>()
 
 const auth = useAuthStore()
-const useFilter = useFilterStore()
+const { on } = useFilter()
 const router = useRouter()
 const dialog = useDialog()
 
-const { page, perPage } = useFilter.on({
+const { page, perPage } = on({
   perPage: {
     type: Number,
     ignore: true,

@@ -4,7 +4,7 @@ import {
   GetFollowingUsersDocument,
 } from '@/api/graphql'
 import { useAuthStore } from '@/store/auth'
-import { useFilterStore } from '@/store/filter'
+import { useFilter } from '@/plugins/filter'
 import { DialogFollowType } from './types'
 
 interface DialogProps {
@@ -25,10 +25,10 @@ const props = withDefaults(defineProps<DialogProps>(), {
 
 const emit = defineEmits<DialogEmits>()
 
-const useFilter = useFilterStore()
+const { on } = useFilter()
 const auth = useAuthStore()
 
-const { followPerPage, followPage } = useFilter.on({
+const { followPerPage, followPage } = on({
   followPerPage: {
     type: Number,
     ignore: true,

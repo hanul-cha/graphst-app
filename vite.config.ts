@@ -11,7 +11,6 @@ const API_URL =
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: './',
   plugins: [
     vue(),
     Pages(),
@@ -49,10 +48,6 @@ export default defineConfig({
       '~': path.resolve(__dirname, './'),
       '@': path.resolve(__dirname, 'src'),
       'apollo-client': path.resolve(__dirname, './node_modules/@apollo/client'),
-      'vue-property-decorator': path.resolve(
-        __dirname,
-        './node_modules/vue-facing-decorator'
-      ),
     },
   },
 })

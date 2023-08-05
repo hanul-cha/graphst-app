@@ -26,8 +26,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "~/*": ["./*"],
-      "apollo-client": ["./node_modules/@apollo/client"],
-      "vue-property-decorator": ["./node_modules/vue-facing-decorator"]
+      "apollo-client": ["./node_modules/@apollo/client"]
     }
   },
 

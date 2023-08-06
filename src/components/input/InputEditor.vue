@@ -55,10 +55,12 @@ onBeforeUnmount(() => {
 watch(
   () => props.modelValue,
   async (value) => {
-    inputValue.value = value ?? ''
-    if (editor.value && value) {
-      editor.value.commands.setContent(value ?? '')
-    }
+    const { from = 0, to = 0 } = editor.value?.state.selection ?? {}
+    editor.value
+      ?.chain()
+      .setContent(value ?? '', false, { preserveWhitespace: 'full' })
+      .setTextSelection({ from, to })
+      .run()
   }
 )
 </script>

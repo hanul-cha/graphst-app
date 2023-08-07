@@ -41,7 +41,9 @@ onMounted(() => {
     onUpdate: async ({ editor }) => {
       if (props.readonly) return
       const onlyText = editor.getText()
-      inputValue.value = onlyText ? editor.getHTML() : null
+      inputValue.value = onlyText
+        ? replaceConsecutiveSpaces(editor.getHTML())
+        : null
     },
   })
 })
@@ -55,14 +57,20 @@ onBeforeUnmount(() => {
 watch(
   () => props.modelValue,
   async (value) => {
-    const { from = 0, to = 0 } = editor.value?.state.selection ?? {}
-    editor.value
-      ?.chain()
-      .setContent(value ?? '', false, { preserveWhitespace: 'full' })
-      .setTextSelection({ from, to })
-      .run()
+    inputValue.value = value ?? ''
+    if (editor.value && value) {
+      editor.value.commands.setContent(value ?? '', false, {
+        preserveWhitespace: 'full',
+      })
+    }
   }
 )
+
+function replaceConsecutiveSpaces(input: string) {
+  return input.replace(/( {2,})/g, (match) => {
+    return match.replace(/ /g, '&nbsp;')
+  })
+}
 </script>
 
 <template>

@@ -68,8 +68,8 @@ async function signUp() {
     >
       <div class="flex flex-col gap-y-2">
         <ValidateField
-          v-slot="{ field, errorMessage }"
-          v-model="inputUserId"
+          v-slot="{ errorMessage }"
+          :model-value="inputUserId"
           name="id"
           :roles="{
             required: true,
@@ -77,11 +77,15 @@ async function signUp() {
             max: 12,
           }"
         >
-          <InputText v-bind="field" placeholder="id" :error="!!errorMessage" />
+          <InputText
+            v-model:model-value="inputUserId"
+            placeholder="id"
+            :error="!!errorMessage"
+          />
         </ValidateField>
         <ValidateField
-          v-slot="{ field, errorMessage }"
-          v-model="inputName"
+          v-slot="{ errorMessage }"
+          :model-value="inputName"
           name="사용자이름"
           :roles="{
             required: true,
@@ -90,34 +94,34 @@ async function signUp() {
           }"
         >
           <InputText
-            v-bind="field"
+            v-model:model-value="inputName"
             placeholder="사용자 이름"
             :error="!!errorMessage"
           />
         </ValidateField>
         <ValidateField
-          v-slot="{ field, errorMessage }"
-          v-model="inputPassword"
+          v-slot="{ errorMessage }"
+          :model-value="inputPassword"
           name="비밀번호"
           roles="password"
         >
           <InputPassword
-            v-bind="field"
+            v-model:model-value="inputPassword"
             placeholder="영문, 숫자포함 6~12자리"
             :error="!!errorMessage"
           />
         </ValidateField>
         <ValidateField
-          v-model="inputPasswordDup"
+          :model-value="inputPasswordDup"
           name="비밀번호확인"
           :roles="{
             required: true,
             custom: inputPassword === inputPasswordDup,
           }"
         >
-          <template #default="{ field, errorMessage }">
+          <template #default="{ errorMessage }">
             <InputPassword
-              v-bind="field"
+              v-model:model-value="inputPasswordDup"
               placeholder="비밀번호 확인"
               :error="!!errorMessage"
             />
@@ -129,21 +133,21 @@ async function signUp() {
           </template>
         </ValidateField>
         <ValidateField
-          v-slot="{ field, errorMessage }"
-          v-model="inputQuestionForSearch"
+          v-slot="{ errorMessage }"
+          :model-value="inputQuestionForSearch"
           name="본인확인질문"
           roles="required"
         >
           <InputSelect
-            v-bind="field"
+            v-model:model-value="inputQuestionForSearch"
             :error="!!errorMessage"
             :options="$format.questionOptions"
             placeholder="본인확인 질문을 선택해 주세요"
           />
         </ValidateField>
         <ValidateField
-          v-slot="{ field, errorMessage }"
-          v-model="inputAnswerForSearch"
+          v-slot="{ errorMessage }"
+          :model-value="inputAnswerForSearch"
           name="본인확인답변"
           :roles="{
             required: true,
@@ -152,7 +156,7 @@ async function signUp() {
           }"
         >
           <InputText
-            v-bind="field"
+            v-model:model-value="inputAnswerForSearch"
             placeholder="본인확인 답변"
             :error="!!errorMessage"
           />

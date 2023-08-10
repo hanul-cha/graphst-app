@@ -15,9 +15,9 @@ export const useGlobalActiveStore = defineStore('globalActive', () => {
   const activeItems = ref<ActiveProps[] | null>(null)
 
   watch(
-    () => activeItems.value?.length,
-    (length) => {
-      if (length && length > 0) {
+    activeItems,
+    (items) => {
+      if (items && items.length > 0) {
         document.addEventListener('click', unActive)
         document.addEventListener('keydown', clickEsc)
       } else {

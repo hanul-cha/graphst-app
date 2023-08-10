@@ -30,21 +30,25 @@ async function signIn() {
       @submit="signIn"
     >
       <ValidateField
-        v-slot="{ field, errorMessage }"
-        v-model="inputId"
+        v-slot="{ errorMessage }"
+        :model-value="inputId"
         name="id"
         roles="required"
       >
-        <InputText v-bind="field" placeholder="id" :error="!!errorMessage" />
+        <InputText
+          v-model:model-value="inputId"
+          placeholder="id"
+          :error="!!errorMessage"
+        />
       </ValidateField>
       <ValidateField
-        v-slot="{ field, errorMessage }"
-        v-model="inputPassword"
+        v-slot="{ errorMessage }"
+        :model-value="inputPassword"
         name="password"
         roles="required"
       >
         <InputPassword
-          v-bind="field"
+          v-model:model-value="inputPassword"
           placeholder="password"
           :error="!!errorMessage"
         />

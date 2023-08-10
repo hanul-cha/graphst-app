@@ -98,9 +98,12 @@ async function deletePost() {
             v-if="post.user.id === auth.user?.id"
             class="flex flex-none gap-x-2"
           >
-            <RouterLink :to="`/post/${post.id}/edit`" class="text-blue-500"
-              >수정</RouterLink
+            <div
+              class="cursor-pointer text-blue-500"
+              @click="$router.replace(`/post/${post.id}/edit`)"
             >
+              수정
+            </div>
             <div class="cursor-pointer text-red-500" @click="deletePost">
               삭제
             </div>

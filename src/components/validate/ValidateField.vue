@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Field, ErrorMessage } from 'vee-validate'
+import { useField } from 'vee-validate'
 import { ValidateProps, validator } from './validator'
 
 interface ValidateFieldProps {
@@ -9,12 +9,7 @@ interface ValidateFieldProps {
   validateOnSubmit?: boolean
 }
 
-interface ValidateFieldEmits {
-  (_: 'update:modelValue', _value: any): void
-}
-
 const props = defineProps<ValidateFieldProps>()
-const emit = defineEmits<ValidateFieldEmits>()
 
 const rules = (value: any, field: any) => {
   if (props.roles) {
@@ -23,36 +18,26 @@ const rules = (value: any, field: any) => {
   return true
 }
 
-function update(value: any) {
-  emit('update:modelValue', value)
-}
+const { errorMessage, value } = useField(props.name, rules)
+
+watch(
+  () => props.modelValue,
+  (modelValue) => {
+    value.value = modelValue
+  }
+)
 </script>
 
 <template>
-  <Field
-    v-slot="slotOption"
-    :model-value="modelValue"
-    :name="name"
-    :rules="rules"
-    :validate-on-input="!validateOnSubmit"
-    @update:model-value="update"
-  >
+  <div>
     <slot
       :="{
-        ...slotOption,
-        field: {
-          ...slotOption.field,
-          modelValue: modelValue,
-        },
+        errorMessage,
       }"
     />
 
-    <slot
-      v-if="slotOption.errorMessage"
-      name="error"
-      :error-message="slotOption.errorMessage"
-    >
-      <ErrorMessage :name="props.name" class="block text-xs text-red-500" />
+    <slot v-if="errorMessage" name="error" :error-message="errorMessage">
+      <div class="text-xs text-red-500">{{ errorMessage }}</div>
     </slot>
-  </Field>
+  </div>
 </template>

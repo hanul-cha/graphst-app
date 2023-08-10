@@ -4,7 +4,7 @@ import { useGlobalActiveStore } from '@/store/globalActive'
 
 export interface FilterHistoryItem {
   label: string
-  value: FilterHistoryValue
+  value: any
   type?: StringConstructor | NumberConstructor | BooleanConstructor
   isMultiple?: boolean
   ignore?: boolean
@@ -159,21 +159,14 @@ async function toggle() {
             >
               <template v-if="activeItem.type === Boolean">
                 <div class="flex gap-x-1">
-                  <ValidateField
-                    v-slot="{ field, errorMessage }"
-                    v-model="activeItem.value"
-                    :name="data.label"
-                    @update:model-value="
-                      updateHistory(activeItem.key, activeItem.value)
-                    "
-                  >
-                    <div class="flex items-center gap-x-2">
-                      <InputCheckToggle
-                        v-bind="field"
-                        :error="!!errorMessage"
-                      />
-                    </div>
-                  </ValidateField>
+                  <div class="flex items-center gap-x-2">
+                    <InputCheckToggle
+                      v-model:model-value="activeItem.value"
+                      @update:model-value="
+                        updateHistory(activeItem.key, activeItem.value)
+                      "
+                    />
+                  </div>
                 </div>
               </template>
               <template v-else-if="activeItem.type === Number">
@@ -186,15 +179,9 @@ async function toggle() {
                     updateHistory(activeItem.key, activeItem.value)
                   "
                 >
-                  <ValidateField
-                    v-slot="{ field, errorMessage }"
-                    v-model="activeItem.value"
-                    name="boolean"
-                  >
-                    <div class="flex items-center gap-x-2">
-                      <InputText v-bind="field" :error="!!errorMessage" />
-                    </div>
-                  </ValidateField>
+                  <div class="flex items-center gap-x-2">
+                    <InputText v-model:model-value="activeItem.value" />
+                  </div>
                   <BasicButton class="text-sm" type="submit">
                     확인
                   </BasicButton>

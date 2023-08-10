@@ -13,7 +13,7 @@ interface InputTextEmits {
   (_e: 'update:modelValue', _value: string | null): void
 }
 
-const props = withDefaults(defineProps<InputTextProps>(), {
+withDefaults(defineProps<InputTextProps>(), {
   modelValue: null,
   placeholder: undefined,
   error: false,
@@ -23,12 +23,15 @@ const props = withDefaults(defineProps<InputTextProps>(), {
 
 const emit = defineEmits<InputTextEmits>()
 
-const inputValue = useVModel(props, 'modelValue', emit)
+function onInput(e: Event) {
+  const target = e.target as HTMLInputElement
+  emit('update:modelValue', target.value)
+}
 </script>
 
 <template>
   <input
-    v-model="inputValue"
+    :value="modelValue"
     class="w-full rounded-xl border p-2 pl-3 text-sm focus:outline-none"
     :class="{
       'border-red-500': error,
@@ -36,5 +39,6 @@ const inputValue = useVModel(props, 'modelValue', emit)
     :placeholder="placeholder"
     :type="type"
     :disabled="disabled"
+    @input="onInput"
   />
 </template>

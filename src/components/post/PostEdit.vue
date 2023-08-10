@@ -48,7 +48,10 @@ const inputCategoryId = ref<string | null>(null)
 const dialog = useDialog()
 
 const enableTagContents = computed(() => {
-  return inputContents.value ? format.removeHtmlTag(inputContents.value) : ''
+  return (
+    (inputContents.value ? format.removeHtmlTag(inputContents.value) : '')
+      .length >= 10
+  )
 })
 
 const categoryOptions = computed<
@@ -94,58 +97,60 @@ async function submit() {
       @submit="submit"
     >
       <ValidateField
-        v-slot="{ field, errorMessage }"
-        v-model="inputTitle"
+        v-slot="{ errorMessage }"
+        :model-value="inputTitle"
         name="제목"
         :roles="{
           required: true,
           min: 4,
-          max: 20,
+          max: 40,
         }"
       >
-        <InputText v-bind="field" placeholder="제목" :error="!!errorMessage" />
+        <InputText
+          v-model:model-value="inputTitle"
+          placeholder="제목"
+          :error="!!errorMessage"
+        />
       </ValidateField>
 
       <ValidateField
-        v-slot="{ field, errorMessage }"
-        v-model="inputActive"
+        v-slot="{ errorMessage }"
+        :model-value="inputActive"
         name="활성화"
       >
         <div class="flex items-center gap-x-2">
-          <InputCheckToggle v-bind="field" :error="!!errorMessage" />
+          <InputCheckToggle
+            v-model:model-value="inputActive"
+            :error="!!errorMessage"
+          />
           <div class="text-xs">포스팅 활성화</div>
         </div>
       </ValidateField>
-      <ValidateField
-        v-slot="{ field, errorMessage }"
-        v-model="inputCategoryId"
-        name="카테고리"
-      >
+      <ValidateField v-slot="{ errorMessage }" name="카테고리">
         <InputSelect
-          v-bind="field"
+          v-model:model-value="inputCategoryId"
           :error="!!errorMessage"
           :options="categoryOptions"
         />
       </ValidateField>
       <ValidateField
-        v-model="inputContents"
+        class="h-full"
+        :model-value="inputContents"
         name="내용"
         :roles="{
-          custom: enableTagContents.length > 9,
+          custom: enableTagContents,
         }"
       >
-        <template #default="{ field, errorMessage }">
+        <template #default="{ errorMessage }">
           <InputEditor
+            v-model:model-value="inputContents"
             class="flex h-full flex-col overflow-x-auto"
-            v-bind="field"
             placeholder="10자 이상 입력해주세요."
             :error="!!errorMessage"
           />
         </template>
         <template #error>
-          <div class="block text-xs text-red-500">
-            내용은 10자 이상 입력해주세요.
-          </div>
+          <div class="text-xs text-red-500">내용은 10자 이상 입력해주세요.</div>
         </template>
       </ValidateField>
       <BasicButton :disabled="loading" class="mt-6" type="submit">

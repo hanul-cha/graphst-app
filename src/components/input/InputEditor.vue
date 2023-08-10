@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
-import { Editor, EditorContent } from '@tiptap/vue-3'
-import { Ref } from 'vue'
+import { EditorContent, useEditor } from '@tiptap/vue-3'
 
 interface InputEditorProps {
   modelValue?: string | null
@@ -24,28 +23,24 @@ const props = withDefaults(defineProps<InputEditorProps>(), {
 
 const emit = defineEmits<InputEditorEmits>()
 
-const editor: Ref<Editor | null> = ref(null)
-
 const inputValue = useVModel(props, 'modelValue', emit)
 
-onMounted(() => {
-  editor.value = new Editor({
-    content: inputValue.value,
-    editable: !props.readonly,
-    extensions: [
-      StarterKit,
-      Placeholder.configure({
-        placeholder: props.placeholder,
-      }),
-    ],
-    onUpdate: async ({ editor }) => {
-      if (props.readonly) return
-      const onlyText = editor.getText()
-      inputValue.value = onlyText
-        ? replaceConsecutiveSpaces(editor.getHTML())
-        : null
-    },
-  })
+const editor = useEditor({
+  content: inputValue.value,
+  editable: !props.readonly,
+  extensions: [
+    StarterKit,
+    Placeholder.configure({
+      placeholder: props.placeholder,
+    }),
+  ],
+  onUpdate: async ({ editor }) => {
+    if (props.readonly) return
+    const onlyText = editor.getText()
+    inputValue.value = onlyText
+      ? replaceConsecutiveSpaces(editor.getHTML())
+      : null
+  },
 })
 
 onBeforeUnmount(() => {
@@ -54,17 +49,14 @@ onBeforeUnmount(() => {
   }
 })
 
-watch(
-  () => props.modelValue,
-  async (value) => {
-    inputValue.value = value ?? ''
-    if (editor.value && value) {
-      editor.value.commands.setContent(value ?? '', false, {
-        preserveWhitespace: 'full',
-      })
-    }
-  }
-)
+watch(inputValue, async (value) => {
+  const { from = 0, to = 0 } = editor.value?.state.selection ?? {}
+  editor.value
+    ?.chain()
+    .setContent(value ?? '', false, { preserveWhitespace: 'full' })
+    .setTextSelection({ from, to })
+    .run()
+})
 
 function replaceConsecutiveSpaces(input: string) {
   return input.replace(/( {2,})/g, (match) => {
@@ -259,12 +251,10 @@ function replaceConsecutiveSpaces(input: string) {
 .input-editor-content ul {
   padding: 0 1rem;
   list-style-type: disc;
-  list-style-position: inside;
 }
 .input-editor-content ol {
   padding: 0 1rem;
   list-style-type: decimal;
-  list-style-position: inside;
 }
 
 .input-editor-content h1 {
@@ -281,10 +271,6 @@ function replaceConsecutiveSpaces(input: string) {
   font-weight: 500;
   font-size: 1.125rem /* 18px */;
   line-height: 1.75rem /* 28px */;
-}
-
-.input-editor-content p {
-  display: inline;
 }
 
 .input-editor-content code {

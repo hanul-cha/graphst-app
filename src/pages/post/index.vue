@@ -173,21 +173,14 @@ function getLabel(id: string) {
           </template>
           <template #active-category="{ activeItem, updateHistory }">
             <div class="flex gap-x-1">
-              <ValidateField
-                v-slot="{ field, errorMessage }"
-                v-model="activeItem.value"
-                name="카테고리"
+              <InputSelect
+                v-model:model-value="activeItem.value"
+                key-name="category-history"
+                :options="categoryOptions"
                 @update:model-value="
                   updateHistory(activeItem.key, activeItem.value)
                 "
-              >
-                <InputSelect
-                  v-bind="field"
-                  key-name="category-history"
-                  :error="!!errorMessage"
-                  :options="categoryOptions"
-                />
-              </ValidateField>
+              />
             </div>
           </template>
         </FilterHistory>

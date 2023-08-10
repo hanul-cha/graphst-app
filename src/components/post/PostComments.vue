@@ -180,14 +180,14 @@ async function toggleUnlike(comment: CommentFullFragment) {
           </template>
           <template v-else>
             <ValidateField
-              v-slot="{ field, errorMessage }"
-              v-model="inputComment"
+              v-slot="{ errorMessage }"
+              :model-value="inputComment"
               name="댓글"
               roles="required"
             >
               <InputText
+                v-model:model-value="inputComment"
                 class="w-full"
-                v-bind="field"
                 placeholder="댓글을 입력해 주세요"
                 :error="!!errorMessage"
               />

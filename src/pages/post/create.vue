@@ -6,14 +6,21 @@ const dialog = useDialog()
 const { mutate, loading } = useMutation(CreatePostDocument)
 
 async function submit(props: CreatePostMutationVariables) {
-  await mutate(props)
+  const data = await mutate(props)
 
-  await dialog.open({
-    title: '포스팅 작성 완료',
-    confirmText: '확인',
-  })
+  if (data?.data?.post.id) {
+    await dialog.open({
+      title: '포스팅 작성 완료',
+      confirmText: '확인',
+    })
 
-  router.push('/post?my=true')
+    router.replace(`/post/${data.data.post.id}`)
+  } else {
+    await dialog.open({
+      title: '포스팅 작성 실패',
+      confirmText: '확인',
+    })
+  }
 }
 </script>
 

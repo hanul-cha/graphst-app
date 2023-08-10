@@ -50,12 +50,31 @@ async function toggleLike(like: boolean) {
     countLike: props.post.countLike + (like ? 1 : -1),
   })
 }
+
+function pushPostPath() {
+  if (props.post.activeAt || auth.user?.id === props.post.user.id) {
+    router.push(`/post/${props.post.id}`)
+    return
+  }
+}
 </script>
 
 <template>
-  <Card @click="$router.push(`/post/${post.id}`)">
+  <Card @click="pushPostPath">
     <template #active>
-      <div class="absolute right-0 top-0 flex pr-1">
+      <div
+        v-if="!post.activeAt"
+        class="absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center text-2xl font-bold"
+        @click="pushPostPath"
+      >
+        비공개
+      </div>
+      <div
+        class="absolute right-0 top-0 flex pr-1"
+        :class="{
+          'opacity-10': !post.activeAt,
+        }"
+      >
         <div
           class="flex cursor-pointer items-center p-2"
           @click="toggleLike(!post.isLike)"
@@ -74,12 +93,17 @@ async function toggleLike(like: boolean) {
         </div>
       </div>
     </template>
-    <div class="p-2">
+    <div
+      class="p-2"
+      :class="{
+        'opacity-10': !post.activeAt,
+      }"
+    >
       <div class="truncate text-lg font-semibold">
         {{ post.title }}
       </div>
       <div class="truncate pb-3">
-        {{ post.contents.replace(/<[^>]*>?/gm, '') }}
+        {{ $format.removeHtmlTag(post.contents) }}
       </div>
       <div
         class="text-sm"
@@ -90,7 +114,11 @@ async function toggleLike(like: boolean) {
       >
         {{ post.category?.label ?? '카테고리 없음' }}
       </div>
-      <UserTooltip :id="post.user.id" :name="post.user.name" />
+      <UserTooltip
+        :id="post.user.id"
+        :name="post.user.name"
+        :disabled="!post.activeAt"
+      />
     </div>
   </Card>
 </template>

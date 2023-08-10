@@ -5,11 +5,16 @@ import { apolloClient } from '@/plugins/apollo'
 export interface UserTooltipProps {
   name: string
   id: string
+  disabled?: boolean
 }
 
 const props = defineProps<UserTooltipProps>()
 
 async function getUser() {
+  if (props.disabled) {
+    user.value = null
+    return
+  }
   const { data } = await apolloClient.query({
     query: GetUserPublicDocument,
     variables: {
@@ -32,8 +37,8 @@ const loading = ref(false)
 </script>
 
 <template>
-  <Tooltip @enter="getUser">
-    <span class="cursor-pointer">{{ name }}</span>
+  <Tooltip :disabled="disabled" @enter="getUser">
+    <span>{{ name }}</span>
     <template #tooltip>
       <div class="rounded-xl bg-violet-50 p-4">
         <template v-if="loading">로딩중</template>

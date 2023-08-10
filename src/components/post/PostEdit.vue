@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<PostEditProps>(), {
 const emit = defineEmits<PostEditEmits>()
 
 const { result } = useQuery(GetCategoryAllDocument)
+const format = useFormat()
 
 onMounted(() => {
   if (!props.post) return
@@ -47,7 +48,7 @@ const inputCategoryId = ref<string | null>(null)
 const dialog = useDialog()
 
 const enableTagContents = computed(() => {
-  return inputContents.value?.replace(/<[^>]*>?/gm, '') ?? ''
+  return inputContents.value ? format.removeHtmlTag(inputContents.value) : ''
 })
 
 const categoryOptions = computed<

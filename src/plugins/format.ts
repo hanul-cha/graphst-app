@@ -3,11 +3,14 @@ import { InjectionKey, Plugin, inject } from 'vue'
 
 interface Format {
   date: typeof formatDate
+  removeHtmlTag: (_str: string) => string
 }
 
 function create(): Format {
   return {
     date: formatDate,
+    removeHtmlTag: (str) =>
+      str.replace(/&nbsp;/g, '').replace(/<[^>]*>?/gm, ''),
   }
 }
 

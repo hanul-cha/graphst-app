@@ -13,15 +13,6 @@ const inputName = ref<string | null>(null)
 const inputQuestionForSearch = ref<AuthQuestion>()
 const inputAnswerForSearch = ref<string | null>(null)
 
-const questionOptions = [
-  { label: '내가 가장 좋아하는 동물은?', value: AuthQuestion.FavoriteAnimal },
-  { label: '내가 가장 좋아하는 색은?', value: AuthQuestion.FavoriteColor },
-  { label: '내가 가장 좋아하는 음식은?', value: AuthQuestion.FavoriteFood },
-  { label: '내가 가장 좋아하는 영화는?', value: AuthQuestion.FavoriteMovie },
-  { label: '내가 가장 좋아하는 숫자는?', value: AuthQuestion.FavoriteNumber },
-  { label: '내가 가장 좋아하는 운동은??', value: AuthQuestion.FavoriteSports },
-]
-
 async function signUp() {
   if (loading.value) return
   if (
@@ -49,38 +40,22 @@ async function signUp() {
     return
   }
 
-  try {
-    const result = await mutate({
-      userId: inputUserId.value,
-      password: inputPassword.value,
-      name: inputName.value,
-      questionForSearch: inputQuestionForSearch.value,
-      answerForSearch: inputAnswerForSearch.value,
-    })
+  const result = await mutate({
+    userId: inputUserId.value,
+    password: inputPassword.value,
+    name: inputName.value,
+    questionForSearch: inputQuestionForSearch.value,
+    answerForSearch: inputAnswerForSearch.value,
+  })
 
-    if (result?.data?.signUp?.id) {
-      await dialog.open({
-        title: '회원가입 완료!',
-        confirmText: '확인',
-      })
-      router.push('/signin')
-    } else {
-      throw new Error('signUp.id is null')
-    }
-  } catch (e: any) {
-    if (e.message === '이미 사용중인 아이디 입니다.') {
-      await dialog.open({
-        title: '회원가입 실패',
-        message: '이미 사용중인 아이디 입니다.',
-        confirmText: '확인',
-      })
-    } else {
-      await dialog.open({
-        title: '회원가입 실패',
-        message: '같은 현상이 발생하면 1대1 문의를 이용해주세요.',
-        confirmText: '확인',
-      })
-    }
+  if (result?.data?.signUp?.id) {
+    await dialog.open({
+      title: '회원가입 완료!',
+      confirmText: '확인',
+    })
+    router.push('/signin')
+  } else {
+    throw new Error('signUp.id is null')
   }
 }
 </script>
@@ -162,7 +137,7 @@ async function signUp() {
           <InputSelect
             v-bind="field"
             :error="!!errorMessage"
-            :options="questionOptions"
+            :options="$format.questionOptions"
             placeholder="본인확인 질문을 선택해 주세요"
           />
         </ValidateField>

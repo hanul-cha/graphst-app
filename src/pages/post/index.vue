@@ -8,13 +8,16 @@ import {
 import { useAuthStore } from '@/store/auth'
 import { useFilter } from '@/plugins/filter'
 import { useGlobalActiveStore } from '@/store/globalActive'
+import { apolloClient } from '@/plugins/apollo'
 
 const { on, filter } = useFilter()
 const auth = useAuthStore()
 const { close } = useGlobalActiveStore()
-const windowSize = useWindowSize()
 
-const { my, myLike, query, category, page, perPage, asc, order } = on({
+const requireLoad = ref(false)
+const page = ref<number>(1)
+const scrollTop = ref<number>(0)
+const { my, myLike, query, category, asc, order } = on({
   my: {
     type: Boolean,
     label: '내 포스팅',
@@ -31,16 +34,6 @@ const { my, myLike, query, category, page, perPage, asc, order } = on({
     type: String,
     label: '카테고리',
   },
-  perPage: {
-    type: Number,
-    ignore: true,
-    default: 16,
-  },
-  page: {
-    type: Number,
-    ignore: true,
-    default: 1,
-  },
   asc: {
     type: Boolean,
     ignore: true,
@@ -52,14 +45,9 @@ const { my, myLike, query, category, page, perPage, asc, order } = on({
   },
 })
 
-const { result } = useQuery(GetCategoryAllDocument)
-const {
-  result: pagination,
-  loading,
-  refetch,
-} = useQuery(PostPaginationDocument, () => ({
-  perPage: perPage.value ? perPage.value : undefined,
-  page: page.value ? page.value : undefined,
+const variablesParameter = computed(() => ({
+  perPage: 10,
+  page: 1,
   likeUserId: myLike.value ? auth.user?.id ?? '0' : undefined,
   userId: my.value ? auth.user?.id ?? '0' : undefined,
   categoryId: category.value,
@@ -68,10 +56,24 @@ const {
   asc: asc.value,
 }))
 
-const perPageOption = ref(8)
+const { result } = useQuery(GetCategoryAllDocument)
+const { loading, refetch, onResult } = useQuery(
+  PostPaginationDocument,
+  variablesParameter
+)
+onResult(({ data }) => {
+  scrollTop.value = 0
+  posts.value = data.posts?.nodes ?? []
+  totalCount.value = data.posts?.totalCount ?? 0
 
-const posts = computed(() => pagination.value?.posts?.nodes ?? [])
-const totalCount = computed(() => pagination.value?.posts?.totalCount ?? 0)
+  page.value = 1
+  if (data.posts?.pageInfo.hasNextPage) {
+    requireLoad.value = true
+  }
+})
+
+const posts = ref<PostInPageFragment[]>([])
+const totalCount = ref<number>(0)
 const categoryOptions = computed<
   {
     label: string
@@ -94,11 +96,6 @@ const categoryOptions = computed<
   },
 ])
 
-onMounted(() => {
-  setPaginationOption(windowSize.width.value)
-})
-watch(windowSize.width, (width) => setPaginationOption(width))
-
 const sortOption = [
   {
     label: '제목',
@@ -114,59 +111,52 @@ const sortOption = [
   },
 ]
 
-const setPaginationOption = useDebounceFn((width: number) => {
-  if (width >= 1280) {
-    perPage.value = 20
-    perPageOption.value = 10
-    page.value = 1
-  } else if (width >= 1024) {
-    perPage.value = 16
-    perPageOption.value = 8
-    page.value = 1
-  } else if (width >= 768) {
-    perPage.value = 18
-    perPageOption.value = 9
-    page.value = 1
-  } else {
-    perPage.value = 10
-    perPageOption.value = 10
-    page.value = 1
-  }
-}, 500)
-
 function updatePost(post: PostInPageFragment) {
-  if (!pagination.value?.posts) return
-  pagination.value = {
-    ...pagination.value,
-    posts: {
-      ...pagination.value?.posts,
-      nodes:
-        pagination.value?.posts?.nodes.map((node) =>
-          node.id === post.id ? post : node
-        ) ?? [],
-    },
-  }
-}
-
-function resetPage() {
-  page.value = 1
+  if (posts.value.length) return
+  posts.value = posts.value.map((node) => (node.id === post.id ? post : node))
 }
 
 function getLabel(id: string) {
   if (id === '_NULL_') return '카테고리 없음'
   return result.value?.categories.find((category) => category.id === id)?.label
 }
+
+async function loadEvent(
+  continueLoad: () => Promise<void>,
+  endLoad: () => void
+) {
+  if (loading.value) {
+    continueLoad()
+    return
+  }
+  page.value += 1
+  const { data } = await apolloClient.query({
+    query: PostPaginationDocument,
+    variables: {
+      ...variablesParameter.value,
+      page: page.value,
+    },
+  })
+  if (posts.value.length && data.posts?.nodes && data.posts?.nodes.length) {
+    posts.value.push(...data.posts.nodes)
+  }
+  if (data.posts?.pageInfo.hasNextPage) {
+    await continueLoad()
+  } else {
+    endLoad()
+    requireLoad.value = false
+  }
+}
 </script>
 
 <template>
-  <LayoutInner>
+  <LayoutInner v-model:scroll="scrollTop">
     <template #header>
       <div class="pb-4 text-2xl font-bold">모든 포스팅</div>
       <div v-if="filter" class="z-10 pb-4">
         <FilterHistory
           v-model:model-value="filter"
           @close="() => close('category-history')"
-          @update:model-value="resetPage"
         >
           <template #value-category="{ value }">
             {{ getLabel(value as string) }}
@@ -206,10 +196,8 @@ function getLabel(id: string) {
         </div>
       </template>
       <template v-else>
-        <div
-          class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
-        >
-          <template v-for="(post, index) of posts" :key="index">
+        <div>
+          <template v-for="(post, index) of posts" :key="`${index}_${post.id}`">
             <PostCard
               :post="post"
               @update="
@@ -220,16 +208,8 @@ function getLabel(id: string) {
             />
           </template>
         </div>
+        <Loader v-if="requireLoad" :event="loadEvent" />
       </template>
     </div>
-    <template #bottom>
-      <Pagination
-        v-model:page="page"
-        v-model:perPage="perPage"
-        :per-page-option="perPageOption"
-        :total="totalCount"
-        @update:per-page="resetPage"
-      />
-    </template>
   </LayoutInner>
 </template>

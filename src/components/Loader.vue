@@ -32,7 +32,6 @@ const callback = useDebounceFn((entries: IntersectionObserverEntry[]) => {
   if (off.value) return
   entries.forEach(async (entry) => {
     if (entry.isIntersecting) {
-      console.log('load')
       disconnect()
       await props.event(continueLoad, endLoad)
     }

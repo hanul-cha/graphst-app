@@ -58,13 +58,17 @@ async function toggleLike() {
 
 <template>
   <div class="flex items-center gap-x-2">
-    <div class="h-10 w-10 rounded-full bg-white" />
+    <div
+      class="flex h-10 w-10 items-center justify-center rounded-full bg-white"
+    >
+      <IconUser class="h-6 w-6 stroke-gray-300" />
+    </div>
     <div class="flex flex-col justify-center px-2">
       <div>{{ user.name }}</div>
       <div class="flex gap-x-3">
         <div
           class="flex cursor-pointer items-center gap-x-1"
-          @click="toggleLike"
+          @click.prevent.stop="toggleLike"
         >
           <template v-if="user.isLike">
             <IconFillHeart class="h-5 w-5" />

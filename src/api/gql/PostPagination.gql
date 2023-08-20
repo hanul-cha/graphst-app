@@ -5,6 +5,7 @@ fragment PostInPage on Post {
   countLike
   isLike
   activeAt
+  createAt
   user {
     id
     name

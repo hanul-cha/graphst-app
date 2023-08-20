@@ -40,7 +40,7 @@ const loading = ref(false)
   <Tooltip :disabled="disabled" @enter="getUser">
     <span>{{ name }}</span>
     <template #tooltip>
-      <div class="rounded-xl bg-violet-50 p-4">
+      <div class="p-4">
         <template v-if="loading">로딩중</template>
         <template v-else-if="!user">없는 유저입니다.</template>
         <template v-else>

@@ -40,7 +40,7 @@ function onMouseEvent(hover: boolean, e: MouseEvent) {
     <div
       v-if="isHovered && !props.disabled"
       ref="tooltip"
-      class="absolute left-0 top-0 z-20 -translate-y-full"
+      class="absolute left-0 top-0 z-20 -translate-y-full rounded-xl bg-white shadow-md"
     >
       <slot name="tooltip" />
     </div>

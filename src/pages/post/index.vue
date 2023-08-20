@@ -112,7 +112,7 @@ const sortOption = [
 ]
 
 function updatePost(post: PostInPageFragment) {
-  if (posts.value.length) return
+  if (!posts.value.length) return
   posts.value = posts.value.map((node) => (node.id === post.id ? post : node))
 }
 
@@ -196,7 +196,7 @@ async function loadEvent(
         </div>
       </template>
       <template v-else>
-        <div>
+        <div class="space-y-8">
           <template v-for="(post, index) of posts" :key="`${index}_${post.id}`">
             <PostCard
               :post="post"

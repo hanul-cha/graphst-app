@@ -19,6 +19,9 @@ const router = useRouter()
 
 const { mutate, loading } = useMutation(ToggleLikePostDocument)
 
+const isItemHover = ref(false)
+const isImgHover = ref(false)
+
 async function toggleLike(like: boolean) {
   if (loading.value) return
   if (!auth.user) {
@@ -60,76 +63,80 @@ function pushPostPath() {
 </script>
 
 <template>
-  <div @click="pushPostPath">
-    <div class="aspect-video w-full overflow-hidden border">
-      <template v-if="false">
-        <!-- TODO -->
-        <!-- <img
+  <div class="relative cursor-pointer" @click="pushPostPath">
+    <div
+      v-if="!post.activeAt"
+      class="absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center text-2xl font-bold"
+    >
+      비공개
+    </div>
+    <div @mouseenter="isItemHover = true" @mouseleave="isItemHover = false">
+      <div
+        class="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-xl bg-gray-50 transition-all"
+        :class="{
+          '-translate-y-2 shadow-lg': isItemHover,
+        }"
+        @mouseenter="isImgHover = true"
+        @mouseleave="isImgHover = false"
+      >
+        <template v-if="false">
+          <!-- TODO -->
+          <!-- <img
           class="h-full w-full rounded-lg object-cover"
           :src="imgUrl"
           :alt="alt"
         /> -->
-      </template>
-      <template v-else>
-        <IconPost class="h-10 w-10 fill-gray-100" />
-      </template>
-    </div>
-    <!-- <div
-        v-if="!post.activeAt"
-        class="absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center text-2xl font-bold"
-        @click="pushPostPath"
-      >
-        비공개
-      </div> -->
-    <!-- <div
-        class="absolute right-0 top-0 flex pr-1"
+        </template>
+        <template v-else>
+          <IconImg class="h-28 w-28 stroke-gray-300" />
+        </template>
+        <div v-if="isImgHover" class="absolute bottom-0 right-0 flex pr-1">
+          <div
+            class="flex cursor-pointer items-center p-2"
+            @click.prevent.stop="toggleLike(!post.isLike)"
+          >
+            <template v-if="post.isLike">
+              <IconFillHeart class="h-5 w-5 fill-red-500" />
+            </template>
+            <template v-else>
+              <IconLineHeart class="h-5 w-5 fill-gray-500" />
+            </template>
+            <div class="text-gray-500">{{ post.countLike }}</div>
+          </div>
+          <div class="flex items-center gap-x-1 p-2">
+            <IconComment class="h-4 w-4" />
+            <div class="text-gray-500">{{ post.countComment }}</div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="p-2"
         :class="{
           'opacity-10': !post.activeAt,
         }"
       >
+        <div class="text-sm">
+          {{ post.category?.label ?? '카테고리 없음' }} ·
+          {{ $format.date(post.createAt) }}
+        </div>
         <div
-          class="flex cursor-pointer items-center p-2"
-          @click="toggleLike(!post.isLike)"
+          class="truncate pb-1 pt-3 text-3xl font-semibold"
+          :class="{
+            'text-blue-500': isItemHover,
+          }"
         >
-          <template v-if="post.isLike">
-            <IconFillHeart class="h-5 w-5 fill-red-500" />
-          </template>
-          <template v-else>
-            <IconLineHeart class="h-5 w-5 fill-gray-500" />
-          </template>
-          <div class="text-gray-500">{{ post.countLike }}</div>
+          {{ post.title }}
         </div>
-        <div class="flex items-center gap-x-1 p-2">
-          <IconComment class="h-4 w-4" />
-          <div class="text-gray-500">{{ post.countComment }}</div>
+        <div class="truncate pb-3">
+          {{ $format.removeHtmlTag(post.contents) }}
         </div>
-      </div> -->
-    <div
-      class="p-2"
-      :class="{
-        'opacity-10': !post.activeAt,
-      }"
-    >
-      <div class="truncate text-lg font-semibold">
-        {{ post.title }}
+
+        <UserTooltip
+          :id="post.user.id"
+          :name="post.user.name"
+          :disabled="!post.activeAt"
+        />
       </div>
-      <div class="truncate pb-3">
-        {{ $format.removeHtmlTag(post.contents) }}
-      </div>
-      <div
-        class="text-sm"
-        :class="{
-          'text-gray-500': !post.category?.label,
-          'text-current': post.category?.label,
-        }"
-      >
-        {{ post.category?.label ?? '카테고리 없음' }}
-      </div>
-      <UserTooltip
-        :id="post.user.id"
-        :name="post.user.name"
-        :disabled="!post.activeAt"
-      />
     </div>
   </div>
 </template>

@@ -60,16 +60,28 @@ function pushPostPath() {
 </script>
 
 <template>
-  <Card @click="pushPostPath">
-    <template #active>
-      <div
+  <div @click="pushPostPath">
+    <div class="aspect-video w-full overflow-hidden border">
+      <template v-if="false">
+        <!-- TODO -->
+        <!-- <img
+          class="h-full w-full rounded-lg object-cover"
+          :src="imgUrl"
+          :alt="alt"
+        /> -->
+      </template>
+      <template v-else>
+        <IconPost class="h-10 w-10 fill-gray-100" />
+      </template>
+    </div>
+    <!-- <div
         v-if="!post.activeAt"
         class="absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center text-2xl font-bold"
         @click="pushPostPath"
       >
         비공개
-      </div>
-      <div
+      </div> -->
+    <!-- <div
         class="absolute right-0 top-0 flex pr-1"
         :class="{
           'opacity-10': !post.activeAt,
@@ -91,8 +103,7 @@ function pushPostPath() {
           <IconComment class="h-4 w-4" />
           <div class="text-gray-500">{{ post.countComment }}</div>
         </div>
-      </div>
-    </template>
+      </div> -->
     <div
       class="p-2"
       :class="{
@@ -120,5 +131,5 @@ function pushPostPath() {
         :disabled="!post.activeAt"
       />
     </div>
-  </Card>
+  </div>
 </template>

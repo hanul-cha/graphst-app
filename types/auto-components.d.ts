@@ -41,6 +41,7 @@ declare module '@vue/runtime-core' {
     InputText: typeof import('./../src/components/input/InputText.vue')['default']
     Layout: typeof import('./../src/components/Layout.vue')['default']
     LayoutInner: typeof import('./../src/components/LayoutInner.vue')['default']
+    Loader: typeof import('./../src/components/Loader.vue')['default']
     Pagination: typeof import('./../src/components/page/Pagination.vue')['default']
     PostCard: typeof import('./../src/components/post/PostCard.vue')['default']
     PostComments: typeof import('./../src/components/post/PostComments.vue')['default']

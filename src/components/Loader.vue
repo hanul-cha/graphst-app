@@ -29,9 +29,10 @@ async function setObserver() {
 }
 
 const callback = useDebounceFn((entries: IntersectionObserverEntry[]) => {
-  if (off) return
+  if (off.value) return
   entries.forEach(async (entry) => {
     if (entry.isIntersecting) {
+      console.log('load')
       disconnect()
       await props.event(continueLoad, endLoad)
     }
@@ -56,5 +57,9 @@ function endLoad() {
 </script>
 
 <template>
-  <div v-if="!off" ref="loader">로딩중</div>
+  <div v-if="!off" ref="loader">
+    <slot>
+      <div>로딩중...</div>
+    </slot>
+  </div>
 </template>

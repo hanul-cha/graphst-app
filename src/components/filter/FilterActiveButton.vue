@@ -1,36 +1,11 @@
 <script setup lang="ts">
 import { FilterHistoryValue } from '@/plugins/filter'
 import { useGlobalActiveStore } from '@/store/globalActive'
-
-export interface FilterHistoryItem {
-  label: string
-  value: any
-  type?: StringConstructor | NumberConstructor | BooleanConstructor
-  isMultiple?: boolean
-  ignore?: boolean
-}
-
-interface FilterHistoryProps {
-  modelValue: {
-    [key: string]: FilterHistoryItem
-  }
-}
-
-export interface UpdateFilter {
-  key: string
-  value: FilterHistoryValue
-}
-
-interface FilterHistoryEmits {
-  (
-    _e: 'update:modelValue',
-    _value: {
-      [key: string]: FilterHistoryItem
-    }
-  ): void
-  (_e: 'open'): void
-  (_e: 'close'): void
-}
+import {
+  FilterHistoryEmits,
+  FilterHistoryItem,
+  FilterHistoryProps,
+} from './types'
 
 const { active, close } = useGlobalActiveStore()
 
@@ -56,6 +31,10 @@ const histories = computed(() => {
         }))
         .filter(({ ignore }) => !ignore)
     : []
+})
+
+const isActive = computed(() => {
+  return histories.value.some(({ value }) => !!value)
 })
 
 function updateHistory(key: string, value: FilterHistoryValue) {
@@ -90,48 +69,22 @@ async function toggle() {
 </script>
 
 <template>
-  <div v-if="histories.length > 0" ref="$plus" class="relative">
-    <div class="flex w-5/6 items-center justify-start gap-x-4">
-      <div class="flex gap-x-1">
-        <template v-for="(data, index) of histories" :key="index">
-          <div
-            v-if="data.value"
-            class="flex items-center justify-between gap-x-2 rounded-full border bg-white p-2"
-          >
-            <div class="flex">
-              <div class="pr-1 text-sm font-semibold text-gray-700">
-                {{ data.label }}:
-              </div>
-              <div class="text-sm text-gray-700">
-                <slot :name="`value-${data.key}`" :value="data.value">
-                  {{
-                    Array.isArray(data.value)
-                      ? data.value.join(', ')
-                      : data.value
-                  }}
-                </slot>
-              </div>
-            </div>
-            <IconCross
-              class="w-3 cursor-pointer fill-gray-500"
-              @click="updateHistory(data.key, null)"
-            />
-          </div>
-        </template>
-      </div>
-
-      <div @click="toggle">
-        <IconCross
-          class="cursor-pointer fill-gray-500 transition-transform duration-300"
-          :class="{
-            'rotate-45': !isOpen,
-          }"
-        />
-      </div>
+  <div
+    v-if="histories.length > 0"
+    ref="$plus"
+    class="relative flex items-center justify-center"
+  >
+    <div @click="toggle">
+      <IconFilter
+        class="cursor-pointer stroke-gray-500 transition-transform duration-300"
+        :class="{
+          'stroke-orange-500': isActive,
+        }"
+      />
     </div>
     <div
       v-if="isOpen"
-      class="absolute bottom-0 left-0 mt-1 flex translate-y-full pt-2"
+      class="absolute bottom-0 left-0 z-10 min-w-[200px] max-w-xl translate-y-full"
     >
       <div class="rounded-xl border bg-white">
         <template v-for="(data, index) of histories" :key="index">
@@ -182,7 +135,7 @@ async function toggle() {
                   <div class="flex items-center gap-x-2">
                     <InputText v-model:model-value="activeItem.value" />
                   </div>
-                  <BasicButton class="text-sm" type="submit">
+                  <BasicButton class="flex-none text-sm" type="submit">
                     확인
                   </BasicButton>
                 </form>

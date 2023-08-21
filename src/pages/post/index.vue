@@ -152,40 +152,44 @@ async function loadEvent(
 <template>
   <LayoutInner v-model:scroll="scrollTop">
     <template #header>
-      <div class="pb-4 text-2xl font-bold">모든 포스팅</div>
-      <div v-if="filter" class="z-10 pb-4">
-        <FilterHistory
-          v-model:model-value="filter"
-          @close="() => close('category-history')"
-        >
-          <template #value-category="{ value }">
-            {{ getLabel(value as string) }}
-          </template>
-          <template #active-category="{ activeItem, updateHistory }">
-            <div class="flex gap-x-1">
-              <InputSelect
-                v-model:model-value="activeItem.value"
-                key-name="category-history"
-                :options="categoryOptions"
-                @update:model-value="
-                  updateHistory(activeItem.key, activeItem.value)
-                "
-              />
-            </div>
-          </template>
-        </FilterHistory>
-      </div>
+      <div class="pb-4 text-center text-2xl font-bold">모든 포스팅</div>
+      <FilterActiveList
+        v-if="filter"
+        v-model:model-value="filter"
+        @close="() => close('category-history')"
+      />
 
       <div class="mt-6 flex items-center justify-between pb-2">
-        <div class="text-sm">
-          Total Count: <span class="text-current">{{ totalCount }}</span>
-        </div>
-        <div>
+        <div class="flex gap-x-2">
+          <FilterActiveButton
+            v-if="filter"
+            v-model:model-value="filter"
+            @close="() => close('category-history')"
+          >
+            <template #value-category="{ value }">
+              {{ getLabel(value as string) }}
+            </template>
+            <template #active-category="{ activeItem, updateHistory }">
+              <div class="flex gap-x-1">
+                <InputSelect
+                  v-model:model-value="activeItem.value"
+                  key-name="category-history"
+                  :options="categoryOptions"
+                  @update:model-value="
+                    updateHistory(activeItem.key, activeItem.value)
+                  "
+                />
+              </div>
+            </template>
+          </FilterActiveButton>
           <InputSort
             v-model:asc="asc"
             v-model:order="order"
             :options="sortOption"
           />
+        </div>
+        <div class="text-sm">
+          Total Count: <span class="text-current">{{ totalCount }}</span>
         </div>
       </div>
     </template>
@@ -196,7 +200,7 @@ async function loadEvent(
         </div>
       </template>
       <template v-else>
-        <div class="space-y-8">
+        <div class="space-y-8 px-14">
           <template v-for="(post, index) of posts" :key="`${index}_${post.id}`">
             <PostCard
               :post="post"

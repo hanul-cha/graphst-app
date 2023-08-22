@@ -46,7 +46,7 @@ const { my, myLike, query, category, asc, order } = on({
 })
 
 const variablesParameter = computed(() => ({
-  perPage: 20,
+  perPage: 10,
   page: 1,
   likeUserId: myLike.value ? auth.user?.id ?? '0' : undefined,
   userId: my.value ? auth.user?.id ?? '0' : undefined,
@@ -140,9 +140,9 @@ const loadEvent = async (
 
   if (posts.value.length && data.posts?.nodes.length) {
     // TODO: 1번 포함하면 나오는 버그 수정
-    const asdf = [...posts.value, ...data.posts.nodes]
-    asdf.pop()
-    posts.value = asdf
+    posts.value = [...posts.value, ...data.posts.nodes].filter(
+      ({ id }) => id !== '1'
+    )
   }
   if (data.posts?.pageInfo.hasNextPage) {
     await continueLoad()

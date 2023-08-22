@@ -58,7 +58,7 @@ function endLoad() {
 <template>
   <div v-if="!off" ref="loader">
     <slot>
-      <div>로딩중...</div>
+      <div class="flex justify-center">로딩중...</div>
     </slot>
   </div>
 </template>

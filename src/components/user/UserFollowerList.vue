@@ -12,7 +12,7 @@ const page = ref<number>(1)
 const requireLoad = ref(false)
 
 const variablesParameter = computed(() => ({
-  perPage: 10,
+  perPage: 5,
   page: 1,
   followerId: props.targetId,
 }))
@@ -62,7 +62,7 @@ async function loadEvent(
 </script>
 
 <template>
-  <div class="h-64">
+  <div class="h-64 overflow-y-auto">
     <UserList
       :loading="loading"
       :users="followers"

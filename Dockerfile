@@ -5,7 +5,7 @@ WORKDIR /app
 
 # 소스 코드 복사하여 빌드
 COPY . .
-RUN npm i
+RUN npm ci
 RUN npm run build
 
 # Nginx를 사용한 이미지 생성

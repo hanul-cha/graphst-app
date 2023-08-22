@@ -1,6 +1,6 @@
 import { Ref, computed, onBeforeUnmount, ref } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
-import { FilterHistoryItem } from '@/components/page/FilterHistory.vue'
+import { FilterHistoryItem } from '@/components/filter/types'
 
 export type FilterHistoryValue =
   | string

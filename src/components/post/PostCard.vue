@@ -127,9 +127,12 @@ function pushPostPath() {
         >
           {{ post.title }}
         </div>
-        <div class="truncate pb-3">
-          {{ $format.removeHtmlTag(post.contents) }}
-        </div>
+        <!-- TODO: contexts 길이가 긴경우 사이드 바 길이가 없어지는 버그 수정 -->
+        <!-- <div class="overflow-hidden pr-1">
+          <div class="truncate pb-3">
+            {{ $format.removeHtmlTag(post.contents) }}
+          </div>
+        </div> -->
 
         <UserTooltip
           :id="post.user.id"

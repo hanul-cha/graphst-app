@@ -46,7 +46,7 @@ const { my, myLike, query, category, asc, order } = on({
 })
 
 const variablesParameter = computed(() => ({
-  perPage: 10,
+  perPage: 5,
   page: 1,
   likeUserId: myLike.value ? auth.user?.id ?? '0' : undefined,
   userId: my.value ? auth.user?.id ?? '0' : undefined,
@@ -139,10 +139,7 @@ const loadEvent = async (
   })
 
   if (posts.value.length && data.posts?.nodes.length) {
-    // TODO: 1번 포함하면 나오는 버그 수정
-    posts.value = [...posts.value, ...data.posts.nodes].filter(
-      ({ id }) => id !== '1'
-    )
+    posts.value = [...posts.value, ...data.posts.nodes]
   }
   if (data.posts?.pageInfo.hasNextPage) {
     await continueLoad()
@@ -155,7 +152,6 @@ const loadEvent = async (
 
 <template>
   <LayoutInner v-model:scroll="scrollTop">
-    {{ posts.length }}
     <template #header>
       <div class="pb-4 text-center text-2xl font-bold">모든 포스팅</div>
       <FilterActiveList

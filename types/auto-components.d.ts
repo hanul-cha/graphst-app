@@ -8,14 +8,11 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BasicButton: typeof import('./../src/components/button/BasicButton.vue')['default']
-    Card: typeof import('./../src/components/card/Card.vue')['default']
     Dialog: typeof import('./../src/components/dialog/Dialog.vue')['default']
     DialogConfirm: typeof import('./../src/components/dialog/DialogConfirm.vue')['default']
     DialogFollow: typeof import('./../src/components/dialog/follow/DialogFollow.vue')['default']
     FilterActiveButton: typeof import('./../src/components/filter/FilterActiveButton.vue')['default']
     FilterActiveList: typeof import('./../src/components/filter/FilterActiveList.vue')['default']
-    FilterButton: typeof import('./../src/components/filter/FilterButton.vue')['default']
-    FilterHistory: typeof import('./../src/components/page/FilterHistory.vue')['default']
     IconBack: typeof import('./../src/components/icons/IconBack.vue')['default']
     IconCloseEye: typeof import('./../src/components/icons/IconCloseEye.vue')['default']
     IconCode: typeof import('./../src/components/icons/IconCode.vue')['default']

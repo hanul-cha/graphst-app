@@ -50,7 +50,6 @@ function updateHistory(key: string, value: FilterHistoryValue) {
 async function toggle() {
   if (isOpen.value) {
     await close('filter-history')
-    emit('close')
     return
   }
   if (!$plus.value) return

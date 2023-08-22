@@ -46,7 +46,7 @@ const { my, myLike, query, category, asc, order } = on({
 })
 
 const variablesParameter = computed(() => ({
-  perPage: 10,
+  perPage: 20,
   page: 1,
   likeUserId: myLike.value ? auth.user?.id ?? '0' : undefined,
   userId: my.value ? auth.user?.id ?? '0' : undefined,
@@ -121,10 +121,10 @@ function getLabel(id: string) {
   return result.value?.categories.find((category) => category.id === id)?.label
 }
 
-async function loadEvent(
+const loadEvent = async (
   continueLoad: () => Promise<void>,
   endLoad: () => void
-) {
+) => {
   if (loading.value) {
     continueLoad()
     return
@@ -137,8 +137,12 @@ async function loadEvent(
       page: page.value,
     },
   })
-  if (posts.value.length && data.posts?.nodes && data.posts?.nodes.length) {
-    posts.value.push(...data.posts.nodes)
+
+  if (posts.value.length && data.posts?.nodes.length) {
+    // TODO: 1번 포함하면 나오는 버그 수정
+    const asdf = [...posts.value, ...data.posts.nodes]
+    asdf.pop()
+    posts.value = asdf
   }
   if (data.posts?.pageInfo.hasNextPage) {
     await continueLoad()
@@ -151,6 +155,7 @@ async function loadEvent(
 
 <template>
   <LayoutInner v-model:scroll="scrollTop">
+    {{ posts.length }}
     <template #header>
       <div class="pb-4 text-center text-2xl font-bold">모든 포스팅</div>
       <FilterActiveList
@@ -194,7 +199,7 @@ async function loadEvent(
       </div>
     </template>
     <div>
-      <template v-if="!loading && posts.length === 0">
+      <template v-if="!loading && !posts.length">
         <div class="flex h-full w-full items-center justify-center">
           포스팅이 없습니다.
         </div>

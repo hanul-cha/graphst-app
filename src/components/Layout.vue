@@ -4,7 +4,7 @@ import { DialogFollowType } from './dialog/follow/types'
 
 interface MenuItem {
   label: string
-  action: () => void
+  action: (_e: MouseEvent) => void
 }
 
 const auth = useAuthStore()
@@ -27,11 +27,17 @@ const menuItems: MenuItem[] = [
   },
   {
     label: '팔로워',
-    action: () => openDialogFollow(DialogFollowType.Follower),
+    action: (e: MouseEvent) => {
+      e.stopPropagation()
+      openDialogFollow(DialogFollowType.Follower)
+    },
   },
   {
     label: '팔로잉',
-    action: () => openDialogFollow(DialogFollowType.Following),
+    action: (e: MouseEvent) => {
+      e.stopPropagation()
+      openDialogFollow(DialogFollowType.Following)
+    },
   },
 ]
 
@@ -102,7 +108,7 @@ async function logout() {
       </div>
     </div>
     <div
-      class="h-full overflow-hidden bg-current transition-all duration-700"
+      class="h-full flex-none overflow-hidden bg-current transition-all duration-700"
       :class="{
         'max-w-0': !openRightSidebar,
         'max-w-full': openRightSidebar,

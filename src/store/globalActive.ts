@@ -7,10 +7,6 @@ interface ActiveProps {
   callback: () => void | Promise<void>
 }
 
-function isOpenDialog() {
-  return document.activeElement?.tagName === 'DIALOG'
-}
-
 export const useGlobalActiveStore = defineStore('globalActive', () => {
   const activeItems = ref<ActiveProps[] | null>(null)
 
@@ -29,7 +25,7 @@ export const useGlobalActiveStore = defineStore('globalActive', () => {
   )
 
   async function unActive(e: MouseEvent) {
-    if (!activeItems.value || isOpenDialog()) return
+    if (!activeItems.value) return
     const target = e.target as HTMLElement
     const lastItem = activeItems.value.at(-1)
     if (!lastItem?.target?.contains(target)) {
@@ -38,7 +34,7 @@ export const useGlobalActiveStore = defineStore('globalActive', () => {
   }
 
   async function clickEsc(e: KeyboardEvent) {
-    if (!activeItems.value || isOpenDialog()) return
+    if (!activeItems.value) return
     if (e.key === 'Escape') {
       await close()
     }
@@ -62,10 +58,9 @@ export const useGlobalActiveStore = defineStore('globalActive', () => {
     if (key) {
       await closeKey(key)
     } else {
-      const lastItem = activeItems.value?.at(-1)
+      const lastItem = activeItems.value?.pop()
       if (lastItem) {
         await lastItem.callback()
-        activeItems.value?.pop()
       }
     }
   }

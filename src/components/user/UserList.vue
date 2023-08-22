@@ -4,6 +4,7 @@ import { UserFullFragment } from '@/api/graphql'
 export interface UserCardProps {
   users: UserFullFragment[]
   emptyText?: string
+  loading?: boolean
 }
 
 defineProps<UserCardProps>()
@@ -11,7 +12,7 @@ defineProps<UserCardProps>()
 
 <template>
   <div>
-    <template v-if="users.length === 0">
+    <template v-if="!loading && users.length === 0">
       <div class="flex justify-center">
         {{ emptyText || '유저가 없습니다.' }}
       </div>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useGlobalActiveStore } from '@/store/globalActive'
+
 interface DialogEmits {
   (_: 'cancel'): void
   (_: 'close'): void
@@ -6,20 +8,37 @@ interface DialogEmits {
 
 defineEmits<DialogEmits>()
 
-const $dialog = ref<HTMLDialogElement | null>(null)
+const { active } = useGlobalActiveStore()
 
-onMounted(() => {
-  $dialog.value?.showModal()
+const $dialog = ref<HTMLDialogElement | null>(null)
+const $item = ref<HTMLElement | null>(null)
+
+onMounted(async () => {
+  $dialog.value?.show()
+
+  await nextTick()
+
+  if ($item.value) {
+    await active({
+      key: 'dialog',
+      target: $item.value,
+      callback: () => {
+        $dialog.value?.close()
+      },
+    })
+  }
 })
 </script>
 
 <template>
   <dialog
     ref="$dialog"
-    class="rounded-xl border-none bg-white p-6 outline-0"
+    class="z-30 h-full w-full border-none bg-black/30 outline-0"
     @close.prevent="$emit('close')"
     @cancel.prevent="$emit('cancel')"
   >
-    <slot />
+    <div ref="$item" class="rounded-xl bg-white p-4">
+      <slot />
+    </div>
   </dialog>
 </template>

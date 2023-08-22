@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useGlobalActiveStore } from '@/store/globalActive'
+
 interface InputSortProps {
   options?: {
     label: string
@@ -25,10 +27,31 @@ const props = withDefaults(defineProps<InputSortProps>(), {
 
 const emit = defineEmits<InputSortEmits>()
 
+const { active, close } = useGlobalActiveStore()
+
 const inputOrder = useVModel(props, 'order', emit)
 const inputAsc = useVModel(props, 'asc', emit)
 
 const isOpen = ref(false)
+const $sort = ref<HTMLElement | null>(null)
+
+async function toggle() {
+  if (isOpen.value) {
+    await close('sort-history')
+    return
+  }
+  if (!$sort.value) return
+  isOpen.value = true
+  emit('open')
+  active({
+    key: 'sort-history',
+    target: $sort.value,
+    callback: () => {
+      isOpen.value = false
+      emit('close')
+    },
+  })
+}
 
 function setOrder(order: string) {
   if (inputOrder.value === order) {
@@ -48,8 +71,8 @@ function setOrder(order: string) {
 </script>
 
 <template>
-  <div>
-    <div @click="isOpen = !isOpen">
+  <div ref="$sort" class="relative">
+    <div @click="toggle">
       <IconSort
         class="cursor-pointer stroke-gray-500 transition-transform duration-300"
         :class="{
@@ -57,38 +80,41 @@ function setOrder(order: string) {
         }"
       />
     </div>
-    <InputSelect
+    <div
       v-if="isOpen"
-      v-model="inputOrder"
       class="absolute bottom-0 left-0 z-10 min-w-[128px] max-w-xl translate-y-full"
-      :options="options"
-      :key-name="keyName"
-      placeholder="정렬"
-      @open="$emit('open')"
-      @close="$emit('close')"
     >
-      <template #item="{ option: { value, label } }">
-        <div
-          :class="{
-            'bg-current text-white': inputOrder === value,
-            'hover:bg-gray-100': inputOrder !== value,
-          }"
-          class="relative flex items-center justify-between p-2"
-          @click="setOrder(value)"
-        >
-          <div>{{ label }}</div>
+      <InputSelect
+        v-model="inputOrder"
+        :options="options"
+        :key-name="keyName"
+        placeholder="정렬"
+        @open="$emit('open')"
+        @close="$emit('close')"
+      >
+        <template #item="{ option: { value, label } }">
           <div
-            v-if="inputOrder === value"
-            class="text-xs"
-            :style="{
-              'font-size': '0.5rem',
-              'line-height': '0.5rem',
+            :class="{
+              'bg-current text-white': inputOrder === value,
+              'hover:bg-gray-100': inputOrder !== value,
             }"
+            class="relative flex items-center justify-between p-2"
+            @click="setOrder(value)"
           >
-            {{ inputAsc ? 'ASC' : 'DESC' }}
+            <div>{{ label }}</div>
+            <div
+              v-if="inputOrder === value"
+              class="text-xs"
+              :style="{
+                'font-size': '0.5rem',
+                'line-height': '0.5rem',
+              }"
+            >
+              {{ inputAsc ? 'ASC' : 'DESC' }}
+            </div>
           </div>
-        </div>
-      </template>
-    </InputSelect>
+        </template>
+      </InputSelect>
+    </div>
   </div>
 </template>

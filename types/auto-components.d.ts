@@ -58,6 +58,8 @@ declare module '@vue/runtime-core' {
     Tab: typeof import('./../src/components/tab/Tab.vue')['default']
     Tooltip: typeof import('./../src/components/tooltip/Tooltip.vue')['default']
     UserCard: typeof import('./../src/components/user/UserCard.vue')['default']
+    UserFollowerList: typeof import('./../src/components/user/UserFollowerList.vue')['default']
+    UserFollowingList: typeof import('./../src/components/user/UserFollowingList.vue')['default']
     UserList: typeof import('./../src/components/user/UserList.vue')['default']
     UserTooltip: typeof import('./../src/components/tooltip/UserTooltip.vue')['default']
     ValidateField: typeof import('./../src/components/validate/ValidateField.vue')['default']
